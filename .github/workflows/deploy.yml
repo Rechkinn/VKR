@@ -23,12 +23,17 @@ jobs:
           npm ci
           npm run build
 
+      - name: Load SSH key
+        uses: webfactory/ssh-agent@v0.11.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
       - name: Sync files via RSYNC
         run: |
           rsync -avz -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
             ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
 
-      - name: Set permissions
+      - name: Set permissions & reload nginx
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
