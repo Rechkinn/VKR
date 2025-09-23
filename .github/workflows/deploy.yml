@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   deploy:
@@ -18,16 +18,17 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
 
-      # - name: Run tests
-      #   run: npm test
+      - name: Sync files via RSYNC
+        run: |
+          rsync -avz -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
+            ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
 
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to VPS
+      - name: Set permissions
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -35,10 +36,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 1045
           script: |
-            cd /home/aleks/VKR
-            git pull origin main
-            npm ci
-            npm run build
             sudo chown -R www-data:www-data /home/aleks/VKR/dist
             sudo chmod -R 755 /home/aleks/VKR/dist
-            sudo nginx -t && sudo systemctl reload nginx
+            sudo systemctl reload nginx
