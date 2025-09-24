@@ -19,9 +19,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: |
-          npm ci
-          npm list @telegram-apps/sdk-react || npm install @telegram-apps/sdk-react
+        run: npm ci
 
       - name: Build project
         run: npm run build
