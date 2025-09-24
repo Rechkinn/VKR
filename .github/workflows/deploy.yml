@@ -71,7 +71,7 @@ jobs:
             fi
           "
 
-            - name: Deploy with Rsync (no permission changes)
+      - name: Deploy with Rsync (no permission changes)
         run: |
           # Debug: покажем текущую папку и содержимое dist
           echo "PWD: $(pwd)"
@@ -87,7 +87,6 @@ jobs:
             --delete \
             ./dist/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
-
 
       - name: Set correct permissions after deploy
         run: |
