@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,10 +24,24 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-folder
+          path: dist/
+          retention-days: 1
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-folder
+          path: dist/
+
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
@@ -35,14 +50,17 @@ jobs:
           sshpass -p "${{ secrets.VPS_ALEKS_PASSWORD }}" \
           rsync -avz --progress \
             --delete \
+            -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
             ./dist/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
 
       - name: Verify deployment
         run: |
           sshpass -p "${{ secrets.VPS_ALEKS_PASSWORD }}" \
-          ssh -o StrictHostKeyChecking=no \
+          ssh -p 1045 -o StrictHostKeyChecking=no \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            echo 'Deployment verified:'
+            echo '✅ Deployment verified:'
             ls -la /home/aleks/VKR/dist/
+            echo '📊 Directory size:'
+            du -sh /home/aleks/VKR/dist/
           "
