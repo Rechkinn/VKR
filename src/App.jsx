@@ -15,11 +15,11 @@ function App() {
 
         // const url
 
-        const res = await fetch("http://0.0.0.1:8000/api/health");
+        const res = await fetch("http://0.0.0.0:8000/api/health");
         alert("res", res);
         alert(
-          `await fetch('http://0.0.0.1:8000/api/health')`,
-          await fetch("http://0.0.0.1:8000/api/health")
+          `await fetch('http://0.0.0.0:8000/api/health')`,
+          await fetch("http://0.0.0.0:8000/api/health")
         );
         // data = await res.json()
       } catch (error) {
