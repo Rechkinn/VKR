@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -6,9 +6,36 @@ import Header from "./components/Header/Header";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+
+        // const url
+
+        const res = await fetch("http://0.0.0.1:8000/api/health");
+        alert("res", res);
+        alert(
+          `await fetch('http://0.0.0.1:8000/api/health')`,
+          await fetch("http://0.0.0.1:8000/api/health")
+        );
+        // data = await res.json()
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
 
   return (
     <>
+      {loading && <h1>LOADIND...</h1>}
+
       <Header />
       <>
         <div>
