@@ -1,58 +1,91 @@
 name: Deploy to VPS
 
+# Триггеры: запускаем пайплайн при пуше в ветку main
 on:
   push:
     branches: [main]
 
 jobs:
-  deploy:
+  # Job для сборки проекта
+  build:
     runs-on: ubuntu-latest
 
     steps:
+      # Шаг 1: Получаем код из репозитория
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Шаг 2: Настраиваем Node.js (если ваш проект на нем)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
-      - name: Install and build
+      # Шаг 3: Устанавливаем зависимости
+      # Если вы используете другой менеджер пакетов (yarn, pnpm), измените команды
+      - name: Install dependencies
+        run: npm ci # Используем ci для более надежной установки в CI-среде
+
+      # Шаг 4: Запускаем сборку проекта
+      # Эта команда создаст папку dist/ с готовыми файлами.
+      - name: Build project
+        run: npm run build
+
+      # Шаг 5: Сохраняем результат сборки (артефакт), чтобы использовать в следующем job
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-folder
+          path: dist/ # Путь к собранной папке
+          retention-days: 1 # Храним артефакт 1 день для экономии места
+
+  # Job для деплоя на сервер
+  deploy:
+    runs-on: ubuntu-latest
+    # Указываем, что этот job зависит от успешного завершения job 'build'
+    needs: build
+
+    steps:
+      # Шаг 1: Загружаем артефакт (папку dist) из job 'build'
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-folder
+          path: dist/ # Распаковываем в папку dist/ текущего раннера
+
+      # Шаг 2: Настраиваем доступ к серверу по SSH
+      - name: Setup SSH
         run: |
-          npm ci
-          npm run build
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          chmod 600 ~/.ssh/vps_key
+          # Добавляем VPS в известные хосты, чтобы избежать запроса подтверждения
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy files
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 1045
-          script: |
-            mkdir -p /home/aleks/VKR/dist
-            rm -rf /home/aleks/VKR/dist/*
-          script_stop: true
+      # Шаг 3: Деплой на сервер с помощью Rsync
+      - name: Deploy with Rsync
+        run: |
+          # Синхронизируем локальную папку dist/ с папкой на сервере
+          # Флаги:
+          # -v: подробный вывод
+          # -r: рекурсивно
+          # -z: сжатие при передаче
+          # --delete: удаляет на сервере файлы, которых нет локально (для чистого деплоя)
+          rsync -avrz --delete ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
 
-      - name: Upload files
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 1045
-          source: "./dist/*"
-          target: "/home/aleks/VKR/dist/"
+  reload-nginx:
+    runs-on: ubuntu-latest
+    needs: deploy # Зависит от успешного деплоя
 
-      - name: Set permissions
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 1045
-          script: |
-            echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S chown -R www-data:www-data /home/aleks/VKR/dist
-            echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S chmod -R 755 /home/aleks/VKR/dist
-            echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S systemctl reload nginx
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          chmod 600 ~/.ssh/vps_key
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Reload Nginx
+        run: |
+          ssh -i ~/.ssh/vps_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'sudo systemctl reload nginx'
