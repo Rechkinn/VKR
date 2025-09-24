@@ -3,72 +3,123 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Header from "./components/Header/Header";
+import { SDKProvider, useLaunchParams, useMiniApp } from "@telegram-apps/sdk-react";
 
-function App() {
+// Основной компонент приложения
+function TelegramApp() {
   const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const miniApp = useMiniApp();
+  const launchParams = useLaunchParams();
 
+  // Инициализация Telegram Mini App
   useEffect(() => {
-    async function load() {
+    async function initTelegram() {
       try {
-        setLoading(true);
-
-        // Используем относительный путь
-        const res = await fetch("/api/health");
+        // Инициализируем Mini App
+        await miniApp.ready();
         
-        if (res.ok) {
-          const data = await res.json();
-          console.log("API response:", data);
-          alert(`Status: ${data.status}`);
-        } else {
-          alert(`HTTP error: ${res.status}`);
+        // Получаем данные пользователя
+        const user = launchParams.initData?.user;
+        if (user) {
+          setUserData({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username
+          });
         }
+
+        // Меняем цвет фона приложения
+        miniApp.setBackgroundColor('#1a1a1a');
+        
       } catch (error) {
-        alert("Error: " + error.message);
-      } finally {
-        setLoading(false);
+        console.error('Error initializing Telegram Mini App:', error);
       }
     }
 
-    load();
-  }, []);
+    initTelegram();
+  }, [miniApp, launchParams]);
+
+  // Функция для показа alert в Telegram
+  const showAlert = async () => {
+    try {
+      miniApp.showAlert(`Текущий счет: ${count}`);
+    } catch (error) {
+      alert(`Текущий счет: ${count}`); // fallback
+    }
+  };
+
+  // Функция для закрытия приложения
+  const closeApp = () => {
+    miniApp.close();
+  };
 
   return (
-    <>
-      {loading && <h1>LOADIND...</h1>}
+    <div className="telegram-app">
+      {/* Шапка с информацией о пользователе */}
+      {userData && (
+        <div className="user-info">
+          <h3>Добро пожаловать, {userData.firstName}!</h3>
+          <p>@{userData.username || 'без username'}</p>
+        </div>
+      )}
 
-      <Header />
-      <>
-        <div>
-          <h1>Это будет второй коммит</h1>
-          <h2>Это будет второй коммит</h2>
-          <h3>Это будет второй коммит</h3>
-          <h4>Это будет второй коммит</h4>
-          <h5>Это будет второй коммит</h5>
-          <h6>Это будет второй коммит</h6>
+      {/* Основной контент */}
+      <div className="app-content">
+        <h1>✨ Мое Telegram Mini App</h1>
+        
+        <div className="counter-section">
+          <h2>Счетчик: {count}</h2>
+          <div className="buttons">
+            <button 
+              className="tg-button"
+              onClick={() => setCount(count + 1)}
+            >
+              +1
+            </button>
+            <button 
+              className="tg-button"
+              onClick={() => setCount(count - 1)}
+            >
+              -1
+            </button>
+            <button 
+              className="tg-button secondary"
+              onClick={() => setCount(0)}
+            >
+              Сбросить
+            </button>
+          </div>
         </div>
-        <div>
-          <a href="https://vite.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
+
+        <div className="action-buttons">
+          <button className="tg-button primary" onClick={showAlert}>
+            Показать счет
           </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
+          <button className="tg-button danger" onClick={closeApp}>
+            Закрыть приложение
+          </button>
         </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </>
-    </>
+
+        {/* Информация о запуске */}
+        <div className="debug-info">
+          <details>
+            <summary>Информация о запуске</summary>
+            <pre>{JSON.stringify(launchParams, null, 2)}</pre>
+          </details>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Обертка провайдера
+function App() {
+  return (
+    <SDKProvider>
+      <TelegramApp />
+    </SDKProvider>
   );
 }
 
