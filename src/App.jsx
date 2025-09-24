@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { init, retrieveLaunchParams, useInitData } from '@telegram-apps/sdk-react';
+import { init, retrieveLaunchParams, initData } from '@telegram-apps/sdk-react';
 import Header from "./components/Header/Header";
 import "./App.css";
 
@@ -7,9 +7,6 @@ function TelegramApp() {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Используем хук для получения данных инициализации
-  const initData = useInitData();
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -20,6 +17,10 @@ function TelegramApp() {
         // Получаем параметры запуска
         const launchParams = retrieveLaunchParams();
         console.log('Launch params:', launchParams);
+        
+        // Получаем данные инициализации
+        const initData = retrieveLaunchParams().initData;
+        console.log('Init data:', initData);
         
         // Если есть данные инициализации, извлекаем профиль пользователя
         if (initData && initData.user) {
@@ -44,10 +45,11 @@ function TelegramApp() {
     };
 
     initializeApp();
-  }, [initData]);
+  }, []);
 
   // Функция для форматирования ID пользователя
   const formatUserId = (id) => {
+    if (!id) return '';
     return id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
