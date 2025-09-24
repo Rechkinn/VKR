@@ -42,42 +42,62 @@ jobs:
           name: dist-folder
           path: dist/
 
-      - name: Setup SSH with key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
-          chmod 700 ~/.ssh/
-          # Сохраняем приватный ключ
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
           chmod 600 ~/.ssh/vps_key
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-          # Отключаем проверку хоста
-          echo "Host ${{ secrets.VPS_HOST }}" >> ~/.ssh/config
-          echo "  HostName ${{ secrets.VPS_HOST }}" >> ~/.ssh/config
-          echo "  User ${{ secrets.VPS_USER }}" >> ~/.ssh/config
-          echo "  Port 1045" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/vps_key" >> ~/.ssh/config
-          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
-          echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
-
-          echo "✅ SSH configuration completed"
-
-      - name: Test SSH connection
+      - name: Fix permissions on server
         run: |
-          echo "Testing connection to server..."
-          ssh ${{ secrets.VPS_HOST }} "echo '✅ SSH connection successful'"
+          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+            # Даем права пользователю aleks на папку VKR
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/aleks/VKR/
+            sudo chmod -R 755 /home/aleks/VKR/
+            echo '✅ Permissions fixed'
+          "
 
-      - name: Deploy with Rsync
+      - name: Clean remote directory before deploy
+        run: |
+          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+            # Очищаем папку dist, если она существует
+            if [ -d '/home/aleks/VKR/dist' ]; then
+              rm -rf /home/aleks/VKR/dist/*
+              echo '✅ Remote dist directory cleaned'
+            else
+              mkdir -p /home/aleks/VKR/dist
+              echo '✅ Remote dist directory created'
+            fi
+          "
+
+      - name: Deploy with Rsync (no permission changes)
         run: |
           rsync -avz --progress \
+            -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
+            --no-times \  # Отключаем попытку установки времени
+            --no-perms \  # Отключаем синхронизацию прав
+            --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \  # Явно указываем права
             --delete \
             ./dist/ \
-            ${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
+
+      - name: Set correct permissions after deploy
+        run: |
+          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+            # Устанавливаем правильные права после деплоя
+            chmod -R 755 /home/aleks/VKR/dist/
+            chown -R ${{ secrets.VPS_USER }}:www-data /home/aleks/VKR/dist/ 2>/dev/null || true
+            echo '✅ Final permissions set'
+          "
 
       - name: Verify deployment
         run: |
-          ssh ${{ secrets.VPS_HOST }} "
+          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
             echo '📁 Deployment verified:'
             ls -la /home/aleks/VKR/dist/
             echo '📊 Directory size:'
             du -sh /home/aleks/VKR/dist/
+            echo '🔐 Permissions:'
+            ls -la /home/aleks/VKR/ | grep dist
           "
