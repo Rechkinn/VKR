@@ -45,40 +45,68 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          # без лишних переводов строк — используем printf для корректной записи ключа
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
           chmod 600 ~/.ssh/vps_key
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "Host *" > ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
-      - name: Fix permissions on server (ensure deploy user owns VKR)
+      - name: Debug local workspace (ensure dist exists)
         run: |
-          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            # Используем переменную пользователя, а не 'aleks'
-            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/${{ secrets.VPS_USER }}/VKR/ || true
-            sudo chmod -R 775 /home/${{ secrets.VPS_USER }}/VKR/ || true
-            # Убедимся что dist существует
-            mkdir -p /home/${{ secrets.VPS_USER }}/VKR/dist
-            echo '✅ Permissions and dist directory ensured'
+          echo "PWD: $(pwd)"
+          echo "Listing workspace root:"
+          ls -la
+          echo "Contents of ./dist:"
+          ls -la ./dist || (echo "ERROR: ./dist not found" && exit 1)
+          echo "Files to be deployed:"
+          find ./dist -maxdepth 3 -type f -print
+
+      - name: Ensure remote VKR ownership & dist directory (uses sudo)
+        run: |
+          ssh -i ~/.ssh/vps_key -p 1045 "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}" "
+            # Используем переменную пользователя в путях
+            sudo mkdir -p /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            # Снимаем возможный immutable флаг (редкий кейс)
+            sudo chattr -i -R /home/${{ secrets.VPS_USER }}/VKR || true
+            # Сделаем владельцем пользователя (однократно)
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/${{ secrets.VPS_USER }}/VKR || true
+            sudo chmod -R 775 /home/${{ secrets.VPS_USER }}/VKR || true
+            echo '✅ remote ownership & perms ensured'
           "
 
       - name: Inspect remote dist before deploy (debug)
         run: |
-          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            echo 'Remote: ls -la /home/${{ secrets.VPS_USER }}/VKR'
+          ssh -i ~/.ssh/vps_key -p 1045 "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}" "
+            echo '--- ls -la /home/${{ secrets.VPS_USER }}/VKR ---'
             ls -la /home/${{ secrets.VPS_USER }}/VKR || true
-            echo 'Remote: ls -la /home/${{ secrets.VPS_USER }}/VKR/dist'
+            echo '--- ls -la /home/${{ secrets.VPS_USER }}/VKR/dist ---'
             ls -la /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            echo '--- stat (owner,group,mode) ---'
+            stat -c '%U %G %a' /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            echo '--- check sudo available non-interactively ---'
+            sudo -n true && echo 'sudo is passwordless' || echo 'sudo requires password or unavailable'
           "
 
-      - name: Deploy with Rsync (use sudo on remote rsync if needed)
+      - name: Remote cleanup (safe) — remove old files with sudo
+        run: |
+          ssh -i ~/.ssh/vps_key -p 1045 "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}" "
+            # Удаляем содержимое dist под sudo чтобы избежать permission denied
+            sudo rm -rf /home/${{ secrets.VPS_USER }}/VKR/dist/* || true
+            sudo mkdir -p /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            sudo chmod -R 775 /home/${{ secrets.VPS_USER }}/VKR/dist || true
+            echo '✅ remote dist cleaned and owned by deploy user'
+          "
+
+      - name: Deploy with Rsync
         run: |
           # локальный debug
           echo "PWD: $(pwd)"
           ls -la ./dist
-          find ./dist -maxdepth 2 -type f -print
+          find ./dist -maxdepth 3 -type f -print
 
-          # Основной rsync. Если ваш ssh-пользователь имеет passwordless sudo,
-          # и целевые файлы принадлежат другому юзеру (root/www-data), 
-          # раскомментируйте --rsync-path="sudo rsync"
+          # Основной rsync-пуш. Не используем inline comments после '\'
           rsync -avz --progress \
             -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
             --no-times \
@@ -86,31 +114,33 @@ jobs:
             --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \
             --delete \
             ./dist/ \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/VKR/dist/
+            "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}":/home/${{ secrets.VPS_USER }}/VKR/dist/
 
-          # Если выше выдаст Permission denied, попробуйте вариант с sudo на удалённой стороне:
+          # --- Если всё ещё permission denied, попробуйте следующий вариант (раскомментируйте):
           # rsync -avz --progress \
           #   -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
-          #   --no-times --no-perms --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r --delete \
+          #   --no-times --no-perms --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \
+          #   --delete \
           #   --rsync-path="sudo rsync" \
-          #   ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/VKR/dist/
+          #   ./dist/ \
+          #   "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}":/home/${{ secrets.VPS_USER }}/VKR/dist/
 
       - name: Set correct permissions after deploy
         run: |
-          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            # Устанавливаем правильные права после деплоя
-            chmod -R 755 /home/{{ secrets.VPS_USER }}/VKR/dist/
-            chown -R ${{ secrets.VPS_USER }}:www-data /home/{{ secrets.VPS_USER }}/VKR/dist/ 2>/dev/null || true
+          ssh -i ~/.ssh/vps_key -p 1045 "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}" "
+            # Устанавливаем права и владельца (если нужно)
+            sudo chmod -R 755 /home/${{ secrets.VPS_USER }}/VKR/dist/ || true
+            sudo chown -R ${{ secrets.VPS_USER }}:www-data /home/${{ secrets.VPS_USER }}/VKR/dist/ 2>/dev/null || true
             echo '✅ Final permissions set'
           "
 
       - name: Verify deployment
         run: |
-          ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          ssh -i ~/.ssh/vps_key -p 1045 "${{ secrets.VPS_USER }}"@"${{ secrets.VPS_HOST }}" "
             echo '📁 Deployment verified:'
-            ls -la /home/{{ secrets.VPS_USER }}/VKR/dist/
+            ls -la /home/${{ secrets.VPS_USER }}/VKR/dist/
             echo '📊 Directory size:'
-            du -sh /home/{{ secrets.VPS_USER }}/VKR/dist/
+            du -sh /home/${{ secrets.VPS_USER }}/VKR/dist/
             echo '🔐 Permissions:'
-            ls -la /home/{{ secrets.VPS_USER }}/VKR/ | grep dist
+            ls -la /home/${{ secrets.VPS_USER }}/VKR/ | grep dist || true
           "
