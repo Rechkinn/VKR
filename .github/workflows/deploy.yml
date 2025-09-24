@@ -36,6 +36,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 1045
           script: |
-            sudo chown -R www-data:www-data /home/aleks/VKR/dist
-            sudo chmod -R 755 /home/aleks/VKR/dist
-            sudo systemctl reload nginx
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S chown -R www-data:www-data /home/aleks/VKR/dist
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S chmod -R 755 /home/aleks/VKR/dist
+            echo '${{ secrets.SUDO_PASSWORD }}' | sudo -S systemctl reload nginx
