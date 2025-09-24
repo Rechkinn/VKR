@@ -18,22 +18,47 @@ function TelegramApp() {
         const launchParams = retrieveLaunchParams();
         console.log('Launch params:', launchParams);
         
-        // Получаем данные инициализации
-        const initData = retrieveLaunchParams().initData;
-        console.log('Init data:', initData);
+        // ПРАВИЛЬНОЕ извлечение данных пользователя
+        // Способ 1: Через initDataRaw и парсинг
+        let userData = null;
         
-        // Если есть данные инициализации, извлекаем профиль пользователя
-        if (initData && initData.user) {
-          const user = initData.user;
+        if (launchParams.initData) {
+          // Если initData уже объект
+          userData = launchParams.initData.user;
+        } else if (launchParams.initDataRaw) {
+          // Если данные в строковом формате, парсим их
+          try {
+            const params = new URLSearchParams(launchParams.initDataRaw);
+            const userParam = params.get('user');
+            if (userParam) {
+              userData = JSON.parse(decodeURIComponent(userParam));
+            }
+          } catch (parseError) {
+            console.error('Error parsing initData:', parseError);
+          }
+        }
+        
+        // Способ 2: Альтернативный подход через tg WebApp
+        if (!userData && window.Telegram?.WebApp) {
+          const tg = window.Telegram.WebApp;
+          userData = tg.initDataUnsafe?.user;
+          console.log('Data from Telegram.WebApp:', tg.initDataUnsafe);
+        }
+        
+        // Если нашли данные пользователя
+        if (userData) {
           const profile = {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            photoUrl: user.photoUrl,
-            languageCode: user.languageCode,
+            id: userData.id,
+            firstName: userData.first_name || userData.firstName,
+            lastName: userData.last_name || userData.lastName,
+            username: userData.username,
+            photoUrl: userData.photo_url || userData.photoUrl,
+            languageCode: userData.language_code || userData.languageCode,
           };
           setUserProfile(profile);
+          console.log('User profile set:', profile);
+        } else {
+          console.warn('No user data found in launch parameters');
         }
         
         setLoading(false);
@@ -51,6 +76,11 @@ function TelegramApp() {
   const formatUserId = (id) => {
     if (!id) return '';
     return id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  // Проверяем, запущено ли приложение в Telegram
+  const isTelegram = () => {
+    return window.Telegram?.WebApp?.initData || window.Telegram?.WebApp?.initDataUnsafe;
   };
 
   if (loading) {
@@ -91,7 +121,6 @@ function TelegramApp() {
                     alt="User Avatar" 
                     className="user-avatar"
                     onError={(e) => {
-                      // Fallback если изображение не загружается
                       e.currentTarget.style.display = 'none';
                     }}
                   />
@@ -114,7 +143,7 @@ function TelegramApp() {
                 
                 <div className="info-item">
                   <label>Имя:</label>
-                  <span>{userProfile.firstName}</span>
+                  <span>{userProfile.firstName || 'Не указано'}</span>
                 </div>
                 
                 {userProfile.lastName && (
@@ -143,11 +172,13 @@ function TelegramApp() {
         ) : (
           <div className="no-user-data">
             <p>Данные пользователя не доступны</p>
-            <p>Откройте приложение через Telegram</p>
+            <p>Откройте приложение через Telegram для получения данных</p>
+            {!isTelegram() && (
+              <p className="warning">⚠️ Приложение запущено вне Telegram</p>
+            )}
           </div>
         )}
         
-        {/* Дополнительная информация о приложении */}
         <div className="app-info">
           <h3>Информация о приложении</h3>
           <p>Это демонстрация Telegram Mini App с использованием Telegram WebApp SDK</p>
