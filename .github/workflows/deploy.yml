@@ -23,12 +23,7 @@ jobs:
           npm ci
           npm run build
 
-      - name: Sync files via RSYNC
-        run: |
-          rsync -avz -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
-            ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
-
-      - name: Set permissions and reload nginx
+      - name: Deploy via SCP and set permissions
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -36,6 +31,13 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 1045
           script: |
+            # Создаем директорию если не существует
+            mkdir -p /home/aleks/VKR/dist
+
+            # Копируем файлы с помощью scp
+            scp -r -o StrictHostKeyChecking=no /github/workspace/dist/* /home/aleks/VKR/dist/
+
+            # Устанавливаем права
             echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S chown -R www-data:www-data /home/aleks/VKR/dist
             echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S chmod -R 755 /home/aleks/VKR/dist
             echo '${{ secrets.VPS_ALEKS_PASSWORD }}' | sudo -S systemctl reload nginx
