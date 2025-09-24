@@ -99,8 +99,8 @@ jobs:
         run: |
           ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
             # Устанавливаем правильные права после деплоя
-            chmod -R 755 /home/aleks/VKR/dist/
-            chown -R ${{ secrets.VPS_USER }}:www-data /home/aleks/VKR/dist/ 2>/dev/null || true
+            chmod -R 755 /home/{{ secrets.VPS_USER }}/VKR/dist/
+            chown -R ${{ secrets.VPS_USER }}:www-data /home/{{ secrets.VPS_USER }}/VKR/dist/ 2>/dev/null || true
             echo '✅ Final permissions set'
           "
 
@@ -108,9 +108,9 @@ jobs:
         run: |
           ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
             echo '📁 Deployment verified:'
-            ls -la /home/aleks/VKR/dist/
+            ls -la /home/{{ secrets.VPS_USER }}/VKR/dist/
             echo '📊 Directory size:'
-            du -sh /home/aleks/VKR/dist/
+            du -sh /home/{{ secrets.VPS_USER }}/VKR/dist/
             echo '🔐 Permissions:'
-            ls -la /home/aleks/VKR/ | grep dist
+            ls -la /home/{{ secrets.VPS_USER }}/VKR/ | grep dist
           "
