@@ -40,3 +40,127 @@
 .read-the-docs {
   color: #888;
 }
+
+.telegram-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 20px;
+}
+
+.user-info {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.app-content {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.counter-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 20px;
+  margin: 20px 0;
+  backdrop-filter: blur(10px);
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.tg-button {
+  background: #2481cc;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.tg-button:hover {
+  background: #1a6fb0;
+  transform: translateY(-2px);
+}
+
+.tg-button:active {
+  transform: translateY(0);
+}
+
+.tg-button.secondary {
+  background: #6c757d;
+}
+
+.tg-button.primary {
+  background: #28a745;
+}
+
+.tg-button.danger {
+  background: #dc3545;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.debug-info {
+  margin-top: 30px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.debug-info summary {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.debug-info pre {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 480px) {
+  .telegram-app {
+    padding: 15px;
+  }
+  
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tg-button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
