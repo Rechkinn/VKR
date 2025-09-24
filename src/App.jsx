@@ -34,7 +34,7 @@ function App() {
 
   return (
     <>
-      {loading && <h1>LOADIND...</h1>}
+      {loading && <h1 style={{ textAlign: "start" }}>LOADIND...</h1>}
 
       <Header />
       <>
