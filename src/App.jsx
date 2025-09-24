@@ -13,17 +13,18 @@ function App() {
       try {
         setLoading(true);
 
-        // const url
-
-        const res = await fetch("http://0.0.0.0:8000/api/health");
-        alert("res", res);
-        alert(
-          `await fetch('http://0.0.0.0:8000/api/health')`,
-          await fetch("http://0.0.0.0:8000/api/health")
-        );
-        // data = await res.json()
+        // Используем относительный путь
+        const res = await fetch("/api/health");
+        
+        if (res.ok) {
+          const data = await res.json();
+          console.log("API response:", data);
+          alert(`Status: ${data.status}`);
+        } else {
+          alert(`HTTP error: ${res.status}`);
+        }
       } catch (error) {
-        alert(error);
+        alert("Error: " + error.message);
       } finally {
         setLoading(false);
       }
