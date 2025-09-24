@@ -3,19 +3,10 @@ import { init, retrieveLaunchParams, useInitData } from '@telegram-apps/sdk-reac
 import Header from "./components/Header/Header";
 import "./App.css";
 
-interface UserProfile {
-  id: number;
-  firstName: string;
-  lastName?: string;
-  username?: string;
-  photoUrl?: string;
-  languageCode?: string;
-}
-
 function TelegramApp() {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   
   // Используем хук для получения данных инициализации
   const initData = useInitData();
@@ -33,7 +24,7 @@ function TelegramApp() {
         // Если есть данные инициализации, извлекаем профиль пользователя
         if (initData && initData.user) {
           const user = initData.user;
-          const profile: UserProfile = {
+          const profile = {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -56,7 +47,7 @@ function TelegramApp() {
   }, [initData]);
 
   // Функция для форматирования ID пользователя
-  const formatUserId = (id: number): string => {
+  const formatUserId = (id) => {
     return id.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
@@ -105,7 +96,10 @@ function TelegramApp() {
                 </div>
               ) : (
                 <div className="avatar-placeholder">
-                  <span>{userProfile.firstName[0]}{userProfile.lastName?.[0]}</span>
+                  <span>
+                    {userProfile.firstName ? userProfile.firstName[0] : ''}
+                    {userProfile.lastName ? userProfile.lastName[0] : ''}
+                  </span>
                 </div>
               )}
               
