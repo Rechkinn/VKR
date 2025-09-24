@@ -49,36 +49,36 @@ jobs:
           chmod 600 ~/.ssh/vps_key
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-      - name: Fix permissions on server
+      - name: Fix permissions on server (ensure deploy user owns VKR)
         run: |
           ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            # Даем права пользователю aleks на папку VKR
-            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/aleks/VKR/
-            sudo chmod -R 755 /home/aleks/VKR/
-            echo '✅ Permissions fixed'
+            # Используем переменную пользователя, а не 'aleks'
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /home/${{ secrets.VPS_USER }}/VKR/ || true
+            sudo chmod -R 775 /home/${{ secrets.VPS_USER }}/VKR/ || true
+            # Убедимся что dist существует
+            mkdir -p /home/${{ secrets.VPS_USER }}/VKR/dist
+            echo '✅ Permissions and dist directory ensured'
           "
 
-      - name: Clean remote directory before deploy
+      - name: Inspect remote dist before deploy (debug)
         run: |
           ssh -i ~/.ssh/vps_key -p 1045 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            # Очищаем папку dist, если она существует
-            if [ -d '/home/aleks/VKR/dist' ]; then
-              rm -rf /home/aleks/VKR/dist/*
-              echo '✅ Remote dist directory cleaned'
-            else
-              mkdir -p /home/aleks/VKR/dist
-              echo '✅ Remote dist directory created'
-            fi
+            echo 'Remote: ls -la /home/${{ secrets.VPS_USER }}/VKR'
+            ls -la /home/${{ secrets.VPS_USER }}/VKR || true
+            echo 'Remote: ls -la /home/${{ secrets.VPS_USER }}/VKR/dist'
+            ls -la /home/${{ secrets.VPS_USER }}/VKR/dist || true
           "
 
-      - name: Deploy with Rsync (no permission changes)
+      - name: Deploy with Rsync (use sudo on remote rsync if needed)
         run: |
-          # Debug: покажем текущую папку и содержимое dist
+          # локальный debug
           echo "PWD: $(pwd)"
-          ls -la
-          echo "Contents of ./dist:"
-          ls -la ./dist || (echo "ERROR: ./dist not found" && exit 1)
+          ls -la ./dist
+          find ./dist -maxdepth 2 -type f -print
 
+          # Основной rsync. Если ваш ssh-пользователь имеет passwordless sudo,
+          # и целевые файлы принадлежат другому юзеру (root/www-data), 
+          # раскомментируйте --rsync-path="sudo rsync"
           rsync -avz --progress \
             -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
             --no-times \
@@ -86,7 +86,14 @@ jobs:
             --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \
             --delete \
             ./dist/ \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/VKR/dist/
+
+          # Если выше выдаст Permission denied, попробуйте вариант с sudo на удалённой стороне:
+          # rsync -avz --progress \
+          #   -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
+          #   --no-times --no-perms --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r --delete \
+          #   --rsync-path="sudo rsync" \
+          #   ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/VKR/dist/
 
       - name: Set correct permissions after deploy
         run: |
