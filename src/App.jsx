@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import "./App.css";
 import Header from "./components/Header/Header";
-import { SDKProvider, useLaunchParams, useMiniApp } from "@telegram-apps/sdk-react";
+import { SDKProvider, useLaunchParams, useMiniApp, useThemeParams } from "@telegram-apps/sdk-react";
+import "./App.css";
 
 // Основной компонент приложения
 function TelegramApp() {
   const [count, setCount] = useState(0);
   const [userData, setUserData] = useState(null);
+  
+  // Правильные хуки
   const miniApp = useMiniApp();
   const launchParams = useLaunchParams();
+  const themeParams = useThemeParams();
 
   // Инициализация Telegram Mini App
   useEffect(() => {
