@@ -71,16 +71,23 @@ jobs:
             fi
           "
 
-      - name: Deploy with Rsync (no permission changes)
+            - name: Deploy with Rsync (no permission changes)
         run: |
+          # Debug: покажем текущую папку и содержимое dist
+          echo "PWD: $(pwd)"
+          ls -la
+          echo "Contents of ./dist:"
+          ls -la ./dist || (echo "ERROR: ./dist not found" && exit 1)
+
           rsync -avz --progress \
             -e "ssh -i ~/.ssh/vps_key -p 1045 -o StrictHostKeyChecking=no" \
-            --no-times \  # Отключаем попытку установки времени
-            --no-perms \  # Отключаем синхронизацию прав
-            --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \  # Явно указываем права
+            --no-times \
+            --no-perms \
+            --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r \
             --delete \
             ./dist/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
+
 
       - name: Set correct permissions after deploy
         run: |
