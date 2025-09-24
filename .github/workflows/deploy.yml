@@ -23,10 +23,10 @@ jobs:
           npm ci
           npm run build
 
-      - name: Sync files via RSYNC
-        run: |
-          rsync -avz -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
-            ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
+      # - name: Sync files via RSYNC
+      #   run: |
+      #     rsync -avz -e "ssh -p 1045 -o StrictHostKeyChecking=no" \
+      #       ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/aleks/VKR/dist/
 
       - name: Set permissions
         uses: appleboy/ssh-action@v1.0.3
