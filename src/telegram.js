@@ -1,22 +1,47 @@
-import WebApp from '@twa-dev/sdk';
-
 export const initTelegramApp = () => {
-  WebApp.enableClosingConfirmation();
-  WebApp.setHeaderColor('#2481cc');
-  WebApp.setBackgroundColor('#7c4e11');
-  
-  // Ready event
-  WebApp.ready();
+  if (window.Telegram && window.Telegram.WebApp) {
+    // Расширяем приложение на весь экран
+    window.Telegram.WebApp.expand();
+    
+    // Устанавливаем цвет заголовка
+    window.Telegram.WebApp.setHeaderColor('#5c3b12');
+    window.Telegram.WebApp.setBackgroundColor('#f5f5f5');
+    
+    console.log('Telegram WebApp инициализирован');
+  } else {
+    console.error('Telegram WebApp не доступен');
+  }
 };
 
 export const getUserData = () => {
-  return WebApp.initDataUnsafe?.user || null;
+  if (window.Telegram && window.Telegram.WebApp) {
+    return window.Telegram.WebApp.initDataUnsafe?.user || null;
+  }
+  return null;
 };
 
 export const sendDataToBot = (data) => {
-  WebApp.sendData(JSON.stringify(data));
+  if (window.Telegram && window.Telegram.WebApp) {
+    // Отправляем данные обратно в бота
+    window.Telegram.WebApp.sendData(JSON.stringify(data));
+  }
 };
 
 export const closeApp = () => {
-  WebApp.close();
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.close();
+  }
+};
+
+// Дополнительные утилиты
+export const showAlert = (message) => {
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.showAlert(message);
+  }
+};
+
+export const showConfirm = (message, callback) => {
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.showConfirm(message, callback);
+  }
 };
