@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { 
   retrieveLaunchParams, 
   miniApp, 
-  initData, 
-  $debug,
+  initData,
   init as initSDK
 } from '@telegram-apps/sdk-react';
 import Header from "./components/Header/Header";
@@ -17,9 +16,6 @@ function TelegramApp() {
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // Включаем отладку для разработки
-        $debug.enabled = true;
-
         // Инициализируем SDK
         initSDK();
         
