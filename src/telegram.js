@@ -3,7 +3,7 @@ import WebApp from '@twa-dev/sdk';
 export const initTelegramApp = () => {
   WebApp.enableClosingConfirmation();
   WebApp.setHeaderColor('#2481cc');
-  WebApp.setBackgroundColor('#ffffff');
+  WebApp.setBackgroundColor('#7c4e11');
   
   // Ready event
   WebApp.ready();
