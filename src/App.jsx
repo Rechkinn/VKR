@@ -11,7 +11,7 @@ function App() {
     WebApp.expand();
 
     // Устанавливаем цвет фона
-    WebApp.setBackgroundColor("#ffffff");
+    WebApp.setBackgroundColor("#000000");
   }, []);
 
   const handleButtonClick = () => {
