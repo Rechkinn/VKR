@@ -1,10 +1,21 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import App from './App'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// If you're running in a plain browser, we inject a mock Telegram.WebApp
+if (!window.Telegram) {
+  import('./telegramMock').then((m) => {
+    window.Telegram = m.createMockTelegram()
+    if (window.Telegram.WebApp && window.Telegram.WebApp.ready) {
+      window.Telegram.WebApp.ready()
+    }
+    renderApp()
+  })
+} else {
+  renderApp()
+}
+
+function renderApp() {
+  const root = createRoot(document.getElementById('root'))
+  root.render(<App />)
+}
