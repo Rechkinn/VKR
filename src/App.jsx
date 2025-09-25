@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { init, retrieveLaunchParams, initData } from '@telegram-apps/sdk-react';
+import { 
+  retrieveLaunchParams, 
+  miniApp, 
+  initData, 
+  $debug,
+  init as initSDK
+} from '@telegram-apps/sdk-react';
 import Header from "./components/Header/Header";
 import "./App.css";
 
@@ -11,60 +17,83 @@ function TelegramApp() {
   useEffect(() => {
     const initializeApp = async () => {
       try {
+        // Включаем отладку для разработки
+        $debug.enabled = true;
+
         // Инициализируем SDK
-        init();
+        initSDK();
         
         // Получаем параметры запуска
         const launchParams = retrieveLaunchParams();
         console.log('Launch params:', launchParams);
         
-        // ПРАВИЛЬНОЕ извлечение данных пользователя
-        // Способ 1: Через initDataRaw и парсинг
+        // Инициализируем miniApp
+        if (miniApp.isSupported()) {
+          miniApp.mount();
+          miniApp.ready();
+        }
+
         let userData = null;
-        
-        if (launchParams.initData) {
-          // Если initData уже объект
-          userData = launchParams.initData.user;
-        } else if (launchParams.initDataRaw) {
-          // Если данные в строковом формате, парсим их
+
+        // Способ 1: Через initData (новый API)
+        if (initData.isSupported()) {
           try {
-            const params = new URLSearchParams(launchParams.initDataRaw);
-            const userParam = params.get('user');
-            if (userParam) {
-              userData = JSON.parse(decodeURIComponent(userParam));
+            await initData.restore();
+            const user = initData.user();
+            if (user) {
+              userData = user;
+              console.log('User data from initData:', userData);
             }
-          } catch (parseError) {
-            console.error('Error parsing initData:', parseError);
+          } catch (initDataError) {
+            console.warn('Error getting initData:', initDataError);
           }
         }
-        
-        // Способ 2: Альтернативный подход через tg WebApp
+
+        // Способ 2: Через launchParams (если initData не работает)
+        if (!userData && launchParams.initData?.user) {
+          userData = launchParams.initData.user;
+          console.log('User data from launchParams:', userData);
+        }
+
+        // Способ 3: Альтернативный через window.Telegram (для совместимости)
         if (!userData && window.Telegram?.WebApp) {
           const tg = window.Telegram.WebApp;
           userData = tg.initDataUnsafe?.user;
-          console.log('Data from Telegram.WebApp:', tg.initDataUnsafe);
+          console.log('User data from Telegram.WebApp:', userData);
         }
-        
+
         // Если нашли данные пользователя
         if (userData) {
           const profile = {
             id: userData.id,
-            firstName: userData.first_name || userData.firstName,
-            lastName: userData.last_name || userData.lastName,
+            firstName: userData.firstName || userData.first_name,
+            lastName: userData.lastName || userData.last_name,
             username: userData.username,
-            photoUrl: userData.photo_url || userData.photoUrl,
-            languageCode: userData.language_code || userData.languageCode,
+            photoUrl: userData.photoUrl || userData.photo_url,
+            languageCode: userData.languageCode || userData.language_code,
+            isPremium: userData.isPremium || userData.is_premium || false,
           };
           setUserProfile(profile);
           console.log('User profile set:', profile);
         } else {
-          console.warn('No user data found in launch parameters');
+          console.warn('No user data found');
+          // В режиме разработки можем использовать моковые данные
+          if (process.env.NODE_ENV === 'development') {
+            setUserProfile({
+              id: 123456789,
+              firstName: 'Test',
+              lastName: 'User',
+              username: 'testuser',
+              languageCode: 'en',
+              isPremium: false
+            });
+          }
         }
         
         setLoading(false);
       } catch (err) {
         console.error('Error initializing app:', err);
-        setError('Failed to initialize application');
+        setError(`Failed to initialize application: ${err.message}`);
         setLoading(false);
       }
     };
@@ -80,13 +109,18 @@ function TelegramApp() {
 
   // Проверяем, запущено ли приложение в Telegram
   const isTelegram = () => {
-    return window.Telegram?.WebApp?.initData || window.Telegram?.WebApp?.initDataUnsafe;
+    return !!(window.Telegram?.WebApp?.initData || 
+             window.Telegram?.WebApp?.initDataUnsafe ||
+             retrieveLaunchParams()?.initData);
   };
 
   if (loading) {
     return (
       <div className="telegram-app">
-        <div className="loading">Loading...</div>
+        <div className="loading">
+          <div className="loading-spinner"></div>
+          <p>Загрузка...</p>
+        </div>
       </div>
     );
   }
@@ -94,7 +128,13 @@ function TelegramApp() {
   if (error) {
     return (
       <div className="telegram-app">
-        <div className="error">{error}</div>
+        <div className="error">
+          <h3>Ошибка</h3>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            Перезагрузить
+          </button>
+        </div>
       </div>
     );
   }
@@ -110,6 +150,9 @@ function TelegramApp() {
           <div className="user-profile">
             <div className="profile-header">
               <h2>Профиль пользователя</h2>
+              {userProfile.isPremium && (
+                <span className="premium-badge">⭐ Premium</span>
+              )}
             </div>
             
             <div className="profile-content">
@@ -122,8 +165,15 @@ function TelegramApp() {
                     className="user-avatar"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling.style.display = 'flex';
                     }}
                   />
+                  <div className="avatar-placeholder" style={{display: 'none'}}>
+                    <span>
+                      {userProfile.firstName ? userProfile.firstName[0] : ''}
+                      {userProfile.lastName ? userProfile.lastName[0] : ''}
+                    </span>
+                  </div>
                 </div>
               ) : (
                 <div className="avatar-placeholder">
@@ -171,17 +221,25 @@ function TelegramApp() {
           </div>
         ) : (
           <div className="no-user-data">
-            <p>Данные пользователя не доступны</p>
-            <p>Откройте приложение через Telegram для получения данных</p>
+            <div className="no-data-icon">📱</div>
+            <h3>Данные пользователя не доступны</h3>
+            <p>Откройте приложение через Telegram для получения данных пользователя</p>
             {!isTelegram() && (
-              <p className="warning">⚠️ Приложение запущено вне Telegram</p>
+              <div className="warning">
+                <span>⚠️</span>
+                <p>Приложение запущено вне Telegram WebApp</p>
+              </div>
             )}
           </div>
         )}
         
         <div className="app-info">
           <h3>Информация о приложении</h3>
-          <p>Это демонстрация Telegram Mini App с использованием Telegram WebApp SDK</p>
+          <p>Демонстрация Telegram Mini App с использованием @telegram-apps/sdk-react 3.0.0</p>
+          <div className="tech-info">
+            <span>SDK версия: 3.0.0</span>
+            <span>Статус Telegram: {isTelegram() ? '✅ Подключен' : '❌ Не подключен'}</span>
+          </div>
         </div>
       </main>
     </div>
