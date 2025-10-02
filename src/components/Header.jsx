@@ -1,42 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState} from "react";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
 
 export default function Header() {
-  const { webapp, ready } = useTelegramWebApp();
+ const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!ready || !webapp) return;
-    try {
-      if (webapp.setHeaderColor) webapp.setHeaderColor("#0088cc");
-    } catch (e) {}
-
-    if (webapp.MainButton && webapp.MainButton.setText) {
-      webapp.MainButton.setText("Done");
-      webapp.MainButton.show && webapp.MainButton.show();
+    // Получаем initData от Telegram
+    const tg = window.Telegram.WebApp;
+    const initData = tg.initData;
+    
+    if (initData) {
+      // Отправляем на бэкенд
+      fetch('http://localhost:8000/api/v1/auth/telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          init_data: initData
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Сохраняем токен
+        localStorage.setItem('access_token', data.access_token);
+        setUser(data.user);
+      })
+      .catch(err => console.error('Auth error:', err));
     }
-
-    const onMain = () => {
-      if (webapp.sendData) webapp.close();
-      else console.log("Main clicked");
-    };
-
-    webapp.MainButton &&
-      webapp.MainButton.onClick &&
-      webapp.MainButton.onClick(onMain);
-
-    return () => {
-      webapp.MainButton &&
-        webapp.MainButton.offClick &&
-        webapp.MainButton.offClick(onMain);
-    };
-  }, [ready, webapp]);
-
+  }, []);
+  
   return (
-    <header style={{ padding: 16, borderBottom: "1px solid #eee" }}>
-      <h1>My TG Mini App (React)</h1>
-      <p style={{ margin: 0, fontSize: 13, color: "#666" }}>
-        Telegram.WebApp {ready ? "connected" : "not connected"}
-      </p>
-    </header>
+    <div>
+      {user ? (
+        <h1>Welcome, {user.first_name}!</h1>
+      ) : (
+        <p>Authenticating...</p>
+      )}
+    </div>
   );
 }
