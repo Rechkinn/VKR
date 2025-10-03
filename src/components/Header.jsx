@@ -9,37 +9,41 @@ export default function Header() {
   const [userInfo, setUserInfo] = useState(null);
 
   // Функция для отправки данных на бэкенд
-  const sendAuthDataToBackend = async (initData) => {
+  const sendAuthDataToBackend = async (initDataString) => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/v1/auth/telegram', {
+      console.log('Sending initData to backend:', initDataString);
+      
+      const response = await fetch('https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          init_data: initData
+          init_data: initDataString  // ВАЖНО: отправляем СТРОКУ, а не объект
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Auth successful:', data);
+      console.log('✅ Auth successful:', data);
       
       // Сохраняем информацию о пользователе
       setUserInfo(data.user);
       
-      // Сохраняем токен (можно в localStorage или в состоянии приложения)
+      // Сохраняем токен в localStorage
       localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       
       return data;
     } catch (err) {
-      console.error('Auth failed:', err);
+      console.error('❌ Auth failed:', err);
       setError(err.message);
       throw err;
     } finally {
@@ -47,18 +51,18 @@ export default function Header() {
     }
   };
 
-  // Функция для парсинга initData и отображения
-  const parseInitData = (initData) => {
-    if (!initData) return null;
+  // Функция для парсинга initData для отображения
+  const parseInitDataForDisplay = (initDataString) => {
+    if (!initDataString) return null;
     
     try {
-      const params = new URLSearchParams(initData);
+      const params = new URLSearchParams(initDataString);
       const parsedData = {};
       
       for (const [key, value] of params) {
         if (key === 'user') {
           try {
-            parsedData[key] = JSON.parse(value);
+            parsedData[key] = JSON.parse(decodeURIComponent(value));
           } catch {
             parsedData[key] = value;
           }
@@ -70,129 +74,292 @@ export default function Header() {
       return parsedData;
     } catch (err) {
       console.error('Error parsing initData:', err);
-      return { raw: initData };
+      return { raw: initDataString };
     }
   };
 
   useEffect(() => {
     if (!ready || !webapp) return;
 
+    console.log('Telegram WebApp ready:', webapp);
+
     // Настраиваем внешний вид
     try {
-      if (webapp.setHeaderColor) webapp.setHeaderColor("#0088cc");
+      if (webapp.setHeaderColor) {
+        webapp.setHeaderColor("#0088cc");
+      }
+      if (webapp.setBackgroundColor) {
+        webapp.setBackgroundColor("#ffffff");
+      }
     } catch (e) {
-      console.warn('Failed to set header color:', e);
+      console.warn('Failed to set colors:', e);
     }
 
-    // Получаем initData от Telegram WebApp
-    const initData = webapp.initData || webapp.initDataUnsafe;
-    console.log('Telegram WebApp initData:', initData);
+    // ВАЖНО: получаем initData как СТРОКУ
+    const initDataString = webapp.initData;
+    
+    console.log('initData type:', typeof initDataString);
+    console.log('initData value:', initDataString);
+    console.log('initDataUnsafe:', webapp.initDataUnsafe);
 
-    // Парсим и сохраняем initData для отображения
-    if (initData) {
-      const parsedData = parseInitData(initData);
-      setAuthData(parsedData);
-      
-      // Автоматически отправляем данные на бэкенд для аутентификации
-      sendAuthDataToBackend(initData).catch(err => {
-        console.error('Auto-auth failed:', err);
+    // Проверяем что initData это строка и не пустая
+    if (!initDataString || typeof initDataString !== 'string' || initDataString.trim() === '') {
+      console.warn('⚠️ initData is empty or invalid. This might be a development environment.');
+      console.log('Available data:', {
+        initData: initDataString,
+        initDataUnsafe: webapp.initDataUnsafe,
+        user: webapp.initDataUnsafe?.user
       });
+      
+      // В режиме разработки можем показать данные из initDataUnsafe
+      if (webapp.initDataUnsafe?.user) {
+        setAuthData({
+          isDevelopment: true,
+          user: webapp.initDataUnsafe.user
+        });
+        setError('Development mode: initData not available. Use test-login endpoint.');
+      }
+      return;
     }
+
+    // Парсим для отображения
+    const parsedData = parseInitDataForDisplay(initDataString);
+    setAuthData(parsedData);
+    
+    // Отправляем на бэкенд
+    sendAuthDataToBackend(initDataString).catch(err => {
+      console.error('Auto-auth failed:', err);
+    });
 
     // Настраиваем кнопку
-    if (webapp.MainButton && webapp.MainButton.setText) {
-      webapp.MainButton.setText("Done");
-      webapp.MainButton.show && webapp.MainButton.show();
-    }
-
-    const onMain = () => {
-      if (webapp.sendData) {
-        webapp.close();
-      } else {
-        console.log("Main clicked");
+    if (webapp.MainButton) {
+      try {
+        webapp.MainButton.setText("Close");
+        webapp.MainButton.show();
+        
+        const onMainButtonClick = () => {
+          console.log("Main button clicked");
+          webapp.close();
+        };
+        
+        webapp.MainButton.onClick(onMainButtonClick);
+        
+        return () => {
+          webapp.MainButton.offClick(onMainButtonClick);
+        };
+      } catch (e) {
+        console.warn('Failed to setup MainButton:', e);
       }
-    };
-
-    webapp.MainButton &&
-      webapp.MainButton.onClick &&
-      webapp.MainButton.onClick(onMain);
-
-    return () => {
-      webapp.MainButton &&
-        webapp.MainButton.offClick &&
-        webapp.MainButton.offClick(onMain);
-    };
+    }
   }, [ready, webapp]);
 
-  // Функция для ручной повторной отправки данных
+  // Функция для ручной повторной отправки
   const handleRetryAuth = () => {
-    if (webapp?.initData) {
-      sendAuthDataToBackend(webapp.initData);
+    const initDataString = webapp?.initData;
+    if (initDataString && typeof initDataString === 'string' && initDataString.trim() !== '') {
+      sendAuthDataToBackend(initDataString);
+    } else {
+      setError('initData not available. Cannot retry authentication.');
     }
+  };
+
+  // Функция для тестового входа (только для разработки)
+  const handleTestLogin = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const testTelegramId = Date.now(); // Уникальный ID для теста
+      const response = await fetch(
+        `https://xn--80aqak6ae.xn--p1ai/api/v1/auth/test-login?telegram_id=${testTelegramId}&first_name=Test&last_name=User&role=passenger`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Test auth successful:', data);
+      
+      setUserInfo(data.user);
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+    } catch (err) {
+      console.error('❌ Test auth failed:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    setUserInfo(null);
+    setAuthData(null);
   };
 
   return (
     <header style={{ padding: 16, borderBottom: "1px solid #eee" }}>
-      <h1>My TG Mini App (React)</h1>
+      <h1 style={{ margin: '0 0 8px 0' }}>AllTransfer Mini App</h1>
       <p style={{ margin: 0, fontSize: 13, color: "#666" }}>
-        Telegram.WebApp {ready ? "connected" : "not connected"}
+        Telegram WebApp {ready ? "✅ connected" : "❌ not connected"}
       </p>
 
       {/* Статус аутентификации */}
       <div style={{ marginTop: 12 }}>
-        {loading && <p style={{ color: '#666' }}>🔄 Authenticating...</p>}
+        {loading && (
+          <p style={{ color: '#0088cc', margin: '8px 0' }}>
+            🔄 Authenticating...
+          </p>
+        )}
+        
         {error && (
-          <div style={{ color: 'red' }}>
-            <p>❌ Auth error: {error}</p>
+          <div style={{ 
+            color: '#d32f2f', 
+            backgroundColor: '#ffebee',
+            padding: 12,
+            borderRadius: 8,
+            marginTop: 12
+          }}>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>
+              ❌ Authentication Error
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontSize: 12 }}>
+              {error}
+            </p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button 
+                onClick={handleRetryAuth}
+                style={{ 
+                  padding: '8px 16px', 
+                  fontSize: 14,
+                  backgroundColor: '#0088cc',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer'
+                }}
+              >
+                🔄 Retry
+              </button>
+              <button 
+                onClick={handleTestLogin}
+                style={{ 
+                  padding: '8px 16px', 
+                  fontSize: 14,
+                  backgroundColor: '#ff9800',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer'
+                }}
+              >
+                🧪 Test Login
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {userInfo && (
+          <div style={{ 
+            backgroundColor: '#e8f5e9',
+            padding: 12,
+            borderRadius: 8,
+            marginTop: 12
+          }}>
+            <p style={{ margin: '0 0 8px 0', color: '#2e7d32', fontWeight: 'bold' }}>
+              ✅ Authenticated
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontSize: 14 }}>
+              <strong>Name:</strong> {userInfo.first_name} {userInfo.last_name || ''}
+            </p>
+            {userInfo.username && (
+              <p style={{ margin: '0 0 8px 0', fontSize: 14 }}>
+                <strong>Username:</strong> @{userInfo.username}
+              </p>
+            )}
+            <p style={{ margin: '0 0 8px 0', fontSize: 14 }}>
+              <strong>Role:</strong> {userInfo.role}
+            </p>
             <button 
-              onClick={handleRetryAuth}
+              onClick={handleLogout}
               style={{ 
-                padding: '4px 8px', 
+                padding: '6px 12px', 
                 fontSize: 12,
-                backgroundColor: '#f0f0f0',
-                border: '1px solid #ccc',
-                borderRadius: 4
+                backgroundColor: '#f44336',
+                color: 'white',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer'
               }}
             >
-              Retry
+              Logout
             </button>
           </div>
         )}
-        {userInfo && (
-          <p style={{ color: 'green' }}>✅ Authenticated as: {userInfo.username || userInfo.first_name}</p>
-        )}
       </div>
 
-      {/* Отображение initData */}
+      {/* Отображение initData (для отладки) */}
       {authData && (
-        <div style={{ marginTop: 16, fontSize: 12 }}>
-          <h3 style={{ margin: '8px 0', fontSize: 14 }}>Telegram Init Data:</h3>
+        <details style={{ marginTop: 16 }}>
+          <summary style={{ 
+            cursor: 'pointer',
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#666',
+            padding: '4px 0'
+          }}>
+            🔍 Debug: Telegram Init Data
+          </summary>
           <div style={{ 
             backgroundColor: '#f5f5f5', 
-            padding: 8, 
-            borderRadius: 4,
-            maxHeight: 200,
+            padding: 12, 
+            borderRadius: 6,
+            marginTop: 8,
+            maxHeight: 300,
             overflow: 'auto',
-            fontFamily: 'monospace'
+            fontFamily: 'monospace',
+            fontSize: 11
           }}>
-            <pre>{JSON.stringify(authData, null, 2)}</pre>
+            <pre style={{ margin: 0 }}>
+              {JSON.stringify(authData, null, 2)}
+            </pre>
           </div>
-        </div>
+        </details>
       )}
 
-      {/* Информация о пользователе из бэкенда */}
-      {userInfo && (
-        <div style={{ marginTop: 16, fontSize: 12 }}>
-          <h3 style={{ margin: '8px 0', fontSize: 14 }}>User from Backend:</h3>
-          <div style={{ 
-            backgroundColor: '#e8f5e8', 
-            padding: 8, 
-            borderRadius: 4,
-            fontFamily: 'monospace'
+      {/* Сохраненный токен (для отладки) */}
+      {localStorage.getItem('access_token') && (
+        <details style={{ marginTop: 8 }}>
+          <summary style={{ 
+            cursor: 'pointer',
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#666',
+            padding: '4px 0'
           }}>
-            <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+            🔑 Debug: Access Token
+          </summary>
+          <div style={{ 
+            backgroundColor: '#f5f5f5', 
+            padding: 12, 
+            borderRadius: 6,
+            marginTop: 8,
+            wordBreak: 'break-all',
+            fontFamily: 'monospace',
+            fontSize: 11
+          }}>
+            {localStorage.getItem('access_token').substring(0, 50)}...
           </div>
-        </div>
+        </details>
       )}
     </header>
   );
