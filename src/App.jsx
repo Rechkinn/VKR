@@ -17,7 +17,7 @@ export default function App() {
           Open the console and try:{" "}
           <code>window.Telegram && window.Telegram.dispatch('ready')</code>
         </p>
-        <Profile userInfo={user} />
+        {/* <Profile userInfo={user} /> */}
       </main>
     </div>
   );

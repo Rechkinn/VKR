@@ -296,10 +296,14 @@ const TelegramAuth = () => {
         {userInfo && (
           <>
             <section>
-              <Profile userInfo={webApp?.initData.initDataUnsafe.user} />
+              <Profile
+                userInfo={
+                  (parseInitData(webApp.initData), null, 2).initDataUnsafe.user
+                }
+              />
             </section>
 
-            <div
+            {/* <div
               style={{
                 padding: 12,
                 backgroundColor: "#e8f5e9",
@@ -353,7 +357,7 @@ const TelegramAuth = () => {
               >
                 Logout
               </button>
-            </div>
+            </div> */}
           </>
         )}
       </section>
