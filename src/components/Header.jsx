@@ -389,6 +389,7 @@ const TelegramAuth = () => {
             <h4 style={{ margin: "0 0 8px 0" }}>WebApp Status:</h4>
             <pre style={{ margin: "4px 0" }}>
               {JSON.stringify(debugInfo, null, 2)}
+              <Profile userInfo={debugInfo} />
             </pre>
 
             {webApp?.initData && (
@@ -397,11 +398,6 @@ const TelegramAuth = () => {
                 <pre style={{ margin: "4px 0" }}>
                   {JSON.stringify(parseInitData(webApp.initData), null, 2)}
                 </pre>
-                <Profile
-                  userInfo={JSON.parse(
-                    JSON.stringify(parseInitData(webApp.initData), null, 2)
-                  )}
-                />
               </>
             )}
 
