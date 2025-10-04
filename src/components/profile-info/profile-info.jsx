@@ -20,7 +20,7 @@ export default function ProfileInfo({ userInfo }) {
         className={styles.mainImage}
       />
       {"---"}
-      {userInfo}
+      {`${userInfo}`}
       {"---"}
       <h1 className={styles.name}>
         {userInfo.last_name || userInfo.first_name
