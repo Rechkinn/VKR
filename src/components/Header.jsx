@@ -423,7 +423,7 @@ const TelegramAuth = () => {
               {/* <Profile userInfo={debugInfo?.initDataUnsafe?.user ?? null} /> */}
             </pre>
 
-            <Profile userInfo={telegramUser} />
+            {telegramUser && <Profile userInfo={telegramUser} />}
 
             {webApp?.initData && (
               <>

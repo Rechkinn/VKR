@@ -34,15 +34,12 @@ import Button from "../button/button";
 
 export default function ProfileInfo({ userInfo }) {
   function parseData() {
-    if (userInfo == null) {
-      return <div style={{ color: "#666" }}>No user info</div>;
-    }
+    if (!userInfo) return <div style={{ color: "#666" }}>No user info</div>;
 
     let parsed;
     try {
       parsed = typeof userInfo === "string" ? JSON.parse(userInfo) : userInfo;
     } catch (err) {
-      // Показать исходную строку и ошибку парсинга
       return (
         <div style={{ color: "#d32f2f" }}>
           <div>Invalid JSON: {err.message}</div>
@@ -51,11 +48,7 @@ export default function ProfileInfo({ userInfo }) {
       );
     }
 
-    if (parsed.initDataUnsafe.user == null) {
-      return <div style={{ color: "#666" }}>Parsed value is null</div>;
-    }
-
-    if (typeof parsed !== "object") {
+    if (!parsed || typeof parsed !== "object") {
       return <div>{String(parsed)}</div>;
     }
 
