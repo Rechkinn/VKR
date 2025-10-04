@@ -207,7 +207,7 @@ const TelegramAuth = () => {
         margin: "0 auto",
       }}
     >
-      {/* <header
+      <header
         style={{
           paddingBottom: 16,
           borderBottom: "1px solid #e0e0e0",
@@ -232,7 +232,7 @@ const TelegramAuth = () => {
         >
           Telegram WebApp {webApp ? "✅ connected" : "❌ not connected"}
         </p>
-      </header> */}
+      </header>
 
       {/* Статус аутентификации */}
       <section style={{ marginBottom: 16 }}>
@@ -414,6 +414,10 @@ const TelegramAuth = () => {
                 </p>
               </>
             )}
+
+            <div>---</div>
+            <div>{userInfo}</div>
+            <div>---</div>
           </div>
         </details>
       </section>
