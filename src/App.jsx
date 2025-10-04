@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./components/Header";
 import Profile from "./components/profile/profile";
+import { user } from "./utils/userInfo";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
           Open the console and try:{" "}
           <code>window.Telegram && window.Telegram.dispatch('ready')</code>
         </p>
-        {/* <Profile /> */}
+        {/* <Profile userInfo={user} /> */}
       </main>
     </div>
   );
