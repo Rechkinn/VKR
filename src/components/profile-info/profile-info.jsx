@@ -19,7 +19,8 @@ export default function ProfileInfo({ userInfo }) {
         }
         className={styles.mainImage}
       />
-
+      <div>---</div>
+      {userInfo}
       <div>---</div>
       {Object.entries(userInfo).map((para) => {
         return <div>{para}</div>;
