@@ -34,10 +34,47 @@ import Button from "../button/button";
 
 export default function ProfileInfo({ userInfo }) {
   function parseData() {
-    const obj = JSON.parse(userInfo);
-    // return typeof obj.initDataUnsafe;
-    return obj;
-    // .user.first_name;
+    if (userInfo == null) {
+      return <div style={{ color: "#666" }}>No user info</div>;
+    }
+
+    let parsed;
+    try {
+      parsed = typeof userInfo === "string" ? JSON.parse(userInfo) : userInfo;
+    } catch (err) {
+      // Показать исходную строку и ошибку парсинга
+      return (
+        <div style={{ color: "#d32f2f" }}>
+          <div>Invalid JSON: {err.message}</div>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{String(userInfo)}</pre>
+        </div>
+      );
+    }
+
+    if (parsed == null) {
+      return <div style={{ color: "#666" }}>Parsed value is null</div>;
+    }
+
+    if (typeof parsed !== "object") {
+      return <div>{String(parsed)}</div>;
+    }
+
+    return (
+      <div>
+        {Object.entries(parsed).map(([key, value]) => (
+          <div key={key} style={{ marginBottom: 6 }}>
+            <strong>{key}:</strong>{" "}
+            {typeof value === "object" ? (
+              <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                {JSON.stringify(value, null, 2)}
+              </pre>
+            ) : (
+              String(value)
+            )}
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -54,54 +91,32 @@ export default function ProfileInfo({ userInfo }) {
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
+      {parseData()}
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
+
       <div>
-        -------------------------------------------------------------------------------------------------------------------------------------------
+        <h1 className={styles.name}>
+          {userInfo.last_name || userInfo.first_name
+            ? `${userInfo.last_name} ${userInfo.first_name}`.trim()
+            : "Имя Фамилия"}
+        </h1>
+        <div className={styles.containerRoleAndRating}>
+          <div className={styles.role}>Водитель</div>
+          <img src={star} alt="Звезда" className={styles.star} />
+          <span className={styles.rating}>4.9</span>
+        </div>
+        <p className={styles.startedWorking}>Работаю с Января 2025</p>
+        <Button styleType="black" isButtonWithIcon={true}>
+          <img
+            src={edit}
+            alt="Редактировать профиль"
+            className={styles.iconButton}
+          />
+          Редактировать профиль
+        </Button>
       </div>
-      {/* {parseData()} */}
-      {/* {userInfo} */}
-      {/* {JSON.parse(obj2)["initDataUnsafe"]["user"]["username"]} */}
-      {JSON.parse(userInfo)["initDataUnsafe"]["user"]["username"]}
-      <div>
-        -------------------------------------------------------------------------------------------------------------------------------------------
-      </div>
-      <div>
-        -------------------------------------------------------------------------------------------------------------------------------------------
-      </div>
-      <div>
-        -------------------------------------------------------------------------------------------------------------------------------------------
-      </div>
-      {/* {Object.entries(JSON.parse(userInfo)).map((para) => {
-        return <div>{para}</div>;
-      })} */}
-      <div>---</div>
-      {/* {Object.keys(JSON.parse(userInfo)).map((para) => {
-        return <div>{para}</div>;
-      })} */}
-      <div>---</div>
-      {/* {Object.entries(userInfo)} */}
-      <div>---</div>
-      <h1 className={styles.name}>
-        {userInfo.last_name || userInfo.first_name
-          ? `${userInfo.last_name} ${userInfo.first_name}`.trim()
-          : "Имя Фамилия"}
-      </h1>
-      <div className={styles.containerRoleAndRating}>
-        <div className={styles.role}>Водитель</div>
-        <img src={star} alt="Звезда" className={styles.star} />
-        <span className={styles.rating}>4.9</span>
-      </div>
-      <p className={styles.startedWorking}>Работаю с Января 2025</p>
-      <Button styleType="black" isButtonWithIcon={true}>
-        <img
-          src={edit}
-          alt="Редактировать профиль"
-          className={styles.iconButton}
-        />
-        Редактировать профиль
-      </Button>
     </article>
   );
 }
