@@ -45,7 +45,11 @@ export default function ProfileInfo({ userInfo }) {
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
-      {Object.entries(JSON.parse(userInfo)).map((para) => {
+      {/* {Object.entries(JSON.parse(userInfo)).map((para) => {
+        return <div>{para}</div>;
+      })} */}
+      <div>---</div>
+      {Object.keys(JSON.parse(userInfo)).map((para) => {
         return <div>{para}</div>;
       })}
       <div>---</div>
