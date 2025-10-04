@@ -11,7 +11,7 @@ export default function ProfileInfo({ userInfo }) {
   function parseData() {
     const obj = JSON.parse(userInfo);
     // return typeof obj.initDataUnsafe;
-    return typeof obj;
+    return obj;
     // .user.first_name;
   }
 
@@ -35,7 +35,7 @@ export default function ProfileInfo({ userInfo }) {
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
-      {parseData()}
+      {/* {parseData()} */}
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
