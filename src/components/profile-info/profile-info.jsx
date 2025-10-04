@@ -51,7 +51,7 @@ export default function ProfileInfo({ userInfo }) {
       );
     }
 
-    if (parsed == null) {
+    if (parsed.initDataUnsafe.user == null) {
       return <div style={{ color: "#666" }}>Parsed value is null</div>;
     }
 
