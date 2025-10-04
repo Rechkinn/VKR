@@ -28,7 +28,7 @@ export default function ProfileInfo({ userInfo }) {
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
-      {userInfo}
+      {/* {userInfo} */}
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
@@ -38,12 +38,12 @@ export default function ProfileInfo({ userInfo }) {
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
-      {/* {Object.entries(userInfo).map((para) => {
+      {Object.entries(userInfo).map((para) => {
         return <div>{para}</div>;
       })}
       <div>---</div>
-      {Object.entries(userInfo)}
-      <div>---</div> */}
+      {/* {Object.entries(userInfo)} */}
+      <div>---</div>
       <h1 className={styles.name}>
         {userInfo.last_name || userInfo.first_name
           ? `${userInfo.last_name} ${userInfo.first_name}`.trim()
