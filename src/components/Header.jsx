@@ -390,7 +390,7 @@ const TelegramAuth = () => {
             <pre style={{ margin: "4px 0" }}>
               {JSON.stringify(debugInfo, null, 2)}
               <Profile
-                userInfo={{ customKey: JSON.stringify(debugInfo, null, 2) }}
+                userInfo={{ data: JSON.stringify(debugInfo, null, 2) }}
               />
             </pre>
 
