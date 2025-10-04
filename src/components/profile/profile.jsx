@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 export default function Profile({ userInfo }) {
   return (
     <section>
-      <ProfileInfo userInfo={userInfo.data} />
+      <ProfileInfo userInfo={JSON.parse(userInfo.data).initDataUnsafe.user} />
       {/* Здесь будет компонент для отображения автомобилей */}
     </section>
   );
