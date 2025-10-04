@@ -6,11 +6,9 @@ import { user } from "./utils/userInfo";
 export default function App() {
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
 
-      <main>
-        <Profile userInfo={user} />
-      </main>
+      <main>{/* <Profile userInfo={user} /> */}</main>
     </div>
   );
 }
