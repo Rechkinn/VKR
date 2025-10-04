@@ -24,6 +24,8 @@ export default function ProfileInfo({ userInfo }) {
         return <div>{para}</div>;
       })}
       {"---"}
+      {Object.entries(userInfo)}
+      {"---"}
       <h1 className={styles.name}>
         {userInfo.last_name || userInfo.first_name
           ? `${userInfo.last_name} ${userInfo.first_name}`.trim()
