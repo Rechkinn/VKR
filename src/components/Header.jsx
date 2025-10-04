@@ -293,9 +293,10 @@ const TelegramAuth = () => {
           </div>
         )}
 
-        {userInfo && (
+        {/* {userInfo && ( */}
+        {debugInfo && (
           <>
-            {webApp?.initData && (
+            {debugInfo && (
               <section>
                 {/* <Profile userInfo={(parseInitData(webApp.initData), null, 2)} /> */}
                 <Profile userInfo={debugInfo} />
