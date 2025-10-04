@@ -295,9 +295,9 @@ const TelegramAuth = () => {
 
         {userInfo && (
           <>
-            <section>
+            {/* <section>
               <Profile />
-            </section>
+            </section> */}
 
             <div
               style={{
@@ -411,9 +411,9 @@ const TelegramAuth = () => {
               </>
             )}
 
-            <div>---</div>
+            {/* <div>---</div>
             <div>{userInfo}</div>
-            <div>---</div>
+            <div>---</div> */}
           </div>
         </details>
       </section>
