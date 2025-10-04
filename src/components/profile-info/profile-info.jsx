@@ -1,6 +1,7 @@
 import styles from "./profile-info.module.css";
 import star from "../../image/star.svg";
 import edit from "../../image/edit-profile.svg";
+import noPhoto from "../../image/no-photo.webp";
 import Button from "../button/button";
 
 // const url =
@@ -9,11 +10,8 @@ import Button from "../button/button";
 export default function ProfileInfo({ userInfo }) {
   return (
     <article className={`global-styles ${styles.container}`}>
-      {console.log(userInfo)}
-      {console.log(userInfo.last_name)}
-      {console.log(userInfo.first_name)}
       <img
-        src={userInfo.photo_url}
+        src={userInfo.photo_url ? userInfo.photo_url : noPhoto}
         alt={
           userInfo.last_name || userInfo.first_name
             ? `${userInfo.last_name} ${userInfo.first_name}`
