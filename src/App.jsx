@@ -6,18 +6,10 @@ import { user } from "./utils/userInfo";
 export default function App() {
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
 
-      <main style={{ padding: 16 }}>
-        <p>
-          This template mocks Telegram.WebApp in the browser so you can use
-          React DevTools.
-        </p>
-        <p>
-          Open the console and try:{" "}
-          <code>window.Telegram && window.Telegram.dispatch('ready')</code>
-        </p>
-        {/* <Profile userInfo={user} /> */}
+      <main>
+        <Profile userInfo={user} />
       </main>
     </div>
   );
