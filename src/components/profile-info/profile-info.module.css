@@ -1,0 +1,54 @@
+.container {
+  padding: 13px;
+  text-align: center;
+}
+.container > :nth-child(n):not(:last-child) {
+  margin-bottom: 13px;
+}
+
+.mainImage {
+  display: block;
+  margin: auto;
+  object-fit: cover;
+  width: 89px;
+  height: 89px;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.containerRoleAndRating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.containerRoleAndRating > :nth-child(n) {
+  margin-right: 5px;
+}
+
+.role {
+  padding: 7px 14px;
+  display: inline-block;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: bold;
+  background-color: #eceef2;
+}
+
+.rating {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.startedWorking {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.iconButton {
+  margin-right: 8px;
+}
