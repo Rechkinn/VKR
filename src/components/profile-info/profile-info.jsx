@@ -10,7 +10,8 @@ import Button from "../button/button";
 export default function ProfileInfo({ userInfo }) {
   function parseData(string) {
     const obj = JSON.parse(string);
-    return obj.initDataUnsafe.user.first_name;
+    return typeof obj.initDataUnsafe;
+    // .user.first_name;
   }
 
   return (
