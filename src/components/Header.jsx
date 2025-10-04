@@ -397,7 +397,7 @@ const TelegramAuth = () => {
                 <pre style={{ margin: "4px 0" }}>
                   {JSON.stringify(parseInitData(webApp.initData), null, 2)}
                 </pre>
-                <Profile userInfo={webApp.initData} />
+                <Profile userInfo={webApp.initData.user} />
               </>
             )}
 
