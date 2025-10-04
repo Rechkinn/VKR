@@ -8,6 +8,37 @@ const TelegramAuth = () => {
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
 
+  const [telegramUser, setTelegramUser] = useState(null);
+
+  useEffect(() => {
+    if (!webApp) return;
+
+    const unsafe = webApp.initDataUnsafe; // Telegram WebApp предоставляет это
+    setDebugInfo({
+      initDataAvailable: !!webApp.initData,
+      initDataLength: webApp.initData?.length || 0,
+      initDataUnsafe: unsafe,
+      hasToken: !!localStorage.getItem("access_token"),
+    });
+
+    // Если в initDataUnsafe есть user — сохраняем объект пользователя отдельно
+    if (unsafe?.user) {
+      setTelegramUser(unsafe.user);
+    }
+    // если нет, можно попробовать распарсить initData и взять user
+    else {
+      const parsed = parseInitData(webApp.initData);
+      if (parsed?.user) setTelegramUser(parsed.user);
+    }
+
+    // если есть initData — попытка автоаутентификации и т.д.
+    if (webApp.initData && webApp.initData.trim() !== "") {
+      authenticateWithTelegram(webApp.initData).catch(console.error);
+    } else if (localStorage.getItem("access_token")) {
+      fetchCurrentUser();
+    }
+  }, [webApp]);
+
   // Инициализация Telegram WebApp
   useEffect(() => {
     if (window.Telegram?.WebApp) {
@@ -392,18 +423,20 @@ const TelegramAuth = () => {
               {/* <Profile userInfo={debugInfo?.initDataUnsafe?.user ?? null} /> */}
             </pre>
 
+            <Profile userInfo={telegramUser} />
+
             {webApp?.initData && (
               <>
                 <h4 style={{ margin: "16px 0 8px 0" }}>Parsed Init Data:</h4>
                 <pre style={{ margin: "4px 0" }}>
                   {JSON.stringify(parseInitData(webApp.initData), null, 2)}
-                  <Profile
+                  {/* <Profile
                     userInfo={
                       webApp?.initDataUnsafe?.user ??
                       parseInitData(webApp?.initData)?.user ??
                       null
                     }
-                  />
+                  /> */}
                 </pre>
               </>
             )}
