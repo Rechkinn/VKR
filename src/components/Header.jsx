@@ -295,9 +295,9 @@ const TelegramAuth = () => {
 
         {userInfo && (
           <>
-            {/* <section>
+            <section>
               <Profile />
-            </section> */}
+            </section>
 
             <div
               style={{
