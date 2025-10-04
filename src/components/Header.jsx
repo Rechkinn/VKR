@@ -316,11 +316,7 @@ const TelegramAuth = () => {
               >
                 ✅ Authenticated
               </p>
-              <div>
-                {/* <div>---------</div>
-                <div>{userInfo}</div>
-                <div>---------</div> */}
-              </div>
+              <div></div>
               <div style={{ fontSize: 14 }}>
                 <p style={{ margin: "4px 0" }}>
                   <strong>ID:</strong> {userInfo.id}
