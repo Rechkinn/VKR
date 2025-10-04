@@ -7,6 +7,31 @@ import Button from "../button/button";
 // const url =
 //   "https://sun9-81.userapi.com/s/v1/if2/U3hQGq7ILnj0qNSHQHWk-cGAi0CC_aptfRfpvCoyiauKMl7wMMxqB-oGrELsiuMnJ46UPd-sIlDPv5lANtLm-XlQ.jpg?quality=95&as=32x20,48x30,72x45,108x67,160x100,240x149,360x224,480x299,540x336,640x398,720x448,1080x672,1157x720&from=bu&cs=1157x0";
 
+// const userData = {
+//   initDataAvailable: true,
+//   initDataLength: 549,
+//   initDataUnsafe: {
+//     query_id: "AAH5M-QzAAAAAPkz5DMf-_FV",
+//     user: {
+//       id: 870593529,
+//       first_name: "Aleks",
+//       last_name: "",
+//       username: "Rechkinnnn",
+//       language_code: "ru",
+//       allows_write_to_pm: true,
+//       photo_url:
+//         "https://t.me/i/userpic/320/JtGPbJBctx4LLq_nm2R9calFGN2KxnnIKkyKLZQyodE.svg",
+//     },
+//     auth_date: "1759591620",
+//     signature:
+//       "fkkeRj8iGUqz3kyx_zg9vKXAc9fXsZ0d7Tg_PFK3YLMwAQzwVu0Wl1Mic7KSKgh75__LvDPmiG_DUORyAqd0Bg",
+//     hash: "04d7afeee5bc4e85d7d898aa2fd2f0c5f8eebd687a2e6620726bafd4df5926be",
+//   },
+//   hasToken: true,
+// };
+
+// const obj2 = JSON.stringify(userData);
+
 export default function ProfileInfo({ userInfo }) {
   function parseData() {
     const obj = JSON.parse(userInfo);
@@ -36,7 +61,9 @@ export default function ProfileInfo({ userInfo }) {
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
       {/* {parseData()} */}
-      {userInfo}
+      {/* {userInfo} */}
+      {/* {JSON.parse(obj2)["initDataUnsafe"]["user"]["username"]} */}
+      {JSON.parse(userInfo)["initDataUnsafe"]["user"]["username"]}
       <div>
         -------------------------------------------------------------------------------------------------------------------------------------------
       </div>
