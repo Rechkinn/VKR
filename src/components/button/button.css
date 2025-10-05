@@ -10,8 +10,11 @@ button:active {
   opacity: 0.7;
 }
 
+/* button > :first-child {
+  margin-right: 8px;
+} */
+
 .black {
-  margin: auto;
   padding: 10px;
   background-color: #030213;
   color: white;
@@ -23,5 +26,15 @@ button:active {
 .withIcon {
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: center;
+}
+
+.onlyIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: #fdcd03;
+  border-radius: 50%;
 }

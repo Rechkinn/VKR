@@ -1,5 +1,28 @@
-.global-styles {
+body {
+  /* width: 100%;
+  height: 100%; */
   font-family: sans-serif;
-  border: 1px solid #f0f0f0;
+  /* background-color: #474747; */
+  background-color: black;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+}
+
+.global-styles {
+  border: 1px solid red;
   border-radius: 20px;
+}
+.global-styles:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  max-width: 390px;
+  /* background-color: red; */
 }

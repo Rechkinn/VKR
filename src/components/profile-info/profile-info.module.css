@@ -1,54 +1,86 @@
-.container {
-  padding: 13px;
-  text-align: center;
-}
-.container > :nth-child(n):not(:last-child) {
-  margin-bottom: 13px;
+h1 {
+  margin: 0;
+  padding: 0;
 }
 
-.mainImage {
-  display: block;
-  margin: auto;
-  object-fit: cover;
-  width: 89px;
-  height: 89px;
-  border-radius: 50%;
-}
-
-.name {
-  font-size: 16px;
-  font-weight: normal;
-}
-
-.containerRoleAndRating {
+.header {
+  margin-bottom: 22px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
-.containerRoleAndRating > :nth-child(n) {
-  margin-right: 5px;
+.headerPart {
+  margin-left: 15px;
+  width: 50%;
 }
 
-.role {
-  padding: 7px 14px;
-  display: inline-block;
-  border-radius: 7px;
-  font-size: 10px;
+.ratingText,
+.balanceText {
+  font-size: 11px;
   font-weight: bold;
-  background-color: #eceef2;
 }
 
 .rating {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.stars {
+  display: flex;
+  margin-right: 6px;
+}
+
+.star {
+  display: inline-block;
+}
+
+.ratingValue,
+.balanceValue {
+  font-size: 24px;
   font-weight: bold;
 }
 
-.startedWorking {
-  font-size: 14px;
+.balanceValue {
+  margin-left: 10px;
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  text-align: center;
+  color: white;
+}
+
+.containerPhoto {
+  display: inline-block;
+  position: relative;
+}
+
+.photo {
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 166px;
+  height: 166px;
+}
+
+.buttonEdit {
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+}
+
+.nameUser {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
   font-weight: bold;
 }
 
-.iconButton {
-  margin-right: 8px;
+.userDescription {
+  font-size: 12px;
+  font-weight: normal;
 }

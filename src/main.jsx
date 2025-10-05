@@ -1,7 +1,7 @@
 import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import App from "./components/app/app";
 
 // If you're running in a plain browser, we inject a mock Telegram.WebApp
 if (!window.Telegram) {

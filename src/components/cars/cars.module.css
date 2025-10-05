@@ -1,0 +1,17 @@
+.article {
+  padding: 16px;
+}
+.article > :nth-child(n):not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nameSection {
+  font-size: 16px;
+  font-weight: normal;
+}
