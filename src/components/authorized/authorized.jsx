@@ -242,7 +242,7 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
 
       {userInfo && <></>}
 
-      {telegramUser && currentSection === "profile" && (
+      {telegramUser && (
         <>
           <Navbar />
           <Profile
