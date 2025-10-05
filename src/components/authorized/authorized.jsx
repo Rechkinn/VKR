@@ -244,16 +244,16 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
 
       {telegramUser && (
         <>
-          <Navbar />
+          {showNavbar && <Navbar />}
           <Profile
             userInfo={telegramUser}
             hiddenSunAndNavbar={() => {
-              hiddenSunAndNavbar();
               setShowNavbar(false);
+              hiddenSunAndNavbar();
             }}
             showSunAndNavbar={() => {
-              showSunAndNavbar();
               setShowNavbar(true);
+              showSunAndNavbar();
             }}
           />
         </>
