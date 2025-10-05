@@ -1,0 +1,76 @@
+.header {
+  margin-bottom: 26px;
+}
+
+.headerText {
+  display: inline-block;
+  margin: 0;
+  margin-left: 20px;
+  color: white;
+  font-size: 18px;
+}
+
+.profilePhoto {
+  text-align: center;
+}
+
+.input {
+  margin-bottom: 16px;
+}
+
+.mb18 {
+  margin-bottom: 18px;
+}
+
+.customCheckboxContainer {
+  display: flex;
+  margin-bottom: 18px;
+}
+
+.customChekcboxText {
+  color: white;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.originalChekcbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  scale: 0;
+}
+
+.customChekcbox {
+  padding: 5px;
+  position: relative;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-color: #fdcd03b2;
+  border: 1px solid #fdcd03e5;
+  border-radius: 5px;
+  margin-right: 11px;
+}
+
+.originalChekcbox:checked + .customChekcbox > .customChekcboxIconArrow {
+  background-image: url("/src/image/change-profile-info/checkbox.svg");
+}
+.customChekcboxIconArrow {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.moreDetail {
+  display: inline-block;
+}
+
+.buttonSave {
+  margin-top: 42px;
+  width: 100%;
+}

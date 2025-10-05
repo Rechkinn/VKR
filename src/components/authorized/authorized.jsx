@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Profile from "../profile/profile";
 import Navbar from "../navbar/navbar";
 
-const TelegramAuth = () => {
+const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
   const [webApp, setWebApp] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,9 @@ const TelegramAuth = () => {
 
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const [currentSection, setCurrentSection] = useState("profile");
+  const [showNavbar, setShowNavbar] = useState(true);
+
+  // const [currentSection, setCurrentSection] = useState("profile");
 
   useEffect(() => {
     if (!webApp) return;
@@ -243,7 +245,17 @@ const TelegramAuth = () => {
       {telegramUser && currentSection === "profile" && (
         <>
           <Navbar />
-          <Profile userInfo={telegramUser} />
+          <Profile
+            userInfo={telegramUser}
+            hiddenSunAndNavbar={() => {
+              hiddenSunAndNavbar();
+              setShowNavbar(false);
+            }}
+            showSunAndNavbar={() => {
+              showSunAndNavbar();
+              setShowNavbar(true);
+            }}
+          />
         </>
       )}
     </>

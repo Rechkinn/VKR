@@ -38,3 +38,12 @@ button:active {
   background-color: #fdcd03;
   border-radius: 50%;
 }
+
+.mainStyle {
+  background-color: #fdcd03;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  height: 35px;
+}

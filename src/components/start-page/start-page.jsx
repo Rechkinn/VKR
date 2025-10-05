@@ -1,7 +1,7 @@
 import styles from "./start-page.module.css";
 import mainImage from "../../image/main-image.svg";
 import Button from "../button/button";
-import arrow from "../../image/arrow-right.svg";
+// import arrow from "../../image/arrow-right.svg";
 
 export default function StartPage({ functionContinue }) {
   return (
@@ -13,7 +13,7 @@ export default function StartPage({ functionContinue }) {
           Продолжая, вы принимаете условия...
         </p>
         <Button className="onlyIcon" onClick={functionContinue}>
-          <img src={arrow} alt="Стрелочка для продолжения" />
+          {/* <img src={arrow} alt="Стрелочка для продолжения" /> */}
         </Button>
       </div>
     </div>

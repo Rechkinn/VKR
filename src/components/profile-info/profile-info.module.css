@@ -55,7 +55,7 @@ h1 {
   color: white;
 }
 
-.containerPhoto {
+/* .containerPhoto {
   display: inline-block;
   position: relative;
 }
@@ -71,7 +71,7 @@ h1 {
   position: absolute;
   bottom: 20px;
   right: 0;
-}
+} */
 
 .nameUser {
   margin: 0;

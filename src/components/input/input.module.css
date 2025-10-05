@@ -1,0 +1,16 @@
+.container {
+}
+
+.label {
+  color: white;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.input {
+  padding: 5px 23px;
+  font-size: 13px;
+  width: 100%;
+  border-radius: 5px;
+}
