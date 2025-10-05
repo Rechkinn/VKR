@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Profile from "../profile/profile";
+import Navbar from "../navbar/navbar";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -240,7 +241,10 @@ const TelegramAuth = () => {
       {userInfo && <></>}
 
       {telegramUser && currentSection === "profile" && (
-        <Profile userInfo={telegramUser} />
+        <>
+          <Navbar />
+          <Profile userInfo={telegramUser} />
+        </>
       )}
     </>
   );

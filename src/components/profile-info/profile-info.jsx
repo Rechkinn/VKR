@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Currency from "../currency/currency";
 import editProfile from "../../image/edit-profile.svg";
 
+// import { user } from "../../utils/userInfo";
 import Button from "../button/button";
 
 export default function ProfileInfo({ userInfo }) {
