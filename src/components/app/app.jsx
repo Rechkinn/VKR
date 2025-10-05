@@ -13,15 +13,15 @@ export default function App() {
   const [currentSection, setCurrentSection] = useState("profile");
   return (
     <>
-      <Navbar />
       <main className={styles.main}>
+        {/* <Navbar /> */}
         {/* <Header /> */}
 
         <Authorized />
 
         {/* <div className={styles.backgroundYellowCircle}></div> */}
 
-        {currentSection === "profile" && <Profile userInfo={user} />}
+        {/* {currentSection === "profile" && <Profile userInfo={user} />} */}
       </main>
     </>
   );
