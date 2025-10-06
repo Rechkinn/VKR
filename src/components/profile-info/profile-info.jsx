@@ -1,10 +1,8 @@
 import styles from "./profile-info.module.css";
 import star from "../../image/star.svg";
 import starEmpty from "../../image/star-empty.svg";
-import Currency from "../currency/currency";
 import ProfilePhoto from "../profile-photo/profile-photo";
-
-// import { user } from "../../utils/userInfo";
+import Balance from "../balance/balance";
 
 export default function ProfileInfo({
   userData,
@@ -42,11 +40,7 @@ export default function ProfileInfo({
               </div>
             </div>
             <div className={styles.headerPart}>
-              <h1 className={styles.balanceText}>Баланс</h1>
-              <div className={styles.balance}>
-                <Currency>RUB</Currency>
-                <span className={styles.balanceValue}>2.754</span>
-              </div>
+              <Balance balanceValue={2.743} />
             </div>
           </header>
 

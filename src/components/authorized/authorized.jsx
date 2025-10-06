@@ -12,6 +12,7 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
   const [telegramUser, setTelegramUser] = useState(null);
 
   const [showNavbar, setShowNavbar] = useState(true);
+  const [activeSection, setActiveSection] = useState("profile");
 
   // const [currentSection, setCurrentSection] = useState("profile");
 
@@ -244,18 +245,31 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
 
       {telegramUser && (
         <>
-          {showNavbar && <Navbar />}
-          <Profile
-            userInfo={telegramUser}
-            hiddenSunAndNavbar={() => {
-              setShowNavbar(false);
-              hiddenSunAndNavbar();
-            }}
-            showSunAndNavbar={() => {
-              setShowNavbar(true);
-              showSunAndNavbar();
-            }}
-          />
+          {showNavbar && (
+            <Navbar
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+            />
+          )}
+          {activeSection === "profile" && (
+            <Profile
+              userInfo={telegramUser}
+              hiddenSunAndNavbar={() => {
+                setShowNavbar(false);
+                hiddenSunAndNavbar();
+              }}
+              showSunAndNavbar={() => {
+                setShowNavbar(true);
+                showSunAndNavbar();
+              }}
+            />
+          )}
+          {activeSection === "trips" && (
+            <div style={{ backgroundColor: "red" }}>Поездки</div>
+          )}
+          {activeSection === "calendar" && (
+            <div style={{ backgroundColor: "green" }}>Календарь</div>
+          )}
         </>
       )}
     </>

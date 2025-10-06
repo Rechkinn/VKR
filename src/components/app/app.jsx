@@ -11,20 +11,25 @@ const body = document.querySelector("body");
 
 export default function App() {
   const [showSun, setShowSun] = useState(true);
-  // const [showNavbar, setShowNavbar] = useState(true);
-  // const [currentSection, setCurrentSection] = useState("profile");
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [activeSection, setActiveSection] = useState("profile");
   return (
     <>
       {showSun && <div className={styles.backgroundYellowCircle}></div>}
       <main className={styles.main}>
-        {/* {showNavbar && <Navbar />} */}
+        {showNavbar && (
+          <Navbar
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+          />
+        )}
 
         <Authorized
           hiddenSunAndNavbar={() => setShowSun(false)}
           showSunAndNavbar={() => setShowSun(true)}
         />
 
-        {/* {currentSection === "profile" && (
+        {activeSection === "profile" && (
           <Profile
             userInfo={user}
             hiddenSunAndNavbar={() => {
@@ -36,7 +41,13 @@ export default function App() {
               setShowNavbar(true);
             }}
           />
-        )} */}
+        )}
+        {activeSection === "trips" && (
+          <div>Скоро здесь будет раздел "Поездки"</div>
+        )}
+        {activeSection === "calendar" && (
+          <div>Скоро здесь будет раздел "Календарь"</div>
+        )}
       </main>
     </>
   );

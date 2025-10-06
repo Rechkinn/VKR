@@ -35,3 +35,7 @@
   font-size: 9px;
   color: #a3a9b5;
 }
+
+.active {
+  color: #fdcd03;
+}
