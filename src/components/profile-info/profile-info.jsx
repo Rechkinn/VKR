@@ -30,7 +30,7 @@ export default function ProfileInfo({
   return (
     <>
       {userData && (
-        <section className={` ${styles.container}`}>
+        <section>
           <header className={styles.header}>
             <div className={styles.headerPart}>
               <h1 className={styles.ratingText}>Рейтинг</h1>
