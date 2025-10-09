@@ -100,7 +100,7 @@ export default function ChangeProfileInfo({ userData, showSunAndNavbar }) {
         )}
 
         <Button
-          className={`mainStyle ${styles.buttonSave}`}
+          className={`yellow ${styles.buttonSave}`}
           onClick={(e) => {
             e.preventDefault();
           }}
