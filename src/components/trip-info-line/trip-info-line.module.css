@@ -1,0 +1,12 @@
+.line {
+  display: flex;
+  align-items: center;
+}
+
+.line > :first-child {
+  margin-right: 7px;
+}
+
+.grey {
+  color: #737373;
+}
