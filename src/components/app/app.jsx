@@ -17,7 +17,7 @@ export default function App() {
   return (
     <>
       {showSun && <div className={styles.backgroundYellowCircle}></div>}
-      <main className={styles.main}>
+      <main>
         {showNavbar && (
           <Navbar
             activeSection={activeSection}
