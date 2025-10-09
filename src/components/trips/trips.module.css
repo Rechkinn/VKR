@@ -1,0 +1,49 @@
+.header {
+  margin-bottom: 27px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 22px;
+}
+
+.balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.containerCreateTrip {
+  margin: auto;
+  /* text-align: center; */
+  width: 321px;
+  height: 139px;
+  background-color: black;
+  border-radius: 20px;
+}
+
+.buttonCreateTrip {
+  width: 100%;
+  height: 100%;
+}
+
+.buttonIconBackground {
+  margin: auto;
+  margin-bottom: 12px;
+  padding: 7px;
+  display: flex;
+  width: 54px;
+  height: 54px;
+  background-color: #fdcd034d;
+  border-radius: 20px;
+}
+.buttonIcon {
+  /* margin: auto; */
+}
+
+.buttonText {
+  font-style: 16px;
+  font-weight: bold;
+  color: white;
+}
