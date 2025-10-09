@@ -6,30 +6,31 @@ import { user } from "../../utils/userInfo";
 import StartPage from "../start-page/start-page";
 import Authorized from "../authorized/authorized";
 import Navbar from "../navbar/navbar";
+import Trips from "../trips/trips";
 
 const body = document.querySelector("body");
 
 export default function App() {
   const [showSun, setShowSun] = useState(true);
-  // const [showNavbar, setShowNavbar] = useState(true);
-  // const [activeSection, setActiveSection] = useState("profile");
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [activeSection, setActiveSection] = useState("trips");
   return (
     <>
       {showSun && <div className={styles.backgroundYellowCircle}></div>}
       <main className={styles.main}>
-        {/* {showNavbar && (
+        {showNavbar && (
           <Navbar
             activeSection={activeSection}
             setActiveSection={setActiveSection}
           />
-        )} */}
+        )}
 
-        <Authorized
+        {/* <Authorized
           hiddenSunAndNavbar={() => setShowSun(false)}
           showSunAndNavbar={() => setShowSun(true)}
-        />
+        /> */}
 
-        {/* {activeSection === "profile" && (
+        {activeSection === "profile" && (
           <Profile
             userInfo={user}
             hiddenSunAndNavbar={() => {
@@ -42,12 +43,10 @@ export default function App() {
             }}
           />
         )}
-        {activeSection === "trips" && (
-          <div>Скоро здесь будет раздел "Поездки"</div>
-        )}
+        {activeSection === "trips" && <Trips />}
         {activeSection === "calendar" && (
           <div>Скоро здесь будет раздел "Календарь"</div>
-        )} */}
+        )}
       </main>
     </>
   );
