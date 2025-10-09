@@ -39,7 +39,8 @@ button:active {
   border-radius: 50%;
 }
 
-.mainStyle {
+.yellow {
+  padding: 0 14px;
   background-color: #fdcd03;
   color: black;
   font-size: 14px;
