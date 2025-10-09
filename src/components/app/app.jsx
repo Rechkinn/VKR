@@ -18,19 +18,19 @@ export default function App() {
     <>
       {showSun && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        {showNavbar && (
+        {/* {showNavbar && (
           <Navbar
             activeSection={activeSection}
             setActiveSection={setActiveSection}
           />
-        )}
+        )} */}
 
-        {/* <Authorized
+        <Authorized
           hiddenSunAndNavbar={() => setShowSun(false)}
           showSunAndNavbar={() => setShowSun(true)}
-        /> */}
+        />
 
-        {activeSection === "profile" && (
+        {/* {activeSection === "profile" && (
           <Profile
             userInfo={user}
             hiddenSunAndNavbar={() => {
@@ -46,7 +46,7 @@ export default function App() {
         {activeSection === "trips" && <Trips />}
         {activeSection === "calendar" && (
           <div>Скоро здесь будет раздел "Календарь"</div>
-        )}
+        )} */}
       </main>
     </>
   );
