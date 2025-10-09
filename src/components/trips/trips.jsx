@@ -3,6 +3,7 @@ import Button from "../button/button";
 import styles from "./trips.module.css";
 import carIcon from "../../image/navbar/carActive.svg";
 import Tabs from "../tabs/tabs";
+import Trip from "../trip/trip";
 
 export default function Trips() {
   return (
@@ -29,7 +30,13 @@ export default function Trips() {
 
       <Tabs />
 
-      <div></div>
+      <div className={styles.trips}>
+        <Trip />
+        <Trip />
+        <Trip />
+        <Trip />
+        <Trip />
+      </div>
     </section>
   );
 }

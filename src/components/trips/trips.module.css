@@ -16,7 +16,6 @@
 
 .containerCreateTrip {
   margin: auto;
-  /* text-align: center; */
   width: 321px;
   height: 139px;
   background-color: black;
@@ -37,9 +36,6 @@
   height: 54px;
   background-color: #fdcd034d;
   border-radius: 20px;
-}
-.buttonIcon {
-  /* margin: auto; */
 }
 
 .buttonText {
