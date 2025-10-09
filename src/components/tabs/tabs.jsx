@@ -1,10 +1,7 @@
-import { useState } from "react";
 import styles from "./tabs.module.css";
 import Button from "../button/button";
 
-export default function Tabs() {
-  const [currentTab, setCurrentTab] = useState("Active");
-
+export default function Tabs({ currentTab, setCurrentTab }) {
   return (
     <div className={styles.tabs}>
       <Button

@@ -4,8 +4,11 @@ import styles from "./trips.module.css";
 import carIcon from "../../image/navbar/carActive.svg";
 import Tabs from "../tabs/tabs";
 import Trip from "../trip/trip";
+import { useState } from "react";
 
 export default function Trips() {
+  const [currentTab, setCurrentTab] = useState("Active");
+
   return (
     <section>
       <header className={styles.header}>
@@ -28,14 +31,15 @@ export default function Trips() {
         )}
       </div>
 
-      <Tabs />
+      <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
       <div className={styles.trips}>
-        <Trip />
-        <Trip />
-        <Trip />
-        <Trip />
-        <Trip />
+        {currentTab === "Active" && (
+          <>
+            <Trip />
+            <Trip />
+          </>
+        )}
       </div>
     </section>
   );
