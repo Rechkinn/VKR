@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Profile from "../profile/profile";
 import Navbar from "../navbar/navbar";
+import Trips from "../trips/trips";
 
 const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
   const [webApp, setWebApp] = useState(null);
