@@ -264,11 +264,9 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
               }}
             />
           )}
-          {activeSection === "trips" && (
-            <div style={{ backgroundColor: "red" }}>Поездки</div>
-          )}
+          {activeSection === "trips" && <Trips />}
           {activeSection === "calendar" && (
-            <div style={{ backgroundColor: "green" }}>Календарь</div>
+            <div>Скоро здесь будет раздел "Календарь"</div>
           )}
         </>
       )}
