@@ -1,0 +1,41 @@
+.trip {
+  padding: 7px 13px;
+  border: 1px solid #fdcd03;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+.trip:nth-child(n):not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+}
+
+.carIcon {
+  margin-left: 7px;
+}
+
+.info {
+  margin-bottom: 20px;
+}
+
+.info > :nth-child(n):not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.containerTimeAndPhone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
