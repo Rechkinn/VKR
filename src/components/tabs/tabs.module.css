@@ -1,0 +1,35 @@
+.tabs {
+  margin-top: 7px;
+  margin-bottom: 22px;
+  padding: 4px;
+
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  grid-template-rows: 1fr;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 35px;
+  background-color: #fdcd03;
+  border-radius: 100px;
+}
+
+.button {
+  font-size: 13px;
+  font-weight: bold;
+  height: 100%;
+  border-radius: 100px;
+}
+
+.activeTab {
+  background-color: white;
+}
+.separator {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(142, 142, 147, 0.3);
+}
+
+.separatorHidden {
+  opacity: 0;
+}
