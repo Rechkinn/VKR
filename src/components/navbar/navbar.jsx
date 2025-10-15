@@ -5,68 +5,60 @@ import calendarIcon from "../../image/navbar/calendar.svg";
 import userActiveIcon from "../../image/navbar/userActive.svg";
 import carActiveIcon from "../../image/navbar/carActive.svg";
 import calendarActiveIcon from "../../image/navbar/calendarActive.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_ACTIVE_SECTION_NAVBAR } from "../../services/actions/navbar";
+import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
+import NavbarLink from "../navbar-link/navbar-link";
 
-export default function Navbar({ activeSection, setActiveSection }) {
+export default function Navbar() {
+  const { visibility } = useSelector((store) => store.navbar);
+
+  const dispatch = useDispatch();
+  function setActiveSection(section) {
+    dispatch({
+      type: SET_ACTIVE_SECTION_NAVBAR,
+      activeSection: section,
+    });
+  }
+
   return (
-    <nav className={styles.nav}>
-      <ul className={styles.ul}>
-        <li className={styles.li} onClick={() => setActiveSection("profile")}>
-          <a href="#" className={styles.a}>
-            <img
-              src={activeSection === "profile" ? userActiveIcon : userIcon}
-              alt="Иконка пользователя"
-              className={styles.icon}
-            />
-            <p
-              className={
-                activeSection === "profile"
-                  ? `${styles.text} ${styles.active}`
-                  : `${styles.text}`
-              }
+    <>
+      {visibility && (
+        <nav className={styles.nav}>
+          <ul className={styles.ul}>
+            <li className={styles.li} onClick={() => setActiveSection(PROFILE)}>
+              <NavbarLink
+                section={PROFILE}
+                activeIcon={userActiveIcon}
+                icon={userIcon}
+              >
+                Профиль
+              </NavbarLink>
+            </li>
+            <li className={styles.li} onClick={() => setActiveSection(TRIPS)}>
+              <NavbarLink
+                section={TRIPS}
+                activeIcon={carActiveIcon}
+                icon={carIcon}
+              >
+                Поездки
+              </NavbarLink>
+            </li>
+            <li
+              className={styles.li}
+              onClick={() => setActiveSection(CALENDAR)}
             >
-              Профиль
-            </p>
-          </a>
-        </li>
-        <li className={styles.li} onClick={() => setActiveSection("trips")}>
-          <a href="#" className={styles.a}>
-            <img
-              src={activeSection === "trips" ? carActiveIcon : carIcon}
-              alt="Иконка авто"
-              className={styles.icon}
-            />
-            <p
-              className={
-                activeSection === "trips"
-                  ? `${styles.text} ${styles.active}`
-                  : `${styles.text}`
-              }
-            >
-              Поездки
-            </p>
-          </a>
-        </li>
-        <li className={styles.li} onClick={() => setActiveSection("calendar")}>
-          <a href="#" className={styles.a}>
-            <img
-              src={
-                activeSection === "calendar" ? calendarActiveIcon : calendarIcon
-              }
-              alt="Иконка календаря"
-              className={styles.icon}
-            />
-            <p
-              className={
-                activeSection === "calendar"
-                  ? `${styles.text} ${styles.active}`
-                  : `${styles.text}`
-              }
-            >
-              Календарь
-            </p>
-          </a>
-        </li>
-      </ul>
-    </nav>
+              <NavbarLink
+                section={CALENDAR}
+                activeIcon={calendarActiveIcon}
+                icon={calendarIcon}
+              >
+                Календарь
+              </NavbarLink>
+            </li>
+          </ul>
+        </nav>
+      )}
+    </>
   );
 }
