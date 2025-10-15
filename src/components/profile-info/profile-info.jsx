@@ -6,8 +6,8 @@ import Balance from "../balance/balance";
 
 export default function ProfileInfo({
   userData,
-  openFormToChangeProfileInfo,
-  hiddenSunAndNavbar,
+  // openFormToChangeProfileInfo,
+  // hiddenSunAndNavbar,
 }) {
   function renderStars(rating) {
     const array = [];
@@ -45,24 +45,11 @@ export default function ProfileInfo({
           </header>
 
           <div className={styles.content}>
-            {/* <div className={styles.containerPhoto}>
-              <img
-                src={userData.photo_url}
-                alt={`${userData.first_name} ${userData.last_name}`}
-                className={styles.photo}
-              />
-              <Button
-                className={`onlyIcon ${styles.buttonEdit}`}
-                onClick={openFormToChangeUserInfo}
-              >
-                <img src={editProfile} alt="Редактировать" />
-              </Button>
-            </div> */}
-
             <ProfilePhoto
               userData={userData}
-              openFormToChangeUserInfo={openFormToChangeProfileInfo}
-              hiddenSunAndNavbar={hiddenSunAndNavbar}
+              buttonToEdit={true}
+              // openFormToChangeUserInfo={openFormToChangeProfileInfo}
+              // hiddenSunAndNavbar={hiddenSunAndNavbar}
               size={166}
             />
 
