@@ -3,15 +3,12 @@ import Cars from "../cars/cars";
 import ProfileInfo from "../profile-info/profile-info";
 import styles from "./profile.module.css";
 import ChangeProfileInfo from "../change-profile-info/change-profile-info";
+import { useSelector } from "react-redux";
 
-export default function Profile({
-  userInfo,
-  hiddenSunAndNavbar,
-  showSunAndNavbar,
-}) {
-  const [activeSection, setActiveSection] = useState("profileInfo");
-
+export default function Profile({ userInfo }) {
   const [userData, setUserData] = useState(null);
+
+  const { activeSection } = useSelector((store) => store.profile);
 
   useEffect(() => {
     if (!userInfo) return <div style={{ color: "#666" }}>No user info</div>;
@@ -40,30 +37,15 @@ export default function Profile({
     <>
       {userData && (
         <>
-          {activeSection === "profileInfo" && (
+          {activeSection === "info" && (
             <>
-              <ProfileInfo
-                userData={userData}
-                openFormToChangeProfileInfo={() => {
-                  setActiveSection("changeProfileInfo");
-                  hiddenSunAndNavbar();
-                }}
-                // hiddenSunAndNavbar={hiddenSunAndNavbar}
-              />
+              <ProfileInfo userData={userData} />
               {/* Здесь будет компонент для отображения автомобилей */}
               {/* <Cars /> */}
             </>
           )}
-          {activeSection === "changeProfileInfo" && (
-            <>
-              <ChangeProfileInfo
-                userData={userData}
-                showSunAndNavbar={() => {
-                  setActiveSection("profileInfo");
-                  showSunAndNavbar();
-                }}
-              />
-            </>
+          {activeSection === "changeInfo" && (
+            <ChangeProfileInfo userData={userData} />
           )}
         </>
       )}
