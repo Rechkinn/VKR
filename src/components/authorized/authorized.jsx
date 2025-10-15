@@ -32,14 +32,31 @@ const TelegramAuth = () => {
     // Если в initDataUnsafe есть user — сохраняем объект пользователя отдельно
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
+      dispatch({
+        type: SET_USER_TELEGRAM_INFO,
+        infoFromTelegram: unsafe.user,
+      });
     }
     // если нет, можно попробовать распарсить initData и взять user
     else {
       const parsed = parseInitData(webApp.initData);
-      if (parsed?.user) setTelegramUser(parsed.user);
+      if (parsed?.user) {
+        setTelegramUser(parsed.user);
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: parsed.user,
+        });
+      }
     }
 
-    if (telegramUser) parsingUserData(telegramUser);
+    // if (telegramUser) {
+    //   dispatch({
+    //     type: SET_USER_TELEGRAM_INFO,
+    //     infoFromTelegram: parsed,
+    //   });
+    // }
+
+    // parsingUserData(telegramUser);
 
     // если есть initData — попытка автоаутентификации и т.д.
     if (webApp.initData && webApp.initData.trim() !== "") {
@@ -70,10 +87,10 @@ const TelegramAuth = () => {
 
     // setUserData(parsed);
 
-    dispatch({
-      type: SET_USER_TELEGRAM_INFO,
-      infoFromTelegram: parsed,
-    });
+    // dispatch({
+    //   type: SET_USER_TELEGRAM_INFO,
+    //   infoFromTelegram: parsed,
+    // });
   }
 
   // Инициализация Telegram WebApp
@@ -280,12 +297,9 @@ const TelegramAuth = () => {
         <>
           {console.log("infoFromTelegram")}
           {console.log(infoFromTelegram)}
-          {infoFromTelegram && (
-            <>
-              {/* <App userInfo={telegramUser} /> */}
-              <App />
-            </>
-          )}
+
+          {/* <App userInfo={telegramUser} /> */}
+          <App />
         </>
       )}
     </>
