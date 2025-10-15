@@ -6,32 +6,48 @@ import ChangeProfileInfo from "../change-profile-info/change-profile-info";
 import { useSelector } from "react-redux";
 
 export default function Profile({ userInfo }) {
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
 
   const { activeSection } = useSelector((store) => store.profile);
 
-  useEffect(() => {
-    if (!userInfo) return <div style={{ color: "#666" }}>No user info</div>;
+  // useEffect(() => {
+  // if (!userInfo) return <div style={{ color: "#666" }}>No user info</div>;
+  // let parsed;
+  // try {
+  //   parsed = typeof userInfo === "string" ? JSON.parse(userInfo) : userInfo;
+  // } catch (err) {
+  //   return (
+  //     <div style={{ color: "#d32f2f" }}>
+  //       <div>Invalid JSON: {err.message}</div>
+  //       <pre style={{ whiteSpace: "pre-wrap" }}>{String(userInfo)}</pre>
+  //     </div>
+  //   );
+  // }
+  // if (!parsed || typeof parsed !== "object") {
+  //   return <div>{String(parsed)}</div>;
+  // }
+  // setUserData(parsed);
+  // }, []);
 
-    let parsed;
-    try {
-      parsed = typeof userInfo === "string" ? JSON.parse(userInfo) : userInfo;
-    } catch (err) {
-      return (
-        <div style={{ color: "#d32f2f" }}>
-          <div>Invalid JSON: {err.message}</div>
-          <pre style={{ whiteSpace: "pre-wrap" }}>{String(userInfo)}</pre>
-        </div>
-      );
-    }
+  // function parsingUserInfo() {
+  //   if (!userInfo) return <div style={{ color: "#666" }}>No user info</div>;
 
-    if (!parsed || typeof parsed !== "object") {
-      return <div>{String(parsed)}</div>;
-    }
+  //   let parsed;
+  //   try {
+  //     parsed = typeof userInfo === "string" ? JSON.parse(userInfo) : userInfo;
+  //   } catch (err) {
+  //     return (
+  //       <div style={{ color: "#d32f2f" }}>
+  //         <div>Invalid JSON: {err.message}</div>
+  //         <pre style={{ whiteSpace: "pre-wrap" }}>{String(userInfo)}</pre>
+  //       </div>
+  //     );
+  //   }
 
-    setUserData(parsed);
-    // setUserData(user);
-  }, []);
+  //   if (!parsed || typeof parsed !== "object") {
+  //     return <div>{String(parsed)}</div>;
+  //   }
+  // }
 
   return (
     <>
@@ -39,7 +55,8 @@ export default function Profile({ userInfo }) {
         <>
           {activeSection === "info" && (
             <>
-              <ProfileInfo userData={userData} />
+              {/* <ProfileInfo userData={userData} /> */}
+              <ProfileInfo userData={userInfo} />
               {/* Здесь будет компонент для отображения автомобилей */}
               {/* <Cars /> */}
             </>

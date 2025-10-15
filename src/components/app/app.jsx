@@ -1,10 +1,6 @@
 import styles from "./app.module.css";
-import { useEffect, useState } from "react";
-import Header from "../Header";
 import Profile from "../profile/profile";
-import { user } from "../../utils/userInfo";
 import StartPage from "../start-page/start-page";
-import Authorized from "../authorized/authorized";
 import Navbar from "../navbar/navbar";
 import Trips from "../trips/trips";
 import { useSelector } from "react-redux";
@@ -18,8 +14,6 @@ export default function App({ userInfo }) {
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        {/* <Authorized /> */}
-
         <Navbar />
         {activeSection === PROFILE && <Profile userInfo={userInfo} />}
         {activeSection === TRIPS && <Trips />}

@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import Profile from "../profile/profile";
-import Navbar from "../navbar/navbar";
-import Trips from "../trips/trips";
 import App from "../app/app";
 
 const TelegramAuth = () => {
@@ -13,10 +10,7 @@ const TelegramAuth = () => {
 
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [activeSection, setActiveSection] = useState("profile");
-
-  // const [currentSection, setCurrentSection] = useState("profile");
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     if (!webApp) return;
@@ -39,6 +33,8 @@ const TelegramAuth = () => {
       if (parsed?.user) setTelegramUser(parsed.user);
     }
 
+    if (telegramUser) parsingUserData(telegramUser);
+
     // если есть initData — попытка автоаутентификации и т.д.
     if (webApp.initData && webApp.initData.trim() !== "") {
       authenticateWithTelegram(webApp.initData).catch(console.error);
@@ -46,6 +42,28 @@ const TelegramAuth = () => {
       fetchCurrentUser();
     }
   }, [webApp]);
+
+  function parsingUserData(userData) {
+    if (!userData) return <div style={{ color: "#666" }}>No user info</div>;
+
+    let parsed;
+    try {
+      parsed = typeof userData === "string" ? JSON.parse(userData) : userData;
+    } catch (err) {
+      return (
+        <div style={{ color: "#d32f2f" }}>
+          <div>Invalid JSON: {err.message}</div>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{String(userData)}</pre>
+        </div>
+      );
+    }
+
+    if (!parsed || typeof parsed !== "object") {
+      return <div>{String(parsed)}</div>;
+    }
+
+    setUserData(parsed);
+  }
 
   // Инициализация Telegram WebApp
   useEffect(() => {
@@ -246,16 +264,19 @@ const TelegramAuth = () => {
       {userInfo && <></>}
 
       {telegramUser && (
-        <App userInfo={telegramUser} />
+        <>
+          {console.log("telegramUser")}
+          {console.log(telegramUser)}
 
-        // <>
-        //   {showNavbar && <Navbar />}
-        //   {activeSection === "profile" && <Profile userInfo={telegramUser} />}
-        //   {activeSection === "trips" && <Trips />}
-        //   {activeSection === "calendar" && (
-        //     <div>Скоро здесь будет раздел "Календарь"</div>
-        //   )}
-        // </>
+          {userData && (
+            <>
+              {console.log("userData")}
+              {console.log(userData)}
+              {/* <App userInfo={telegramUser} /> */}
+              <App userInfo={userData} />
+            </>
+          )}
+        </>
       )}
     </>
   );

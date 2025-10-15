@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./services/reducers";
 
+import { userInfo } from "./utils/userInfo";
+
 import Authorized from "./components/authorized/authorized";
 
 const store = configureStore({
@@ -32,8 +34,8 @@ function renderApp() {
   root.render(
     <StrictMode>
       <Provider store={store}>
-        <Authorized />
-        {/* <App /> */}
+        {/* <Authorized /> */}
+        <App userInfo={userInfo} />
       </Provider>
     </StrictMode>
   );
