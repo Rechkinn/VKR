@@ -20,22 +20,3 @@
 .li {
   text-align: center;
 }
-
-.a {
-  display: block;
-  text-decoration: none;
-}
-
-.icon {
-  margin: auto;
-  display: block;
-}
-
-.text {
-  font-size: 9px;
-  color: #a3a9b5;
-}
-
-.active {
-  color: #fdcd03;
-}
