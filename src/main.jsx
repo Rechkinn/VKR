@@ -1,12 +1,9 @@
-import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./components/app/app";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./services/reducers";
-
-import { userInfo } from "./utils/userInfo";
 
 import Authorized from "./components/authorized/authorized";
 
@@ -34,8 +31,8 @@ function renderApp() {
   root.render(
     <StrictMode>
       <Provider store={store}>
-        {/* <Authorized /> */}
-        <App userInfo={userInfo} />
+        <Authorized />
+        {/* <App /> */}
       </Provider>
     </StrictMode>
   );
