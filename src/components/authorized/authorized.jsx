@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import App from "../app/app";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -10,7 +12,11 @@ const TelegramAuth = () => {
 
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
+
+  const { infoFromTelegram } = useSelector((store) => store.user);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!webApp) return;
@@ -62,7 +68,12 @@ const TelegramAuth = () => {
       return <div>{String(parsed)}</div>;
     }
 
-    setUserData(parsed);
+    // setUserData(parsed);
+
+    dispatch({
+      type: SET_USER_TELEGRAM_INFO,
+      infoFromTelegram: parsed,
+    });
   }
 
   // Инициализация Telegram WebApp
@@ -263,17 +274,16 @@ const TelegramAuth = () => {
 
       {userInfo && <></>}
 
+      {console.log("telegramUser")}
+      {console.log(telegramUser)}
       {telegramUser && (
         <>
-          {console.log("telegramUser")}
-          {console.log(telegramUser)}
-
-          {userData && (
+          {console.log("infoFromTelegram")}
+          {console.log(infoFromTelegram)}
+          {infoFromTelegram && (
             <>
-              {console.log("userData")}
-              {console.log(userData)}
               {/* <App userInfo={telegramUser} /> */}
-              <App userInfo={userData} />
+              <App />
             </>
           )}
         </>

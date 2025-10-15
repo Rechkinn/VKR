@@ -5,15 +5,17 @@ import arrowLeftIcon from "../../image/change-profile-info/arrow-left.svg";
 import { useRef, useState } from "react";
 import Input from "../input/input";
 import moreDetailIcon from "../../image/change-profile-info/more-details.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { SET_ACTIVE_SECTION_PROFILE } from "../../services/actions/profile";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
-export default function ChangeProfileInfo({ userData, showSunAndNavbar }) {
+export default function ChangeProfileInfo() {
   // если чекбокс будет активным, то будет показываться поле для вода числового кода
   const [showInputCode, setShowInputCode] = useState(false);
   const checkboxRef = useRef();
+
+  const { infoFromTelegram } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
   function closeFormToChangeProfileInfo() {
@@ -40,28 +42,28 @@ export default function ChangeProfileInfo({ userData, showSunAndNavbar }) {
         <h1 className={styles.headerText}>Редактировать аккаунт</h1>
       </header>
       <div className={styles.profilePhoto}>
-        <ProfilePhoto userData={userData} size={114} />
+        <ProfilePhoto size={114} />
       </div>
       <form action="">
         <Input
           label="Имя"
           type="text"
           name="first-name"
-          initialValue={userData.first_name}
+          initialValue={infoFromTelegram.first_name}
           className={styles.input}
         />
         <Input
           label="Фамилия"
           type="text"
           name="last-name"
-          initialValue={userData.last_name}
+          initialValue={infoFromTelegram.last_name}
           className={styles.input}
         />
         <Input
           label="Telegram"
           type="text"
           name="username"
-          initialValue={`@${userData.username}`}
+          initialValue={`@${infoFromTelegram.username}`}
           className={styles.input}
         />
         <Input

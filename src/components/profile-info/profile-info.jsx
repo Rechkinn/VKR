@@ -3,8 +3,11 @@ import star from "../../image/star.svg";
 import starEmpty from "../../image/star-empty.svg";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import Balance from "../balance/balance";
+import { useSelector } from "react-redux";
 
-export default function ProfileInfo({ userData }) {
+export default function ProfileInfo() {
+  const { infoFromTelegram } = useSelector((store) => store.user);
+
   function renderStars(rating) {
     const array = [];
     for (let i = 0; i < Math.floor(rating); i++) {
@@ -25,7 +28,7 @@ export default function ProfileInfo({ userData }) {
 
   return (
     <>
-      {userData && (
+      {infoFromTelegram && (
         <section>
           <header className={styles.header}>
             <div className={styles.headerPart}>
@@ -41,14 +44,10 @@ export default function ProfileInfo({ userData }) {
           </header>
 
           <div className={styles.content}>
-            <ProfilePhoto
-              userData={userData}
-              needButtonToEdit={true}
-              size={166}
-            />
+            <ProfilePhoto needButtonToEdit={true} size={166} />
 
             <h2 className={styles.nameUser}>
-              {`${userData.first_name} ${userData.last_name}`.trim()}
+              {`${infoFromTelegram.first_name} ${infoFromTelegram.last_name}`.trim()}
             </h2>
             <p className={styles.userDescription}>
               В Alltransfer с Января 2025

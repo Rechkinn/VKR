@@ -1,19 +1,19 @@
 import styles from "./profile-photo.module.css";
 import editProfile from "../../image/edit-profile.svg";
 import Button from "../button/button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SET_ACTIVE_SECTION_PROFILE } from "../../services/actions/profile";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
 export default function ProfilePhoto({
-  userData,
-  // openFormToChangeUserInfo = null,
   needButtonToEdit = false,
   size = 166,
   className = "",
 }) {
   const dispatch = useDispatch();
+
+  const { infoFromTelegram } = useSelector((store) => store.user);
 
   function openFormToChangeProfileInfo() {
     dispatch({
@@ -33,8 +33,8 @@ export default function ProfilePhoto({
   return (
     <article className={`${className} ${styles.containerPhoto}`}>
       <img
-        src={userData.photo_url}
-        alt={`${userData.first_name} ${userData.last_name}`}
+        src={infoFromTelegram.photo_url}
+        alt={`${infoFromTelegram.first_name} ${infoFromTelegram.last_name}`}
         className={styles.photo}
         style={{ width: size, height: size }}
       />
