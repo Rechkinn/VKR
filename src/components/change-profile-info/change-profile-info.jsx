@@ -5,15 +5,36 @@ import arrowLeftIcon from "../../image/change-profile-info/arrow-left.svg";
 import { useRef, useState } from "react";
 import Input from "../input/input";
 import moreDetailIcon from "../../image/change-profile-info/more-details.svg";
+import { useDispatch } from "react-redux";
+import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
+import { SET_ACTIVE_SECTION_PROFILE } from "../../services/actions/profile";
+import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
 export default function ChangeProfileInfo({ userData, showSunAndNavbar }) {
-  const checkboxChecked = useRef();
+  // если чекбокс будет активным, то будет показываться поле для вода числового кода
   const [showInputCode, setShowInputCode] = useState(false);
+  const checkboxRef = useRef();
+
+  const dispatch = useDispatch();
+  function closeFormToChangeProfileInfo() {
+    dispatch({
+      type: SET_VISIBILITY_NAVBAR,
+      visibility: true,
+    });
+    dispatch({
+      type: SET_SUN_VISIBILITY_ON_BACKGROUND,
+      sunVisibility: true,
+    });
+    dispatch({
+      type: SET_ACTIVE_SECTION_PROFILE,
+      activeSection: "info",
+    });
+  }
 
   return (
     <section>
       <header className={styles.header}>
-        <Button onClick={showSunAndNavbar}>
+        <Button onClick={closeFormToChangeProfileInfo}>
           <img src={arrowLeftIcon} alt="" />
         </Button>
         <h1 className={styles.headerText}>Редактировать аккаунт</h1>
@@ -60,12 +81,12 @@ export default function ChangeProfileInfo({ userData, showSunAndNavbar }) {
             htmlFor="become-driver"
             onClick={() => {
               console.log("123");
-              setShowInputCode(checkboxChecked?.current?.checked);
+              setShowInputCode(checkboxRef?.current?.checked);
             }}
             className={styles.customChekcboxText}
           >
             <input
-              ref={checkboxChecked}
+              ref={checkboxRef}
               type="checkbox"
               id="become-driver"
               name="become-driver"
