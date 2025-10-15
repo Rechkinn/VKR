@@ -47,7 +47,7 @@ export default function ProfileInfo({
           <div className={styles.content}>
             <ProfilePhoto
               userData={userData}
-              buttonToEdit={true}
+              needButtonToEdit={true}
               // openFormToChangeUserInfo={openFormToChangeProfileInfo}
               // hiddenSunAndNavbar={hiddenSunAndNavbar}
               size={166}
