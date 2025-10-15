@@ -7,46 +7,25 @@ import StartPage from "../start-page/start-page";
 import Authorized from "../authorized/authorized";
 import Navbar from "../navbar/navbar";
 import Trips from "../trips/trips";
-
-const body = document.querySelector("body");
+import { useSelector } from "react-redux";
+import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
 
 export default function App() {
-  const [showSun, setShowSun] = useState(true);
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [activeSection, setActiveSection] = useState("trips");
+  const { sunVisibility } = useSelector((store) => store.background);
+  const { activeSection } = useSelector((store) => store.navbar);
+
   return (
     <>
-      {showSun && <div className={styles.backgroundYellowCircle}></div>}
+      {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        {/* {showNavbar && (
-          <Navbar
-            activeSection={activeSection}
-            setActiveSection={setActiveSection}
-          />
-        )} */}
+        <Navbar />
+        <Authorized />
 
-        <Authorized
-          hiddenSunAndNavbar={() => setShowSun(false)}
-          showSunAndNavbar={() => setShowSun(true)}
-        />
-
-        {/* {activeSection === "profile" && (
-          <Profile
-            userInfo={user}
-            hiddenSunAndNavbar={() => {
-              setShowSun(false);
-              setShowNavbar(false);
-            }}
-            showSunAndNavbar={() => {
-              setShowSun(true);
-              setShowNavbar(true);
-            }}
-          />
-        )}
-        {activeSection === "trips" && <Trips />}
-        {activeSection === "calendar" && (
+        {activeSection === PROFILE && <Profile userInfo={user} />}
+        {activeSection === TRIPS && <Trips />}
+        {activeSection === CALENDAR && (
           <div>Скоро здесь будет раздел "Календарь"</div>
-        )} */}
+        )}
       </main>
     </>
   );
