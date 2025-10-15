@@ -12,10 +12,6 @@ const TelegramAuth = () => {
 
   const [telegramUser, setTelegramUser] = useState(null);
 
-  // const [userData, setUserData] = useState(null);
-
-  const { infoFromTelegram } = useSelector((store) => store.user);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -289,19 +285,9 @@ const TelegramAuth = () => {
         </div>
       )}
 
-      {userInfo && <></>}
-
       {console.log("telegramUser")}
       {console.log(telegramUser)}
-      {telegramUser && (
-        <>
-          {console.log("infoFromTelegram")}
-          {console.log(infoFromTelegram)}
-
-          {/* <App userInfo={telegramUser} /> */}
-          <App />
-        </>
-      )}
+      {telegramUser && <App />}
     </>
   );
 };

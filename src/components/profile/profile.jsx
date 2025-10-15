@@ -30,7 +30,6 @@ export default function Profile() {
     <>
       {activeSection === "info" && (
         <>
-          {/* <ProfileInfo userData={userData} /> */}
           <ProfileInfo />
           {/* Здесь будет компонент для отображения автомобилей */}
           {/* <Cars /> */}
