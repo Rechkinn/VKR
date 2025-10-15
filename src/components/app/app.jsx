@@ -10,7 +10,7 @@ import Trips from "../trips/trips";
 import { useSelector } from "react-redux";
 import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
 
-export default function App() {
+export default function App({ userInfo }) {
   const { sunVisibility } = useSelector((store) => store.background);
   const { activeSection } = useSelector((store) => store.navbar);
 
@@ -18,10 +18,10 @@ export default function App() {
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        <Navbar />
-        <Authorized />
+        {/* <Authorized /> */}
 
-        {activeSection === PROFILE && <Profile userInfo={user} />}
+        <Navbar />
+        {activeSection === PROFILE && <Profile userInfo={userInfo} />}
         {activeSection === TRIPS && <Trips />}
         {activeSection === CALENDAR && (
           <div>Скоро здесь будет раздел "Календарь"</div>

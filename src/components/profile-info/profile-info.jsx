@@ -4,11 +4,7 @@ import starEmpty from "../../image/star-empty.svg";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import Balance from "../balance/balance";
 
-export default function ProfileInfo({
-  userData,
-  // openFormToChangeProfileInfo,
-  // hiddenSunAndNavbar,
-}) {
+export default function ProfileInfo({ userData }) {
   function renderStars(rating) {
     const array = [];
     for (let i = 0; i < Math.floor(rating); i++) {
@@ -48,8 +44,6 @@ export default function ProfileInfo({
             <ProfilePhoto
               userData={userData}
               needButtonToEdit={true}
-              // openFormToChangeUserInfo={openFormToChangeProfileInfo}
-              // hiddenSunAndNavbar={hiddenSunAndNavbar}
               size={166}
             />
 

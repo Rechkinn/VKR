@@ -3,7 +3,7 @@ import Profile from "../profile/profile";
 import Navbar from "../navbar/navbar";
 import Trips from "../trips/trips";
 
-const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
+const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -245,31 +245,16 @@ const TelegramAuth = ({ hiddenSunAndNavbar, showSunAndNavbar }) => {
       {userInfo && <></>}
 
       {telegramUser && (
-        <>
-          {showNavbar && (
-            <Navbar
-              activeSection={activeSection}
-              setActiveSection={setActiveSection}
-            />
-          )}
-          {activeSection === "profile" && (
-            <Profile
-              userInfo={telegramUser}
-              hiddenSunAndNavbar={() => {
-                setShowNavbar(false);
-                hiddenSunAndNavbar();
-              }}
-              showSunAndNavbar={() => {
-                setShowNavbar(true);
-                showSunAndNavbar();
-              }}
-            />
-          )}
-          {activeSection === "trips" && <Trips />}
-          {activeSection === "calendar" && (
-            <div>Скоро здесь будет раздел "Календарь"</div>
-          )}
-        </>
+        <App userInfo={telegramUser} />
+
+        // <>
+        //   {showNavbar && <Navbar />}
+        //   {activeSection === "profile" && <Profile userInfo={telegramUser} />}
+        //   {activeSection === "trips" && <Trips />}
+        //   {activeSection === "calendar" && (
+        //     <div>Скоро здесь будет раздел "Календарь"</div>
+        //   )}
+        // </>
       )}
     </>
   );

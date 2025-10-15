@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./services/reducers";
 
+import Authorized from "./components/authorized/authorized";
+
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
@@ -30,7 +32,8 @@ function renderApp() {
   root.render(
     <StrictMode>
       <Provider store={store}>
-        <App />
+        <Authorized />
+        {/* <App /> */}
       </Provider>
     </StrictMode>
   );
