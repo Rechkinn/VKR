@@ -62,7 +62,7 @@ export default function Profile({ userInfo }) {
             </>
           )}
           {activeSection === "changeInfo" && (
-            <ChangeProfileInfo userData={userData} />
+            <ChangeProfileInfo userData={userInfo} />
           )}
         </>
       )}
