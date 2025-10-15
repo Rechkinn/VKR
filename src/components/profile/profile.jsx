@@ -51,7 +51,7 @@ export default function Profile({ userInfo }) {
 
   return (
     <>
-      {userData && (
+      {userInfo && (
         <>
           {activeSection === "info" && (
             <>
