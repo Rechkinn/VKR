@@ -14,12 +14,12 @@ export default function App() {
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        <Navbar />
         {activeSection === PROFILE && <Profile />}
         {activeSection === TRIPS && <Trips />}
         {activeSection === CALENDAR && (
           <div>Скоро здесь будет раздел "Календарь"</div>
         )}
+        <Navbar />
       </main>
     </>
   );
