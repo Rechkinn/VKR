@@ -1,0 +1,3 @@
+export const SET_CURRENT_TAB = "SET_CURRENT_TAB";
+export const OPEN_FORM_SECTION_TRIP = "OPEN_FORM";
+export const CLOSE_FORM_SECTION_TRIP = "CLOSE_FORM";
