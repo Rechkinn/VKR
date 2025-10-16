@@ -4,14 +4,36 @@ import styles from "./trips.module.css";
 import carIcon from "../../image/navbar/carActive.svg";
 import Tabs from "../tabs/tabs";
 import Trip from "../trip/trip";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Trips() {
   const [currentTab, setCurrentTab] = useState("Active");
   const [isOpeningForm, setIsOpeningForm] = useState(false);
 
+  const [styleTripsContainer, setStyleTripsContainer] = useState(null);
+
+  const sectionRef = useRef();
+  const tripsContainerRef = useRef();
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const tripsContainer = tripsContainerRef.current;
+
+    if (!section) return;
+    if (!tripsContainer) return;
+
+    const sectionBorders = section.getBoundingClientRect();
+    const tripsContainerBorders = tripsContainer.getBoundingClientRect();
+
+    const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
+
+    setStyleTripsContainer({
+      maxHeight: maxHeight,
+    });
+  }, []);
+
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={styles.section}>
       <header className={styles.header}>
         <h1 className={styles.title}>Мои поездки</h1>
 
@@ -55,11 +77,32 @@ export default function Trips() {
             </Button>
             <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
-            <div className={styles.trips}>
+            <div
+              ref={tripsContainerRef}
+              style={styleTripsContainer}
+              className={styles.trips}
+            >
               {currentTab === "Active" && (
                 <>
-                  <Trip />
-                  <Trip />
+                  {[1, 2, 3, 4, 5].map(() => {
+                    return <Trip status="Активные" />;
+                  })}
+                </>
+              )}
+              {currentTab === "Upcoming" && (
+                <>
+                  <Trip status="Предстоящие" />
+                  <Trip status="Предстоящие" />
+                  <Trip status="Предстоящие" />
+                  <Trip status="Предстоящие" />
+                </>
+              )}
+              {currentTab === "Completed" && (
+                <>
+                  <Trip status="Заверешнные" />
+                  <Trip status="Заверешнные" />
+                  <Trip status="Заверешнные" />
+                  <Trip status="Заверешнные" />
                 </>
               )}
             </div>
