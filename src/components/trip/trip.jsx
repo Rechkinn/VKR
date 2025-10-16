@@ -8,8 +8,19 @@ import watchIcon from "../../image/section-trips/watch-icon.svg";
 import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import settingsIcon from "../../image/section-trips/settings-icon.svg";
 import TripInfoLine from "../trip-info-line/trip-info-line";
+import { ACTIVE_TAB } from "../../utils/consts";
+import { useDispatch } from "react-redux";
+import { SET_VISIBILITY_MODAL } from "../../services/actions/modal";
 
 export default function Trip({ status }) {
+  const dispatch = useDispatch();
+  function openModal() {
+    dispatch({
+      type: SET_VISIBILITY_MODAL,
+      visibilityModal: true,
+    });
+  }
+
   return (
     <article className={styles.trip}>
       <header className={styles.header}>
@@ -21,7 +32,7 @@ export default function Trip({ status }) {
             className={styles.carIcon}
           />
         </div>
-        <Button>
+        <Button onClick={openModal}>
           <img
             src={settingsIcon}
             alt="Иконка автомобиля"
@@ -51,7 +62,7 @@ export default function Trip({ status }) {
         </div>
       </div>
 
-      {status === "Активные" && (
+      {status === ACTIVE_TAB && (
         <Button className={`yellow ${styles.buttonFinishTrip}`}>
           Завершить поездку
         </Button>
