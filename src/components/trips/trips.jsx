@@ -5,13 +5,21 @@ import carIcon from "../../image/navbar/carActive.svg";
 import Tabs from "../tabs/tabs";
 import Trip from "../trip/trip";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  CLOSE_FORM_SECTION_TRIP,
+  OPEN_FORM_SECTION_TRIP,
+} from "../../services/actions/trips";
+import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
+import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
+import ModalOverlay from "../modal-overlay/modal-overlay";
 
 export default function Trips() {
-  const [currentTab, setCurrentTab] = useState("Active");
-  const [isOpeningForm, setIsOpeningForm] = useState(false);
+  const dispatch = useDispatch();
+  const { currentTab, isOpeningForm } = useSelector((store) => store.trips);
+  const { visibilityModal } = useSelector((store) => store.modal);
 
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
-
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
 
@@ -32,8 +40,19 @@ export default function Trips() {
     });
   }, []);
 
+  function openForm() {
+    dispatch({
+      type: SET_VISIBILITY_NAVBAR,
+      visibility: false,
+    });
+    dispatch({
+      type: OPEN_FORM_SECTION_TRIP,
+    });
+  }
+
   return (
     <section ref={sectionRef} className={styles.section}>
+      {visibilityModal && <ModalOverlay />}
       <header className={styles.header}>
         <h1 className={styles.title}>Мои поездки</h1>
 
@@ -56,55 +75,30 @@ export default function Trips() {
         }
       >
         {isOpeningForm ? (
-          <form>
-            <button
-              // style={{ color: "white" }}
-              onClick={() => setIsOpeningForm(false)}
-            >
-              CLOSE
-            </button>
-          </form>
+          <FormForNewTrip actionType={CLOSE_FORM_SECTION_TRIP} />
         ) : (
           <>
-            <Button
-              className={styles.buttonCreateTrip}
-              onClick={() => setIsOpeningForm(true)}
-            >
+            <Button className={styles.buttonCreateTrip} onClick={openForm}>
               <span className={styles.buttonIconBackground}>
                 <img src={carIcon} alt="Иконка автомобиля" />
               </span>
               <span className={styles.buttonText}>Создать поездку</span>
             </Button>
-            <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
+
+            <Tabs />
 
             <div
               ref={tripsContainerRef}
               style={styleTripsContainer}
               className={styles.trips}
             >
-              {currentTab === "Active" && (
-                <>
-                  {[1, 2, 3, 4, 5].map(() => {
-                    return <Trip status="Активные" />;
-                  })}
-                </>
-              )}
-              {currentTab === "Upcoming" && (
-                <>
-                  <Trip status="Предстоящие" />
-                  <Trip status="Предстоящие" />
-                  <Trip status="Предстоящие" />
-                  <Trip status="Предстоящие" />
-                </>
-              )}
-              {currentTab === "Completed" && (
-                <>
-                  <Trip status="Заверешнные" />
-                  <Trip status="Заверешнные" />
-                  <Trip status="Заверешнные" />
-                  <Trip status="Заверешнные" />
-                </>
-              )}
+              {[1, 2, 3, 4, 5].map((trip) => {
+                if (trip?.status === currentTab) {
+                  return <Trip status={currentTab} />;
+                } else {
+                  return <Trip status={currentTab} />;
+                }
+              })}
             </div>
           </>
         )}
