@@ -3,17 +3,25 @@ import styles from "./input.module.css";
 
 export default function Input({
   label = "",
-  type = "text",
+  // type = "text",
   name = "",
   initialValue = "",
   className = "",
+  iconForLabel = null,
   ...props
 }) {
   const [valueInput, setValueInput] = useState(initialValue);
 
   return (
-    <div className={styles.container}>
+    <div>
       <label htmlFor={name} className={styles.label}>
+        {iconForLabel && (
+          <img
+            src={iconForLabel}
+            alt="Иконка дял label"
+            className={styles.iconForLabel}
+          />
+        )}
         {label}
       </label>
       <input

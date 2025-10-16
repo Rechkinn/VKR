@@ -1,9 +1,6 @@
-.container {
-}
-
 .label {
   color: white;
-  display: block;
+  display: flex;
   font-size: 13px;
   margin-bottom: 10px;
 }
@@ -13,4 +10,9 @@
   font-size: 13px;
   width: 100%;
   border-radius: 5px;
+}
+
+.iconForLabel {
+  display: inline-block;
+  margin-right: 2px;
 }
