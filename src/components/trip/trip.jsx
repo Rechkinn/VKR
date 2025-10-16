@@ -9,12 +9,12 @@ import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import settingsIcon from "../../image/section-trips/settings-icon.svg";
 import TripInfoLine from "../trip-info-line/trip-info-line";
 
-export default function Trip() {
+export default function Trip({ status }) {
   return (
     <article className={styles.trip}>
       <header className={styles.header}>
         <div className={styles.status}>
-          <TripStatus>Активно</TripStatus>
+          <TripStatus>{status}</TripStatus>
           <img
             src={carIcon}
             alt="Иконка автомобиля"
@@ -50,9 +50,12 @@ export default function Trip() {
           </TripInfoLine>
         </div>
       </div>
-      <Button className={`yellow ${styles.buttonFinishTrip}`}>
-        Завершить поездку
-      </Button>
+
+      {status === "Активные" && (
+        <Button className={`yellow ${styles.buttonFinishTrip}`}>
+          Завершить поездку
+        </Button>
+      )}
     </article>
   );
 }
