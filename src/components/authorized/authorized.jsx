@@ -126,16 +126,12 @@ const TelegramAuth = () => {
         console.log("data.user");
         console.log(data.user);
 
-        myCustomData = { ...data.user };
-
-        // setUserInfoForSave({ ...userInfoForSave, ...data.user });
-        // dispatch({
-        //   type: SET_USER_TELEGRAM_INFO,
-        //   infoFromTelegram: {
-        //     ...infoFromTelegram,
-        //     ...data.user,
-        //   },
-        // });
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: {
+            ...data.user,
+          },
+        });
       }
 
       return data;
@@ -206,7 +202,7 @@ const TelegramAuth = () => {
       console.log("unsafe.user");
       console.log(unsafe.user);
 
-      myCustomUnsafe = { ...unsafe.user };
+      // myCustomUnsafe = { ...unsafe.user };
 
       console.log("myCustomData");
       console.log(myCustomData);
@@ -215,7 +211,7 @@ const TelegramAuth = () => {
 
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: Object.assign(myCustomData, myCustomUnsafe),
+        infoFromTelegram: { ...unsafe.user },
       });
     } else {
       // пробуем спарсить initData (если есть)

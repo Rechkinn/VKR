@@ -24,7 +24,10 @@ export const userReducer = (state = initialState, action) => {
     case SET_USER_TELEGRAM_INFO:
       return {
         ...state,
-        infoFromTelegram: action.infoFromTelegram,
+        infoFromTelegram: Object.assign(
+          state.infoFromTelegram,
+          action.infoFromTelegram
+        ),
       };
     default:
       return state;
