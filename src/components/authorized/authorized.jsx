@@ -207,12 +207,15 @@ const TelegramAuth = () => {
       console.log(unsafe.user);
 
       myCustomUnsafe = { ...unsafe.user };
+
+      console.log("myCustomData");
+      console.log(myCustomData);
+      console.log("myCustomUnsafe");
+      console.log(myCustomUnsafe);
+
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: {
-          ...myCustomData,
-          ...myCustomUnsafe,
-        },
+        infoFromTelegram: Object.assign(myCustomData, myCustomUnsafe),
       });
     } else {
       // пробуем спарсить initData (если есть)
