@@ -48,6 +48,7 @@ const TelegramAuth = () => {
 
   // Инициализация Telegram WebApp (делаем один раз)
   useEffect(() => {
+    window.location.reload();
     if (window.Telegram?.WebApp) {
       const tgWebApp = window.Telegram.WebApp;
       setWebApp(tgWebApp);
@@ -73,6 +74,7 @@ const TelegramAuth = () => {
       );
       setError("Telegram WebApp not detected. Please open in Telegram.");
     }
+    window.location.reload();
   }, []);
 
   // Универсальная функция аутентификации (без утечек)
