@@ -13,9 +13,6 @@ const TelegramAuth = () => {
 
   const [userInfoForSave, setUserInfoForSave] = useState({});
 
-  let myCustomData = {};
-  let myCustomUnsafe = {};
-
   const { infoFromTelegram } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
@@ -119,10 +116,10 @@ const TelegramAuth = () => {
 
       localStorage.setItem("access_token", data.access_token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
-      setUserInfo(data.user);
 
       // диспатчим в стор (если нужно)
       if (data.user) {
+        setUserInfo(data.user);
         console.log("data.user");
         console.log(data.user);
 
@@ -204,28 +201,24 @@ const TelegramAuth = () => {
 
       // myCustomUnsafe = { ...unsafe.user };
 
-      console.log("myCustomData");
-      console.log(myCustomData);
-      console.log("myCustomUnsafe");
-      console.log(myCustomUnsafe);
-
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
         infoFromTelegram: { ...unsafe.user },
       });
-    } else {
-      // пробуем спарсить initData (если есть)
-      const parsed = parseInitData(initData);
-      if (parsed?.user) {
-        setTelegramUser(parsed.user);
-        console.log("parsed.user");
-        console.log(parsed.user);
-        // dispatch({
-        //   type: SET_USER_TELEGRAM_INFO,
-        //   infoFromTelegram: parsed.user,
-        // });
-      }
     }
+    // else {
+    // пробуем спарсить initData (если есть)
+    // const parsed = parseInitData(initData);
+    // if (parsed?.user) {
+    // setTelegramUser(parsed.user);
+    // console.log("parsed.user");
+    // console.log(parsed.user);
+    // dispatch({
+    //   type: SET_USER_TELEGRAM_INFO,
+    //   infoFromTelegram: parsed.user,
+    // });
+    // }
+    // }
 
     // Если уже есть токен в localStorage — пробуем получить профиль
     if (!authAttemptedRef.current) {
@@ -312,7 +305,7 @@ const TelegramAuth = () => {
       )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {(telegramUser || userInfo) && <App />}
+      {telegramUser && userInfo && <App />}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
