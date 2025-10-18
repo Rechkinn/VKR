@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import App from "../app/app";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
 
 const TelegramAuth = () => {
@@ -10,6 +10,11 @@ const TelegramAuth = () => {
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
+
+  const { userMyData } = useSelector((store) => store.user);
+  console.log("userMyData ------- ");
+  console.log(userMyData);
+  console.log("userMyData ------- ");
 
   const dispatch = useDispatch();
 
@@ -116,6 +121,8 @@ const TelegramAuth = () => {
 
       // диспатчим в стор (если нужно)
       if (data.user) {
+        console.log("data.user");
+        console.log(data.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: data.user,
@@ -150,6 +157,10 @@ const TelegramAuth = () => {
         // В разных API ответ может быть { user: {...} } или сразу объект пользователя
         setUserInfo(payload.user ?? payload);
         if (payload.user ?? payload) {
+          console.log("payload");
+          console.log(payload);
+          console.log("payload.user");
+          console.log(payload.user);
           dispatch({
             type: SET_USER_TELEGRAM_INFO,
             infoFromTelegram: payload.user ?? payload,
@@ -183,12 +194,16 @@ const TelegramAuth = () => {
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
+      console.log("unsafe.user");
+      console.log(unsafe.user);
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
         setTelegramUser(parsed.user);
+        console.log("parsed.user");
+        console.log(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: parsed.user,
@@ -272,16 +287,22 @@ const TelegramAuth = () => {
       )}
 
       {/* Место для отладки — показываем только если есть debugInfo */}
-      {debugInfo && (
+      {/* {debugInfo && (
         <div style={{ fontSize: 12, color: "#666", marginTop: 8 }}>
           <div>initDataAvailable: {String(debugInfo.initDataAvailable)}</div>
           <div>initDataLength: {debugInfo.initDataLength}</div>
           <div>hasToken: {String(debugInfo.hasToken)}</div>
         </div>
-      )}
+      )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {(telegramUser || userInfo) && <App />}
+      {(telegramUser || userInfo) && (
+        <>
+          {console.log("userMyData")}
+          {console.log(userMyData)}
+          <App />
+        </>
+      )}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
