@@ -289,7 +289,7 @@ const TelegramAuth = () => {
       )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {telegramUser || (userInfo && <App />)}
+      {(telegramUser || userInfo) && <App />}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
