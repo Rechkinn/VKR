@@ -13,6 +13,9 @@ const TelegramAuth = () => {
 
   const [userInfoForSave, setUserInfoForSave] = useState({});
 
+  let myCustomData = {};
+  let myCustomUnsafe = {};
+
   const { infoFromTelegram } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
@@ -122,7 +125,10 @@ const TelegramAuth = () => {
       if (data.user) {
         console.log("data.user");
         console.log(data.user);
-        setUserInfoForSave({ ...userInfoForSave, ...data.user });
+
+        myCustomData = { ...data.user };
+
+        // setUserInfoForSave({ ...userInfoForSave, ...data.user });
         // dispatch({
         //   type: SET_USER_TELEGRAM_INFO,
         //   infoFromTelegram: {
@@ -199,12 +205,13 @@ const TelegramAuth = () => {
       setTelegramUser(unsafe.user);
       console.log("unsafe.user");
       console.log(unsafe.user);
-      // setUserInfoForSave({ ...userInfoForSave, ...unsafe.user });
+
+      myCustomUnsafe = { ...unsafe.user };
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
         infoFromTelegram: {
-          ...userInfoForSave,
-          ...unsafe.user,
+          ...myCustomData,
+          ...myCustomUnsafe,
         },
       });
     } else {
@@ -306,19 +313,7 @@ const TelegramAuth = () => {
       )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {(telegramUser || userInfo) && (
-        <>
-          {/* {dispatch({
-            type: SET_USER_TELEGRAM_INFO,
-            infoFromTelegram: {
-              ...userInfoForSave,
-            },
-          })} */}
-          {console.log("infoFromTelegram")}
-          {console.log(infoFromTelegram)}
-          <App />
-        </>
-      )}
+      {(telegramUser || userInfo) && <App />}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
