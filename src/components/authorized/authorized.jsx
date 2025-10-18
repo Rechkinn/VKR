@@ -12,9 +12,6 @@ const TelegramAuth = () => {
   const [telegramUser, setTelegramUser] = useState(null);
 
   const { userMyData } = useSelector((store) => store.user);
-  console.log("userMyData ------- ");
-  console.log(userMyData);
-  console.log("userMyData ------- ");
 
   const dispatch = useDispatch();
 
@@ -298,6 +295,13 @@ const TelegramAuth = () => {
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {(telegramUser || userInfo) && (
         <>
+          {dispatch({
+            type: SET_USER_TELEGRAM_INFO,
+            infoFromTelegram: {
+              ...data.user,
+              ...unsafe.user,
+            },
+          })}
           {console.log("userMyData")}
           {console.log(userMyData)}
           <App />

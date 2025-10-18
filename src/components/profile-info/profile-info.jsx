@@ -8,6 +8,9 @@ import { useSelector } from "react-redux";
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
 
+  console.log("infoFromTelegram в ProfileInfo");
+  console.log(infoFromTelegram);
+
   function renderStars(rating) {
     const array = [];
     for (let i = 0; i < Math.floor(rating); i++) {
