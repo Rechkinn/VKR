@@ -199,14 +199,14 @@ const TelegramAuth = () => {
       setTelegramUser(unsafe.user);
       console.log("unsafe.user");
       console.log(unsafe.user);
-      setUserInfoForSave({ ...userInfoForSave, ...unsafe.user });
-      // dispatch({
-      //   type: SET_USER_TELEGRAM_INFO,
-      //   infoFromTelegram: {
-      //     ...infoFromTelegram,
-      //     ...unsafe.user,
-      //   },
-      // });
+      // setUserInfoForSave({ ...userInfoForSave, ...unsafe.user });
+      dispatch({
+        type: SET_USER_TELEGRAM_INFO,
+        infoFromTelegram: {
+          ...userInfoForSave,
+          ...unsafe.user,
+        },
+      });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
@@ -308,12 +308,12 @@ const TelegramAuth = () => {
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {(telegramUser || userInfo) && (
         <>
-          {dispatch({
+          {/* {dispatch({
             type: SET_USER_TELEGRAM_INFO,
             infoFromTelegram: {
               ...userInfoForSave,
             },
-          })}
+          })} */}
           {console.log("infoFromTelegram")}
           {console.log(infoFromTelegram)}
           <App />
