@@ -203,19 +203,6 @@ const TelegramAuth = () => {
         infoFromTelegram: { ...unsafe.user },
       });
     }
-    // else {
-    // пробуем спарсить initData (если есть)
-    // const parsed = parseInitData(initData);
-    // if (parsed?.user) {
-    // setTelegramUser(parsed.user);
-    // console.log("parsed.user");
-    // console.log(parsed.user);
-    // dispatch({
-    //   type: SET_USER_TELEGRAM_INFO,
-    //   infoFromTelegram: parsed.user,
-    // });
-    // }
-    // }
 
     // Если уже есть токен в localStorage — пробуем получить профиль
     if (!authAttemptedRef.current) {
@@ -236,18 +223,15 @@ const TelegramAuth = () => {
       (webApp.MainButton.show || webApp.MainButton.onClick)
     ) {
       try {
-        // webApp.MainButton.setText?.("Close");
-        webApp.MainButton.setText?.("Обновить");
+        webApp.MainButton.setText?.("Close");
         webApp.MainButton.show?.();
 
         const handler = () => {
-          window.location.reload();
-
-          // try {
-          //   webApp.close();
-          // } catch (e) {
-          //   console.warn("Failed to close webApp:", e);
-          // }
+          try {
+            webApp.close();
+          } catch (e) {
+            console.warn("Failed to close webApp:", e);
+          }
         };
 
         mainBtnHandlerRef.current = handler;
@@ -305,7 +289,7 @@ const TelegramAuth = () => {
       )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {telegramUser && userInfo && <App />}
+      {telegramUser || (userInfo && <App />)}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
