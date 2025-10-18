@@ -11,6 +11,8 @@ const TelegramAuth = () => {
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
 
+  const [userInfoForSave, setUserInfoForSave] = useState({});
+
   const { infoFromTelegram } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
@@ -120,13 +122,14 @@ const TelegramAuth = () => {
       if (data.user) {
         console.log("data.user");
         console.log(data.user);
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: {
-            ...infoFromTelegram,
-            ...data.user,
-          },
-        });
+        setUserInfoForSave({ ...userInfoForSave, ...data.user });
+        // dispatch({
+        //   type: SET_USER_TELEGRAM_INFO,
+        //   infoFromTelegram: {
+        //     ...infoFromTelegram,
+        //     ...data.user,
+        //   },
+        // });
       }
 
       return data;
@@ -196,13 +199,14 @@ const TelegramAuth = () => {
       setTelegramUser(unsafe.user);
       console.log("unsafe.user");
       console.log(unsafe.user);
-      dispatch({
-        type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: {
-          ...infoFromTelegram,
-          ...unsafe.user,
-        },
-      });
+      setUserInfoForSave({ ...userInfoForSave, ...unsafe.user });
+      // dispatch({
+      //   type: SET_USER_TELEGRAM_INFO,
+      //   infoFromTelegram: {
+      //     ...infoFromTelegram,
+      //     ...unsafe.user,
+      //   },
+      // });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
@@ -304,13 +308,12 @@ const TelegramAuth = () => {
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {(telegramUser || userInfo) && (
         <>
-          {/* {dispatch({
+          {dispatch({
             type: SET_USER_TELEGRAM_INFO,
             infoFromTelegram: {
-              ...data.user,
-              ...unsafe.user,
+              ...userInfoForSave,
             },
-          })} */}
+          })}
           {console.log("infoFromTelegram")}
           {console.log(infoFromTelegram)}
           <App />
