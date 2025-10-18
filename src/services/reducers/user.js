@@ -15,7 +15,7 @@ import { SET_USER_TELEGRAM_INFO } from "../actions/user";
 // };
 
 const initialState = {
-  infoFromTelegram: null,
+  infoFromTelegram: {},
   infoFromBackend: null,
 };
 

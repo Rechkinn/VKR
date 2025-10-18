@@ -11,7 +11,7 @@ const TelegramAuth = () => {
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const { userMyData } = useSelector((store) => store.user);
+  const { infoFromTelegram } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
 
@@ -122,7 +122,10 @@ const TelegramAuth = () => {
         console.log(data.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: data.user,
+          infoFromTelegram: {
+            ...infoFromTelegram,
+            ...data.user,
+          },
         });
       }
 
@@ -158,10 +161,10 @@ const TelegramAuth = () => {
           console.log(payload);
           console.log("payload.user");
           console.log(payload.user);
-          dispatch({
-            type: SET_USER_TELEGRAM_INFO,
-            infoFromTelegram: payload.user ?? payload,
-          });
+          // dispatch({
+          //   type: SET_USER_TELEGRAM_INFO,
+          //   infoFromTelegram: payload.user ?? payload,
+          // });
         }
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
@@ -193,7 +196,13 @@ const TelegramAuth = () => {
       setTelegramUser(unsafe.user);
       console.log("unsafe.user");
       console.log(unsafe.user);
-      dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
+      dispatch({
+        type: SET_USER_TELEGRAM_INFO,
+        infoFromTelegram: {
+          ...infoFromTelegram,
+          ...unsafe.user,
+        },
+      });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
@@ -201,10 +210,10 @@ const TelegramAuth = () => {
         setTelegramUser(parsed.user);
         console.log("parsed.user");
         console.log(parsed.user);
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: parsed.user,
-        });
+        // dispatch({
+        //   type: SET_USER_TELEGRAM_INFO,
+        //   infoFromTelegram: parsed.user,
+        // });
       }
     }
 
@@ -295,15 +304,15 @@ const TelegramAuth = () => {
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {(telegramUser || userInfo) && (
         <>
-          {dispatch({
+          {/* {dispatch({
             type: SET_USER_TELEGRAM_INFO,
             infoFromTelegram: {
               ...data.user,
               ...unsafe.user,
             },
-          })}
-          {console.log("userMyData")}
-          {console.log(userMyData)}
+          })} */}
+          {console.log("infoFromTelegram")}
+          {console.log(infoFromTelegram)}
           <App />
         </>
       )}
