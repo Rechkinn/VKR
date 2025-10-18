@@ -11,10 +11,6 @@ const TelegramAuth = () => {
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const [userInfoForSave, setUserInfoForSave] = useState({});
-
-  const { infoFromTelegram } = useSelector((store) => store.user);
-
   const dispatch = useDispatch();
 
   // Флаг, чтобы не запускать authenticate несколько раз
@@ -48,7 +44,7 @@ const TelegramAuth = () => {
 
   // Инициализация Telegram WebApp (делаем один раз)
   useEffect(() => {
-    window.location.reload();
+    // window.location.reload();
     if (window.Telegram?.WebApp) {
       const tgWebApp = window.Telegram.WebApp;
       setWebApp(tgWebApp);
@@ -74,7 +70,6 @@ const TelegramAuth = () => {
       );
       setError("Telegram WebApp not detected. Please open in Telegram.");
     }
-    window.location.reload();
   }, []);
 
   // Универсальная функция аутентификации (без утечек)
@@ -241,15 +236,18 @@ const TelegramAuth = () => {
       (webApp.MainButton.show || webApp.MainButton.onClick)
     ) {
       try {
-        webApp.MainButton.setText?.("Close");
+        // webApp.MainButton.setText?.("Close");
+        webApp.MainButton.setText?.("Обновить");
         webApp.MainButton.show?.();
 
         const handler = () => {
-          try {
-            webApp.close();
-          } catch (e) {
-            console.warn("Failed to close webApp:", e);
-          }
+          window.location.reload();
+
+          // try {
+          //   webApp.close();
+          // } catch (e) {
+          //   console.warn("Failed to close webApp:", e);
+          // }
         };
 
         mainBtnHandlerRef.current = handler;
