@@ -277,7 +277,7 @@ const TelegramAuth = () => {
         )}
       </div>
 
-      {telegramUser || userInfo ? <App /> : null}
+      {telegramUser || userInfo ? <App /> : <>LOADING...</>}
     </>
   );
 };
