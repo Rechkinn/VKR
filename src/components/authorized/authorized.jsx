@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import App from "../app/app";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
+import {
+  SET_USER_BACKEND_INFO,
+  SET_USER_TELEGRAM_INFO,
+} from "../../services/actions/user";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -10,6 +13,11 @@ const TelegramAuth = () => {
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
+
+  const { userMyData } = useSelector((store) => store.user);
+  console.log("userMyData ------- ");
+  console.log(userMyData);
+  console.log("userMyData ------- ");
 
   const dispatch = useDispatch();
 
@@ -44,7 +52,6 @@ const TelegramAuth = () => {
 
   // Инициализация Telegram WebApp (делаем один раз)
   useEffect(() => {
-    // window.location.reload();
     if (window.Telegram?.WebApp) {
       const tgWebApp = window.Telegram.WebApp;
       setWebApp(tgWebApp);
@@ -113,18 +120,15 @@ const TelegramAuth = () => {
 
       localStorage.setItem("access_token", data.access_token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+      setUserInfo(data.user);
 
       // диспатчим в стор (если нужно)
       if (data.user) {
-        // setUserInfo(data.user);
         console.log("data.user");
         console.log(data.user);
-
         dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: {
-            ...data.user,
-          },
+          type: SET_USER_BACKEND_INFO,
+          infoFromBackend: data.user,
         });
       }
 
@@ -154,7 +158,7 @@ const TelegramAuth = () => {
       if (response.ok) {
         const payload = await response.json();
         // В разных API ответ может быть { user: {...} } или сразу объект пользователя
-        // setUserInfo(payload.user ?? payload);
+        setUserInfo(payload.user ?? payload);
         if (payload.user ?? payload) {
           console.log("payload");
           console.log(payload);
@@ -195,13 +199,7 @@ const TelegramAuth = () => {
       setTelegramUser(unsafe.user);
       console.log("unsafe.user");
       console.log(unsafe.user);
-
-      // myCustomUnsafe = { ...unsafe.user };
-
-      dispatch({
-        type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: { ...unsafe.user },
-      });
+      dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
@@ -301,7 +299,11 @@ const TelegramAuth = () => {
       )} */}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {(telegramUser || userInfo) && <App />}
+      {(telegramUser || userInfo) && (
+        <>
+          <App />
+        </>
+      )}
 
       {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
