@@ -14,19 +14,16 @@ const TelegramAuth = () => {
   const [debugInfo, setDebugInfo] = useState(null);
   const [telegramUser, setTelegramUser] = useState(null);
 
-  const { userMyData } = useSelector((store) => store.user);
-  console.log("userMyData ------- ");
-  console.log(userMyData);
-  console.log("userMyData ------- ");
+  // const { userMyData } = useSelector((store) => store.user);
+  // console.log("userMyData ------- ");
+  // console.log(userMyData);
+  // console.log("userMyData ------- ");
 
   const dispatch = useDispatch();
 
-  // Флаг, чтобы не запускать authenticate несколько раз
   const authAttemptedRef = useRef(false);
-  // Храним ссылку на обработчик main button, чтобы коректно снять
   const mainBtnHandlerRef = useRef(null);
 
-  // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
   const parseInitData = (initDataString) => {
     if (!initDataString) return null;
     try {
@@ -37,6 +34,7 @@ const TelegramAuth = () => {
           try {
             result[key] = JSON.parse(decodeURIComponent(value));
           } catch {
+            // fallback: keep raw value
             result[key] = value;
           }
         } else {
@@ -50,7 +48,6 @@ const TelegramAuth = () => {
     }
   };
 
-  // Инициализация Telegram WebApp (делаем один раз)
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       const tgWebApp = window.Telegram.WebApp;
@@ -58,10 +55,8 @@ const TelegramAuth = () => {
 
       try {
         tgWebApp.ready();
-        // expand может не сработать в некоторых контекстах, но попытка безопасна
         if (typeof tgWebApp.expand === "function") tgWebApp.expand();
 
-        // Подстройка внешнего вида (в новых версиях методы поддерживаются)
         if (typeof tgWebApp.setHeaderColor === "function")
           tgWebApp.setHeaderColor("#0088cc");
         if (typeof tgWebApp.setBackgroundColor === "function")
@@ -79,7 +74,6 @@ const TelegramAuth = () => {
     }
   }, []);
 
-  // Универсальная функция аутентификации (без утечек)
   const authenticateWithTelegram = async (initData) => {
     if (!initData) {
       throw new Error("No init data available");
@@ -98,7 +92,6 @@ const TelegramAuth = () => {
         }
       );
 
-      // Попытка безопасно распарсить тело ошибки/ответа
       const text = await response.text();
       let parsedBody = null;
       try {
@@ -112,7 +105,6 @@ const TelegramAuth = () => {
         throw new Error(detail || `Authentication failed: ${response.status}`);
       }
 
-      // ожидаем структуру { access_token, user }
       const data = parsedBody;
       if (!data || !data.access_token) {
         throw new Error("Invalid auth response from server");
@@ -122,7 +114,6 @@ const TelegramAuth = () => {
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
 
-      // диспатчим в стор (если нужно)
       if (data.user) {
         console.log("data.user");
         console.log(data.user);
@@ -142,7 +133,6 @@ const TelegramAuth = () => {
     }
   };
 
-  // Получение текущего пользователя по токену
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
@@ -157,17 +147,13 @@ const TelegramAuth = () => {
 
       if (response.ok) {
         const payload = await response.json();
-        // В разных API ответ может быть { user: {...} } или сразу объект пользователя
         setUserInfo(payload.user ?? payload);
+        // optionally dispatch if your app expects it in the store:
         if (payload.user ?? payload) {
-          console.log("payload");
-          console.log(payload);
-          console.log("payload.user");
-          console.log(payload.user);
-          // dispatch({
-          //   type: SET_USER_TELEGRAM_INFO,
-          //   infoFromTelegram: payload.user ?? payload,
-          // });
+          dispatch({
+            type: SET_USER_TELEGRAM_INFO,
+            infoFromTelegram: payload.user ?? payload,
+          });
         }
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
@@ -178,14 +164,12 @@ const TelegramAuth = () => {
     }
   };
 
-  // Основной эффект — реагируем на появление webApp и делаем одну логичную последовательность
   useEffect(() => {
     if (!webApp) return;
 
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
 
-    // debug info
     setDebugInfo({
       initDataAvailable: !!initData,
       initDataLength: initData?.length || 0,
@@ -194,19 +178,17 @@ const TelegramAuth = () => {
       platform: webApp.platform ?? null,
     });
 
-    // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
-      console.log("unsafe.user");
-      console.log(unsafe.user);
+      console.log("unsafe.user", unsafe.user);
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
-      // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
         setTelegramUser(parsed.user);
-        console.log("parsed.user");
-        console.log(parsed.user);
+        console.log("parsed.user", parsed.user);
+
+        // <<< ВАЖНО: диспатчим parsed.user в стор, как в unsafe ветке >>>
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: parsed.user,
@@ -214,7 +196,6 @@ const TelegramAuth = () => {
       }
     }
 
-    // Если уже есть токен в localStorage — пробуем получить профиль
     if (!authAttemptedRef.current) {
       if (initData && initData.trim() !== "") {
         authAttemptedRef.current = true;
@@ -222,49 +203,60 @@ const TelegramAuth = () => {
           console.error("Auth attempt failed:", err);
         });
       } else if (localStorage.getItem("access_token")) {
-        // нет initData, но есть токен — получаем профиль
         fetchCurrentUser();
       }
     }
 
-    // Настройка MainButton (показываем кнопку закрыть если есть userInfo)
-    if (
-      webApp.MainButton &&
-      (webApp.MainButton.show || webApp.MainButton.onClick)
-    ) {
-      try {
-        webApp.MainButton.setText?.("Close");
-        webApp.MainButton.show?.();
-
-        const handler = () => {
-          try {
-            webApp.close();
-          } catch (e) {
-            console.warn("Failed to close webApp:", e);
-          }
-        };
-
-        mainBtnHandlerRef.current = handler;
-
-        // API: onClick может возвращать функцию off, либо использовать offClick
-        const maybeOff = webApp.MainButton.onClick?.(handler);
-        // если onClick вернул функцию, используем её при очистке
-        return () => {
-          if (typeof maybeOff === "function") {
-            maybeOff();
-          } else if (webApp.MainButton.offClick) {
-            webApp.MainButton.offClick(handler);
-          }
-        };
-      } catch (e) {
-        console.warn("Failed to setup MainButton:", e);
-      }
-    }
-    // если ничего возвращаем — cleanup не требуется
-    return undefined;
+    // НЕ возвращаем cleanup здесь — обработку MainButton вынесем в отдельный useEffect
   }, [webApp, dispatch]);
 
-  // ручная аутентификация (кнопка Retry)
+  // Отдельный useEffect для MainButton (чистая регистрация/отписка)
+  useEffect(() => {
+    if (!webApp || !webApp.MainButton) return;
+
+    const btn = webApp.MainButton;
+    try {
+      btn.setText?.("Close");
+      // иногда show может быть не методом — проверяем
+      if (typeof btn.show === "function") btn.show();
+
+      const handler = () => {
+        try {
+          webApp.close();
+        } catch (e) {
+          console.warn("Failed to close webApp:", e);
+        }
+      };
+      mainBtnHandlerRef.current = handler;
+
+      // subscribe: onClick may not return unsubscribe, so keep handler ref to offClick
+      if (typeof btn.onClick === "function") {
+        btn.onClick(handler);
+      } else if (btn.addEventListener) {
+        // defensive: some implementations may have different API
+        btn.addEventListener("click", handler);
+      }
+
+      return () => {
+        try {
+          if (typeof btn.offClick === "function") {
+            btn.offClick(handler);
+          } else if (
+            typeof btn.onClick === "function" &&
+            btn.removeEventListener
+          ) {
+            btn.removeEventListener("click", handler);
+          }
+        } catch (e) {
+          console.warn("Failed to cleanup MainButton handler:", e);
+        }
+      };
+    } catch (e) {
+      console.warn("Failed to setup MainButton:", e);
+      return undefined;
+    }
+  }, [webApp]);
+
   const handleManualAuth = () => {
     if (webApp?.initData) {
       authenticateWithTelegram(webApp.initData).catch((err) => {
@@ -274,6 +266,14 @@ const TelegramAuth = () => {
       setError("No init data available. Please open inside Telegram.");
     }
   };
+
+  // Флаг — показывать fallback-кнопку (дополнительно к MainButton)
+  const shouldShowFallbackClose =
+    webApp &&
+    (!webApp.MainButton ||
+      (typeof webApp.MainButton.isVisible === "function"
+        ? !webApp.MainButton.isVisible()
+        : webApp.MainButton.isVisible === false));
 
   return (
     <>
@@ -289,28 +289,43 @@ const TelegramAuth = () => {
         </div>
       )}
 
-      {/* Место для отладки — показываем только если есть debugInfo */}
-      {/* {debugInfo && (
-        <div style={{ fontSize: 12, color: "#666", marginTop: 8 }}>
-          <div>initDataAvailable: {String(debugInfo.initDataAvailable)}</div>
-          <div>initDataLength: {debugInfo.initDataLength}</div>
-          <div>hasToken: {String(debugInfo.hasToken)}</div>
-        </div>
-      )} */}
-
-      {/* показываем основной апп, если есть telegramUser или userInfo */}
       {(telegramUser || userInfo) && (
         <>
           <App />
         </>
       )}
 
-      {/* если ничего нет — краткая подсказка */}
       {!telegramUser && !userInfo && !loading && (
         <div style={{ color: "#666", marginTop: 12 }}>
           Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
           вы в браузере — убедитесь, что приложение запущено через кнопку
           бота/inline-клавиатуру, чтобы telegram передал initData.
+        </div>
+      )}
+
+      {/* fallback DOM-кнопка Close — на случай, если MainButton не отображается */}
+      {shouldShowFallbackClose && webApp && (
+        <div style={{ position: "fixed", right: 16, bottom: 16, zIndex: 9999 }}>
+          <button
+            onClick={() => {
+              try {
+                webApp.close();
+              } catch (e) {
+                console.warn("webApp.close() failed:", e);
+              }
+            }}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 8,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+              background: "#1976d2",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Close
+          </button>
         </div>
       )}
     </>
