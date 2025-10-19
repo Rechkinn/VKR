@@ -31,43 +31,38 @@
 // }
 
 // src/hooks/useTelegramWebApp.js
+// src/hooks/useTelegramWebApp.js
 import { useEffect, useRef, useState } from "react";
 
 export default function useTelegramWebApp({
-  pollInterval = 200,
-  pollTimeout = 6000,
+  pollInterval = 250,
+  pollTimeout = 15000,
 } = {}) {
-  const [ready, setReady] = useState(false);
   const [webapp, setWebapp] = useState(null);
+  const [ready, setReady] = useState(false);
   const [initData, setInitData] = useState(null);
   const [initDataUnsafe, setInitDataUnsafe] = useState(null);
 
-  const pollRef = useRef(null);
-  const stopRef = useRef(false);
+  const attachRef = useRef({ attached: false });
+  const pollTimerRef = useRef(null);
+  const detachCleanupRef = useRef(null);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    let tries = 0;
-    const tryAttach = () => {
-      const tg = window.Telegram;
+  const tryAttach = () => {
+    try {
+      const tg = window?.Telegram;
       if (!tg || !tg.WebApp) return false;
 
       const wa = tg.WebApp;
       setWebapp(wa);
-
-      // init values
       setInitData(wa.initData ?? null);
       setInitDataUnsafe(wa.initDataUnsafe ?? null);
 
-      // call ready if available (safe)
+      // call ready safely
       try {
         wa.ready && typeof wa.ready === "function" && wa.ready();
-      } catch (e) {
-        /* ignore */
-      }
+      } catch (e) {}
 
-      // if we already have init data or unsafe user -> ready
+      // if there is initData or unsafe -> ready (fast path)
       if (
         (wa.initData && String(wa.initData).trim() !== "") ||
         wa.initDataUnsafe
@@ -75,51 +70,52 @@ export default function useTelegramWebApp({
         setReady(true);
       }
 
-      // subscribe to 'ready' and try to keep initData in sync if WebApp provides events
+      // subscribe to events if API supports it
       const onReady = () => setReady(true);
-      const onAnyUpdate = () => {
+      const syncInit = () => {
         setInitData(wa.initData ?? null);
         setInitDataUnsafe(wa.initDataUnsafe ?? null);
       };
 
       if (typeof wa.onEvent === "function") {
         wa.onEvent("ready", onReady);
-        // attach a generic update listener if available
-        wa.onEvent("auth", onAnyUpdate);
-        wa.onEvent("initDataChanged", onAnyUpdate);
+        wa.onEvent("auth", syncInit);
+        wa.onEvent("initDataChanged", syncInit);
       }
 
-      // as fallback for daft implementations: poll the object's initData for changes
-      let lastInit = wa.initData;
-      const fallbackPoll = setInterval(() => {
-        if (!wa) return;
-        if (wa.initData !== lastInit) {
-          lastInit = wa.initData;
-          onAnyUpdate();
+      // fallback polling for initData changes
+      let last = wa.initData;
+      const fallback = setInterval(() => {
+        if (wa.initData !== last) {
+          last = wa.initData;
+          syncInit();
         }
-      }, 250);
+      }, 350);
 
-      // store cleanup
-      pollRef.current = () => {
-        try {
-          clearInterval(fallbackPoll);
-        } catch (e) {}
+      detachCleanupRef.current = () => {
+        clearInterval(fallback);
         if (typeof wa.offEvent === "function") {
-          wa.offEvent && wa.offEvent("ready", onReady);
-          wa.offEvent && wa.offEvent("auth", onAnyUpdate);
-          wa.offEvent && wa.offEvent("initDataChanged", onAnyUpdate);
+          wa.offEvent("ready", onReady);
+          wa.offEvent("auth", syncInit);
+          wa.offEvent("initDataChanged", syncInit);
         }
       };
 
+      attachRef.current.attached = true;
       return true;
-    };
+    } catch (e) {
+      console.warn("tryAttach error", e);
+      return false;
+    }
+  };
 
+  useEffect(() => {
+    let tries = 0;
     if (tryAttach()) return;
 
-    // Poll for a short time for injection (mobile may be late)
     const interval = setInterval(() => {
       tries += 1;
-      if (stopRef.current) {
+      if (attachRef.current.attached) {
         clearInterval(interval);
         return;
       }
@@ -130,18 +126,26 @@ export default function useTelegramWebApp({
       }
     }, pollInterval);
 
+    // also try when tab gets focus or visibility changes (mobile can inject then)
+    const onFocus = () => tryAttach();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+
     return () => {
-      stopRef.current = true;
       clearInterval(interval);
-      if (pollRef.current) {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+      if (detachCleanupRef.current) {
         try {
-          pollRef.current();
-        } catch (e) {}
-        pollRef.current = null;
+          detachCleanupRef.current();
+        } catch {}
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { webapp, ready, initData, initDataUnsafe };
+  // expose forceAttach to manually retry
+  const forceAttach = () => tryAttach();
+
+  return { webapp, ready, initData, initDataUnsafe, forceAttach };
 }

@@ -5,106 +5,111 @@ import { useDispatch } from "react-redux";
 import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 
-const TELEGRAM_AUTH_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram";
-const TELEGRAM_ME_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me";
+const AUTH_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram";
+const ME_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me";
 
-const TelegramAuth = () => {
+export default function TelegramAuth() {
   const dispatch = useDispatch();
+  const { webapp, ready, initData, initDataUnsafe, forceAttach } =
+    useTelegramWebApp({
+      pollInterval: 250,
+      pollTimeout: 15000,
+    });
 
-  const { webapp, ready, initData, initDataUnsafe } = useTelegramWebApp();
   const [telegramUser, setTelegramUser] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState(null);
+  const [debugLog, setDebugLog] = useState([]);
 
-  const authAttemptedRef = useRef(false);
+  const authAttemptRef = useRef(false);
   const initPollRef = useRef(null);
 
-  // safe parse of initData string -> object
-  const parseInitData = (initDataString) => {
-    if (!initDataString) return null;
+  const log = (msg) => {
+    const entry = `${new Date().toISOString()} — ${msg}`;
+    setDebugLog((d) => [...d.slice(-50), entry]); // keep last 50
+    console.log(entry);
+  };
+
+  // parse initData -> user
+  const parseInitData = (s) => {
+    if (!s) return null;
     try {
-      const params = new URLSearchParams(initDataString);
-      const result = {};
-      for (const [key, value] of params) {
-        if (key === "user") {
+      const params = new URLSearchParams(s);
+      const res = {};
+      for (const [k, v] of params) {
+        if (k === "user") {
           try {
-            result[key] = JSON.parse(decodeURIComponent(value));
+            res[k] = JSON.parse(decodeURIComponent(v));
           } catch {
             try {
-              result[key] = JSON.parse(value);
+              res[k] = JSON.parse(v);
             } catch {
-              result[key] = value;
+              res[k] = v;
             }
           }
-        } else {
-          result[key] = value;
-        }
+        } else res[k] = v;
       }
-      return result;
-    } catch (err) {
-      console.error("Error parsing initData:", err);
-      return { raw: initDataString };
+      return res;
+    } catch (e) {
+      return { raw: s };
     }
   };
 
-  // authenticate to backend
-  const authenticateWithTelegram = async (initDataStr) => {
-    if (!initDataStr) throw new Error("No init data available");
-    // mark attempted early to avoid double attempts
-    authAttemptedRef.current = true;
+  // authenticate
+  const authenticateWithTelegram = async (initStr) => {
+    if (!initStr) throw new Error("no initData");
+    authAttemptRef.current = true;
     setLoading(true);
     setError(null);
+    log("auth: start");
     try {
-      const response = await fetch(TELEGRAM_AUTH_URL, {
+      const resp = await fetch(AUTH_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ init_data: initDataStr }),
+        body: JSON.stringify({ init_data: initStr }),
       });
-
-      if (!response.ok) {
-        const errJson = await response.json().catch(() => ({}));
-        throw new Error(
-          errJson.detail || `Authentication failed: ${response.status}`
-        );
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        throw new Error(errJson.detail || `status ${resp.status}`);
       }
-
-      const data = await response.json();
+      const data = await resp.json();
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
+      log("auth: success");
       return data;
-    } catch (err) {
-      console.error("authenticateWithTelegram error:", err);
-      setError(err.message || String(err));
-      throw err;
+    } catch (e) {
+      log(`auth: fail ${e.message}`);
+      setError(e.message || String(e));
+      throw e;
     } finally {
       setLoading(false);
     }
   };
 
-  // fetch current user if we already have token
+  // fetch current user if token present
   const fetchCurrentUser = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) return;
+    const t = localStorage.getItem("access_token");
+    if (!t) return;
     try {
-      const resp = await fetch(TELEGRAM_ME_URL, {
-        headers: { Authorization: `Bearer ${token}` },
+      const r = await fetch(ME_URL, {
+        headers: { Authorization: `Bearer ${t}` },
       });
-      if (resp.ok) {
-        const user = await resp.json();
-        setUserInfo(user);
-      } else if (resp.status === 401) {
+      if (r.ok) {
+        const u = await r.json();
+        setUserInfo(u);
+        log("fetched current user");
+      } else if (r.status === 401) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
       }
-    } catch (err) {
-      console.error("fetchCurrentUser error:", err);
+    } catch (e) {
+      log("fetchCurrentUser err: " + e.message);
     }
   };
 
-  // When webapp or initDataUnsafe changes — set telegram user immediately (fast path)
+  // whenever initDataUnsafe or initData changes — set user fast-path
   useEffect(() => {
     if (initDataUnsafe?.user) {
       setTelegramUser(initDataUnsafe.user);
@@ -112,87 +117,77 @@ const TelegramAuth = () => {
         type: SET_USER_TELEGRAM_INFO,
         infoFromTelegram: initDataUnsafe.user,
       });
+      log("user from initDataUnsafe set");
     } else if (initData) {
-      const parsed = parseInitData(initData);
-      if (parsed?.user) {
-        setTelegramUser(parsed.user);
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: parsed.user,
-        });
+      const p = parseInitData(initData);
+      if (p?.user) {
+        setTelegramUser(p.user);
+        dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: p.user });
+        log("user from initData string set");
       }
     }
-    setDebugInfo({
-      ready,
-      hasInit: !!initData,
-      initLen: initData?.length || 0,
-      hasToken: !!localStorage.getItem("access_token"),
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initData, initDataUnsafe, ready]);
+  }, [initData, initDataUnsafe]);
 
-  // Authentication flow: try immediate, else short-poll for initData, else use token
+  // main auth flow: immediate auth if initData present, else short poll, else token
   useEffect(() => {
-    if (!webapp) return;
+    if (!webapp) {
+      log("webapp not attached yet");
+      return;
+    }
+    log("webapp attached");
 
-    // attempt immediate auth if we have initData
-    const tryAuthImmediately = async () => {
+    // set header/background if available
+    try {
+      webapp.setHeaderColor && webapp.setHeaderColor("#0088cc");
+      webapp.setBackgroundColor && webapp.setBackgroundColor("#ffffff");
+      webapp.expand && webapp.expand();
+    } catch (e) {
+      log("UI calls failed: " + e.message);
+    }
+
+    const attempt = async () => {
       const id = webapp.initData;
       if (id && String(id).trim() !== "") {
-        if (!authAttemptedRef.current) {
+        if (!authAttemptRef.current) {
           try {
             await authenticateWithTelegram(id);
           } catch (e) {
-            console.warn("Immediate authenticate failed:", e);
+            log("immediate auth failed");
           }
         }
         return;
       }
 
-      // if token exists — fetch user
       if (localStorage.getItem("access_token")) {
         fetchCurrentUser();
-        authAttemptedRef.current = true;
+        authAttemptRef.current = true;
         return;
       }
 
-      // else, short poll initData for a few seconds (mobile may inject later)
+      // short poll initData up to ~12s
       let tries = 0;
-      const maxTries = 15; // ~15 * 200ms = 3s
+      const maxTries = 48; // 48 * 250ms = 12s
       initPollRef.current = setInterval(async () => {
         tries += 1;
-        const currentInit = webapp.initData;
-        if (currentInit && String(currentInit).trim() !== "") {
+        const cur = webapp.initData;
+        if (cur && String(cur).trim() !== "") {
           clearInterval(initPollRef.current);
           initPollRef.current = null;
-          if (!authAttemptedRef.current) {
-            try {
-              await authenticateWithTelegram(currentInit);
-            } catch (e) {
-              console.warn("Auth after poll failed:", e);
-            }
+          try {
+            await authenticateWithTelegram(cur);
+          } catch (e) {
+            log("auth after poll failed");
           }
         } else if (tries >= maxTries) {
           clearInterval(initPollRef.current);
           initPollRef.current = null;
-          // give control to manual retry (user can press retry)
-          authAttemptedRef.current = false;
-          console.warn("initData not available after short poll");
+          log("initData not arrived after poll");
         }
-      }, 200);
+      }, 250);
     };
 
-    // set header/background and expand safely
-    try {
-      webapp.setHeaderColor && webapp.setHeaderColor("#0088cc");
-      webapp.setBackgroundColor && webapp.setBackgroundColor("#ffffff");
-      webapp.ready && typeof webapp.ready === "function" && webapp.ready();
-      webapp.expand && typeof webapp.expand === "function" && webapp.expand();
-    } catch (e) {
-      console.warn("webapp UI calls failed:", e);
-    }
-
-    tryAuthImmediately();
+    attempt();
 
     return () => {
       if (initPollRef.current) {
@@ -203,33 +198,7 @@ const TelegramAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webapp]);
 
-  // MainButton (close) setup — only when we already have backend user info
-  useEffect(() => {
-    if (!webapp || !webapp.MainButton || !userInfo) return;
-    const mb = webapp.MainButton;
-    try {
-      mb.setText && mb.setText("Close");
-      mb.show && mb.show();
-
-      const onClick = () => {
-        try {
-          webapp.close && webapp.close();
-        } catch (e) {
-          console.warn(e);
-        }
-      };
-
-      mb.onClick && mb.onClick(onClick);
-
-      return () => {
-        mb.offClick && mb.offClick(onClick);
-      };
-    } catch (e) {
-      console.warn("MainButton setup failed:", e);
-    }
-  }, [webapp, userInfo]);
-
-  const handleManualAuth = () => {
+  const handleManualAuth = async () => {
     setError(null);
     if (!webapp) {
       setError("Telegram WebApp not detected. Please open inside Telegram.");
@@ -237,22 +206,18 @@ const TelegramAuth = () => {
     }
     const id = webapp.initData;
     if (id && String(id).trim() !== "") {
-      authenticateWithTelegram(id).catch((e) =>
-        console.error("Manual auth error:", e)
-      );
-    } else if (webapp.initDataUnsafe?.user) {
-      setTelegramUser(webapp.initDataUnsafe.user);
-      dispatch({
-        type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: webapp.initDataUnsafe.user,
-      });
-      setError(
-        "Init data not present yet — try manual auth again in a moment."
-      );
+      authenticateWithTelegram(id).catch(() => {});
     } else {
-      setError("No init data available. Please open in Telegram.");
+      // force re-attach attempt (in case injection happened very late)
+      forceAttach();
+      setError(
+        "Init data not present yet — tried to re-attach. If problem persists, try opening in Telegram app."
+      );
     }
   };
+
+  // show debug logs when needed (you can hide in prod)
+  const showDebug = true;
 
   return (
     <>
@@ -260,26 +225,33 @@ const TelegramAuth = () => {
         <p style={{ margin: 0, color: "#1976d2" }}>🔄 Authenticating...</p>
       )}
 
-      {error && (
+      {!loading && !userInfo && !telegramUser && (
         <div>
-          <p>❌ Authentication Error</p>
-          <p>{error}</p>
-          <button onClick={handleManualAuth}>🔄 Retry Authentication</button>
+          <p>Ожидание Telegram WebApp...</p>
+          <p style={{ fontSize: 13, color: "#666" }}>
+            Если вы в мобильном Telegram, подождите несколько секунд. Если
+            ничего не происходит — нажмите Retry.
+          </p>
+          <button onClick={handleManualAuth}>🔄 Retry</button>
         </div>
       )}
 
-      {/* Dev debug — можно скрыть/удалить в проде */}
-      <div style={{ display: "none" }}>
-        {debugInfo && (
-          <pre style={{ whiteSpace: "pre-wrap" }}>
-            {JSON.stringify(debugInfo, null, 2)}
-          </pre>
-        )}
-      </div>
+      {error && (
+        <div>
+          <p>❌ Ошибка: {error}</p>
+          <button onClick={handleManualAuth}>🔄 Retry</button>
+        </div>
+      )}
 
-      {telegramUser || userInfo ? <App /> : <>LOADING...</>}
+      {showDebug && (
+        <pre
+          style={{ whiteSpace: "pre-wrap", maxHeight: 200, overflow: "auto" }}
+        >
+          {debugLog.join("\n")}
+        </pre>
+      )}
+
+      {telegramUser || userInfo ? <App /> : null}
     </>
   );
-};
-
-export default TelegramAuth;
+}
