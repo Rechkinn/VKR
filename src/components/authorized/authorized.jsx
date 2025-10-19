@@ -1,407 +1,212 @@
-import React, { useState, useEffect } from "react";
-import App from "../app/app";
+import { useEffect, useState } from "react";
 
-const TelegramAuth = () => {
-  const [webApp, setWebApp] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
+const TelegramMiniAppInitializer = () => {
+  const [initData, setInitData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState(null);
 
-  const [telegramUser, setTelegramUser] = useState(null);
-
-  // useEffect(() => {
-  //   if (!webApp) return;
-
-  //   const unsafe = webApp.initDataUnsafe; // Telegram WebApp предоставляет это
-  //   setDebugInfo({
-  //     initDataAvailable: !!webApp.initData,
-  //     initDataLength: webApp.initData?.length || 0,
-  //     initDataUnsafe: unsafe,
-  //     hasToken: !!localStorage.getItem("access_token"),
-  //   });
-
-  //   // Если в initDataUnsafe есть user — сохраняем объект пользователя отдельно
-  //   if (unsafe?.user) {
-  //     setTelegramUser(unsafe.user);
-  //   }
-  //   // если нет, можно попробовать распарсить initData и взять user
-  //   else {
-  //     const parsed = parseInitData(webApp.initData);
-  //     if (parsed?.user) setTelegramUser(parsed.user);
-  //   }
-
-  //   // если есть initData — попытка автоаутентификации и т.д.
-  //   if (webApp.initData && webApp.initData.trim() !== "") {
-  //     authenticateWithTelegram(webApp.initData).catch(console.error);
-  //   } else if (localStorage.getItem("access_token")) {
-  //     fetchCurrentUser();
-  //   }
-  // }, [webApp]);
-
-  // Инициализация Telegram WebApp
   useEffect(() => {
-    console.log("window");
-    console.log(window);
-    console.log("window?.Telegram");
-    console.log(window?.Telegram);
-    console.log("window?.Telegram?.WebApp");
-    console.log(window?.Telegram?.WebApp);
-    // if (window.Telegram?.WebApp) {
-    //   const tgWebApp = window.Telegram.WebApp;
-    //   setWebApp(tgWebApp);
-    //   // Инициализируем WebApp
-    //   tgWebApp.ready();
-    //   tgWebApp.expand();
-    //   // Настраиваем внешний вид
-    //   tgWebApp.setHeaderColor("#0088cc");
-    //   tgWebApp.setBackgroundColor("#ffffff");
-    //   console.log("Telegram WebApp initialized:", tgWebApp);
-    //   console.log("Init Data:", tgWebApp.initData);
-    //   console.log("Init Data Unsafe:", tgWebApp.initDataUnsafe);
-    // }
-    // else {
-    //   console.warn(
-    //     "Telegram WebApp not available - running in development mode"
-    //   );
-    //   setError("Telegram WebApp not detected. Please open in Telegram.");
-    // }
+    const initializeTelegramApp = () => {
+      try {
+        // Проверяем, доступен ли объект Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+          const tg = window.Telegram.WebApp;
+
+          // Инициализируем приложение
+          tg.ready();
+
+          // Получаем данные разными способами для надежности
+          const initDataUnsafe = tg.initDataUnsafe;
+          const initDataString = tg.initData;
+
+          console.log("Telegram WebApp объект доступен:", tg);
+          console.log("initDataUnsafe:", initDataUnsafe);
+          console.log("initData строка:", initDataString);
+
+          const result = {
+            // Основные данные пользователя
+            user: initDataUnsafe?.user || null,
+
+            // Полная initData строка (для серверной проверки)
+            initData: initDataString,
+
+            // Дополнительная информация
+            platform: tg.platform,
+            version: tg.version,
+            themeParams: tg.themeParams,
+            colorScheme: tg.colorScheme,
+
+            // Информация о чате
+            chat: initDataUnsafe?.chat || null,
+
+            // Время авторизации
+            authDate: initDataUnsafe?.auth_date || null,
+
+            // Хэш для проверки
+            hash: initDataUnsafe?.hash || null,
+          };
+
+          setInitData(result);
+          setIsLoading(false);
+        } else {
+          setError(
+            "Telegram WebApp объект не найден. Приложение запущено вне Telegram?"
+          );
+          setIsLoading(false);
+        }
+      } catch (err) {
+        setError(`Ошибка инициализации: ${err.message}`);
+        setIsLoading(false);
+      }
+    };
+
+    // Задержка для гарантии загрузки Telegram WebApp скрипта
+    if (window.Telegram && window.Telegram.WebApp) {
+      initializeTelegramApp();
+    } else {
+      // Если скрипт еще не загружен, ждем немного и пробуем снова
+      const timer = setTimeout(() => {
+        initializeTelegramApp();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
   }, []);
 
-  // Функция для отправки данных аутентификации
-  // const authenticateWithTelegram = async (initData) => {
-  //   if (!initData) {
-  //     throw new Error("No init data available");
-  //   }
+  // Функция для красивого вывода JSON
+  const formatJSON = (obj) => {
+    return JSON.stringify(obj, null, 2);
+  };
 
-  //   setLoading(true);
-  //   setError(null);
+  if (isLoading) {
+    return (
+      <div>
+        <h2>Инициализация Telegram Mini App...</h2>
+        <p>Пожалуйста, подождите</p>
+      </div>
+    );
+  }
 
-  //   try {
-  //     const response = await fetch(
-  //       "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           init_data: initData,
-  //         }),
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(
-  //         errorData.detail || `Authentication failed: ${response.status}`
-  //       );
-  //     }
-
-  //     const data = await response.json();
-
-  //     // Сохраняем данные
-  //     localStorage.setItem("access_token", data.access_token);
-  //     localStorage.setItem("user", JSON.stringify(data.user));
-  //     setUserInfo(data.user);
-
-  //     console.log("✅ Authentication successful:", data);
-  //     return data;
-  //   } catch (err) {
-  //     console.error("❌ Authentication failed:", err);
-  //     setError(err.message);
-  //     throw err;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // // Функция для получения информации о текущем пользователе
-  // const fetchCurrentUser = async () => {
-  //   const token = localStorage.getItem("access_token");
-  //   if (!token) return;
-
-  //   try {
-  //     const response = await fetch(
-  //       "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me",
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const userData = await response.json();
-  //       setUserInfo(userData);
-  //     } else if (response.status === 401) {
-  //       // Токен невалидный, удаляем его
-  //       localStorage.removeItem("access_token");
-  //       localStorage.removeItem("user");
-  //     }
-  //   } catch (err) {
-  //     console.error("Failed to fetch user data:", err);
-  //   }
-  // };
-
-  // // Основной эффект для аутентификации
-  // useEffect(() => {
-  //   if (!webApp) return;
-
-  //   const initData = webApp.initData;
-
-  //   // Собираем отладочную информацию
-  //   setDebugInfo({
-  //     initDataAvailable: !!initData,
-  //     initDataLength: initData?.length || 0,
-  //     initDataUnsafe: webApp.initDataUnsafe,
-  //     hasToken: !!localStorage.getItem("access_token"),
-  //   });
-
-  //   // Если есть initData, пробуем аутентифицироваться
-  //   if (initData && initData.trim() !== "") {
-  //     authenticateWithTelegram(initData).catch(console.error);
-  //   } else if (localStorage.getItem("access_token")) {
-  //     // Если нет initData, но есть токен - получаем информацию о пользователе
-  //     fetchCurrentUser();
-  //   }
-  // }, [webApp]);
-
-  // // Функция для ручного запуска аутентификации
-  // const handleManualAuth = () => {
-  //   if (webApp?.initData) {
-  //     authenticateWithTelegram(webApp.initData);
-  //   } else {
-  //     setError("No init data available. Please open in Telegram.");
-  //   }
-  // };
-
-  // // Функция для выхода
-  // const handleLogout = () => {
-  //   localStorage.removeItem("access_token");
-  //   localStorage.removeItem("user");
-  //   setUserInfo(null);
-  //   setError(null);
-  // };
-
-  // // Функция для парсинга initData для отображения
-  // const parseInitData = (initDataString) => {
-  //   if (!initDataString) return null;
-
-  //   try {
-  //     const params = new URLSearchParams(initDataString);
-  //     const result = {};
-
-  //     for (const [key, value] of params) {
-  //       if (key === "user") {
-  //         try {
-  //           result[key] = JSON.parse(decodeURIComponent(value));
-  //         } catch {
-  //           result[key] = value;
-  //         }
-  //       } else {
-  //         result[key] = value;
-  //       }
-  //     }
-
-  //     return result;
-  //   } catch (err) {
-  //     console.error("Error parsing initData:", err);
-  //     return { raw: initDataString };
-  //   }
-  // };
-
-  // // Настройка кнопки закрытия
-  // useEffect(() => {
-  //   if (!webApp || !webApp.MainButton || !userInfo) return;
-
-  //   try {
-  //     webApp.MainButton.setText("Close");
-  //     webApp.MainButton.show();
-
-  //     const handleClose = () => {
-  //       webApp.close();
-  //     };
-
-  //     webApp.MainButton.onClick(handleClose);
-
-  //     return () => {
-  //       webApp.MainButton.offClick(handleClose);
-  //     };
-  //   } catch (e) {
-  //     console.warn("Failed to setup MainButton:", e);
-  //   }
-  // }, [webApp, userInfo]);
+  if (error) {
+    return (
+      <div>
+        <h2>Ошибка инициализации</h2>
+        <p style={{ color: "red" }}>{error}</p>
+        <div>
+          <h3>Отладочная информация:</h3>
+          <pre>
+            {`
+User Agent: ${navigator.userAgent}
+Telegram объект: ${window.Telegram ? "доступен" : "не доступен"}
+WebApp объект: ${window.Telegram?.WebApp ? "доступен" : "не доступен"}
+URL: ${window.location.href}
+            `}
+          </pre>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div
-      style={{
-        padding: 16,
-        fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
-        maxWidth: 600,
-        margin: "0 auto",
-      }}
-    >
-      <header
-        style={{
-          paddingBottom: 16,
-          borderBottom: "1px solid #e0e0e0",
-          marginBottom: 16,
-        }}
-      >
-        <h1
-          style={{
-            margin: "0 0 8px 0",
-            color: "#333",
-            fontSize: 24,
-          }}
-        >
-          AllTransfer Mini App
-        </h1>
-        <p
-          style={{
-            margin: 0,
-            fontSize: 14,
-            color: "#666",
-          }}
-        >
-          Telegram WebApp {webApp ? "✅ connected" : "❌ not connected"}
+    <div>
+      <h2>Данные Telegram Mini App</h2>
+
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Статус:</h3>
+        <p>
+          Платформа: <strong>{initData.platform}</strong>
         </p>
-      </header>
+        <p>
+          Версия WebApp: <strong>{initData.version}</strong>
+        </p>
+        <p>
+          Цветовая схема: <strong>{initData.colorScheme}</strong>
+        </p>
+      </div>
 
-      {/* Статус аутентификации */}
-      <section style={{ marginBottom: 16 }}>
-        {loading && (
-          <div
-            style={{
-              padding: 12,
-              backgroundColor: "#e3f2fd",
-              borderRadius: 8,
-              marginBottom: 12,
-            }}
-          >
-            <p style={{ margin: 0, color: "#1976d2" }}>🔄 Authenticating...</p>
-          </div>
-        )}
+      {initData.user ? (
+        <div style={{ marginBottom: "20px" }}>
+          <h3>Данные пользователя:</h3>
+          <ul>
+            <li>
+              <strong>ID:</strong> {initData.user.id}
+            </li>
+            <li>
+              <strong>Имя:</strong> {initData.user.first_name}
+            </li>
+            <li>
+              <strong>Фамилия:</strong>{" "}
+              {initData.user.last_name || "не указана"}
+            </li>
+            <li>
+              <strong>Username:</strong> {initData.user.username || "не указан"}
+            </li>
+            <li>
+              <strong>Язык:</strong>{" "}
+              {initData.user.language_code || "не указан"}
+            </li>
+            <li>
+              <strong>Дата авторизации:</strong>{" "}
+              {newDate(initData.authDate * 1000).toLocaleString()}
+            </li>
+          </ul>
+        </div>
+      ) : (
+        <div style={{ marginBottom: "20px", color: "orange" }}>
+          <h3> Данные пользователя не доступны</h3>
+          <p>Это может быть связано с:</p>
+          <ul>
+            <li>Запуском вне Telegram</li>
+            <li>Старой версией Telegram клиента</li>
+            <li>Настройками приватности пользователя</li>
+            <li>Типом кнопки, через которую открыто приложение</li>
+          </ul>
+        </div>
+      )}
 
-        {error && (
-          <div
-            style={{
-              padding: 12,
-              backgroundColor: "#ffebee",
-              borderRadius: 8,
-              marginBottom: 12,
-            }}
-          >
-            <p
-              style={{
-                margin: "0 0 8px 0",
-                color: "#d32f2f",
-                fontWeight: "bold",
-              }}
-            >
-              ❌ Authentication Error
-            </p>
-            <p
-              style={{
-                margin: "0 0 12px 0",
-                fontSize: 14,
-                color: "#d32f2f",
-              }}
-            >
-              {error}
-            </p>
-            <button
-              onClick={handleManualAuth}
-              style={{
-                padding: "8px 16px",
-                fontSize: 14,
-                backgroundColor: "#0088cc",
-                color: "white",
-                border: "none",
-                borderRadius: 6,
-                cursor: "pointer",
-              }}
-            >
-              🔄 Retry Authentication
-            </button>
-          </div>
-        )}
+      {initData.chat && (
+        <div style={{ marginBottom: "20px" }}>
+          <h3>Данные чата:</h3>
+          <pre>{formatJSON(initData.chat)}</pre>
+        </div>
+      )}
 
-        {userInfo && (
-          <>
-            <App />
-            {console.log("telegramUser")}
-            {console.log(telegramUser)}
-          </>
-        )}
-      </section>
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Параметры темы:</h3>
+        <pre>{formatJSON(initData.themeParams)}</pre>
+      </div>
 
-      {/* Отладочная информация */}
-      <section>
-        <details>
-          <summary
-            style={{
-              cursor: "pointer",
-              fontSize: 14,
-              fontWeight: "bold",
-              color: "#666",
-              padding: "8px 0",
-            }}
-          >
-            🔍 Debug Information
-          </summary>
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Полная initData строка:</h3>
+        <pre
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: "10px",
+            borderRadius: "5px",
+            overflow: "auto",
+            maxHeight: "200px",
+          }}
+        >
+          {initData.initData || "не доступна"}
+        </pre>
+      </div>
 
-          <div
-            style={{
-              backgroundColor: "#f5f5f5",
-              padding: 12,
-              borderRadius: 6,
-              marginTop: 8,
-              fontSize: 12,
-              fontFamily: "monospace",
-            }}
-          >
-            <h4 style={{ margin: "0 0 8px 0" }}>WebApp Status:</h4>
-            <pre style={{ margin: "4px 0" }}>
-              {JSON.stringify(debugInfo, null, 2)}
-              {/* <Profile userInfo={debugInfo?.initDataUnsafe?.user ?? null} /> */}
-            </pre>
-
-            {webApp?.initData && (
-              <>
-                <h4 style={{ margin: "16px 0 8px 0" }}>Parsed Init Data:</h4>
-                <pre style={{ margin: "4px 0" }}>
-                  {JSON.stringify(parseInitData(webApp.initData), null, 2)}
-                  {/* <Profile
-                    userInfo={
-                      webApp?.initDataUnsafe?.user ??
-                      parseInitData(webApp?.initData)?.user ??
-                      null
-                    }
-                  /> */}
-                </pre>
-              </>
-            )}
-
-            {localStorage.getItem("access_token") && (
-              <>
-                <h4 style={{ margin: "16px 0 8px 0" }}>Access Token:</h4>
-                <p
-                  style={{
-                    wordBreak: "break-all",
-                    margin: "4px 0",
-                  }}
-                >
-                  {localStorage.getItem("access_token").substring(0, 50)}...
-                </p>
-              </>
-            )}
-          </div>
-        </details>
-      </section>
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Все данные в JSON:</h3>
+        <pre
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "10px",
+            borderRadius: "5px",
+            overflow: "auto",
+            maxHeight: "300px",
+          }}
+        >
+          {formatJSON(initData)}
+        </pre>
+      </div>
     </div>
   );
 };
 
-export default TelegramAuth;
+export default TelegramMiniAppInitializer;
