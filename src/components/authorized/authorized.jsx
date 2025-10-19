@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import App from "../app/app";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
+import {
+  SET_USER_TELEGRAM_INFO,
+  SET_USER_BACKEND_INFO,
+} from "../../services/actions/user";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
