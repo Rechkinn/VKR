@@ -1,85 +1,75 @@
 import { useEffect, useState } from 'react';
+import { WebApp, init } from '@twa-dev/sdk';
 
-const TelegramAuth = () => {
+const TelegramInit = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const initTelegramApp = () => {
+    const initialize = async () => {
       try {
-        // Проверяем доступность Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-          const tg = window.Telegram.WebApp;
-          
-          // Инициализируем приложение
-          tg.ready();
-          tg.expand(); // Раскрываем на весь экран
-          
-          // Парсим данные пользователя
-          const userData = tg.initDataUnsafe?.user;
-          
-          if (userData) {
-            setUser({
-              id: userData.id,
-              firstName: userData.first_name,
-              lastName: userData.last_name,
-              username: userData.username,
-              languageCode: userData.language_code,
-              isPremium: userData.is_premium || false
-            });
-          } else {
-            setError('Данные пользователя не получены');
-          }
-          
-          setLoading(false);
-        } else {
-          setError('Telegram WebApp не доступен');
-          setLoading(false);
+        // Инициализируем Telegram Mini App
+        await init();
+        
+        // Говорим Telegram что приложение готово
+        WebApp.ready();
+        WebApp.expand();
+        
+        // Получаем данные пользователя
+        const userData = WebApp.initDataUnsafe?.user;
+        
+        if (userData) {
+          setUser({
+            id: userData.id,
+            firstName: userData.first_name,
+            lastName: userData.last_name, 
+            username: userData.username
+          });
         }
-      } catch (err) {
-        setError(`Ошибка инициализации: ${err.message}`);
+        
+        setLoading(false);
+        
+      } catch (error) {
+        console.log('Ошибка инициализации:', error);
         setLoading(false);
       }
     };
 
-    // Добавляем скрипт Telegram WebApp если его нет
-    if (!window.Telegram) {
-      const script = document.createElement('script');
-      script.src = 'https://telegram.org/js/telegram-web-app.js';
-      script.onload = initTelegramApp;
-      script.onerror = () => {
-        setError('Не удалось загрузить Telegram WebApp');
-        setLoading(false);
-      };
-      document.head.appendChild(script);
-    } else {
-      initTelegramApp();
-    }
+    initialize();
   }, []);
 
   if (loading) {
-    return <div>Загрузка Telegram Mini App...</div>;
-  }
-
-  if (error) {
-    return <div>Ошибка: {error}</div>;
+    return (
+      <div style={{ padding: 20, textAlign: 'center' }}>
+        <h3>Загрузка Telegram Mini App...</h3>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>Данные пользователя Telegram</h2>
-      {user && (
+    <div style={{ padding: 20 }}>
+      {user ? (
         <div>
-          <p>ID: {user.id}</p>
-          <p>Имя: {user.firstName} {user.lastName}</p>
-          <p>Username: @{user.username}</p>
-          <p>Язык: {user.languageCode}</p>
-          <p>Premium: {user.isPremium ? 'Да' : 'Нет'}</p>
+          <h2>✅ Приложение инициализировано!</h2>
+          <div style={{ 
+            padding: 15, 
+            background: '#e8f5e8', 
+            borderRadius: 8, 
+            marginTop: 15 
+          }}>
+            <p><strong>ID:</strong> {user.id}</p>
+            <p><strong>Имя:</strong> {user.firstName} {user.lastName}</p>
+            <p><strong>Username:</strong> @{user.username}</p>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h2>❌ Данные не получены</h2>
+          <p>Откройте приложение через Telegram бота</p>
         </div>
       )}
     </div>
   );
 };
 
-export default TelegramAuth;
+export default TelegramInit;
