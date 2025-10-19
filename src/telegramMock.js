@@ -24,7 +24,7 @@ export function createMockTelegram() {
 
   const WebApp = {
     initData: null,
-    initDataUnsafe: { user: null },
+    initDataUnsafe: { user: { id: 123, first_name: "Dev" } },
     isExpanded: false,
     showMainButton() {
       MainButton._visible = true;
