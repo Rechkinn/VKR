@@ -1,106 +1,137 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import App from "../app/app";
-import { useDispatch } from "react-redux";
-import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
-import useTelegramWebApp from "../../hooks/useTelegramWebApp";
-
-const AUTH_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram";
-const ME_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me";
 
 const TelegramAuth = () => {
-  const dispatch = useDispatch();
-  // Увеличим таймаут до 30s
-  const { webapp, ready, initData, initDataUnsafe, forceAttach } =
-    useTelegramWebApp({
-      pollInterval: 250,
-      pollTimeout: 30000,
-    });
-
-  const [telegramUser, setTelegramUser] = useState(null); // from unsafe or parsed initData
-  const [userInfo, setUserInfo] = useState(null); // from backend (after auth)
+  const [webApp, setWebApp] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [authInProgress, setAuthInProgress] = useState(false);
+  const [debugInfo, setDebugInfo] = useState(null);
 
-  const authAttemptedRef = useRef(false);
-  const longPollRef = useRef(null);
+  const [telegramUser, setTelegramUser] = useState(null);
 
-  // вспомогательный парсер (из строки initData -> user)
-  const parseInitData = (initDataString) => {
-    if (!initDataString) return null;
-    try {
-      const params = new URLSearchParams(initDataString);
-      const result = {};
-      for (const [key, value] of params) {
-        if (key === "user") {
-          try {
-            result[key] = JSON.parse(decodeURIComponent(value));
-          } catch {
-            try {
-              result[key] = JSON.parse(value);
-            } catch {
-              result[key] = value;
-            }
-          }
-        } else {
-          result[key] = value;
-        }
-      }
-      return result;
-    } catch (err) {
-      console.error("Error parsing initData:", err);
-      return { raw: initDataString };
+  useEffect(() => {
+    if (!webApp) return;
+
+    const unsafe = webApp.initDataUnsafe; // Telegram WebApp предоставляет это
+    setDebugInfo({
+      initDataAvailable: !!webApp.initData,
+      initDataLength: webApp.initData?.length || 0,
+      initDataUnsafe: unsafe,
+      hasToken: !!localStorage.getItem("access_token"),
+    });
+
+    // Если в initDataUnsafe есть user — сохраняем объект пользователя отдельно
+    if (unsafe?.user) {
+      setTelegramUser(unsafe.user);
     }
-  };
+    // если нет, можно попробовать распарсить initData и взять user
+    else {
+      const parsed = parseInitData(webApp.initData);
+      if (parsed?.user) setTelegramUser(parsed.user);
+    }
 
-  // Авторизация на бэкенде
-  const authenticateWithTelegram = async (initDataStr) => {
-    if (!initDataStr) {
+    // если есть initData — попытка автоаутентификации и т.д.
+    if (webApp.initData && webApp.initData.trim() !== "") {
+      authenticateWithTelegram(webApp.initData).catch(console.error);
+    } else if (localStorage.getItem("access_token")) {
+      fetchCurrentUser();
+    }
+  }, [webApp]);
+
+  // Инициализация Telegram WebApp
+  useEffect(() => {
+    if (window.Telegram?.WebApp) {
+      const tgWebApp = window.Telegram.WebApp;
+      setWebApp(tgWebApp);
+
+      // Инициализируем WebApp
+      tgWebApp.ready();
+      tgWebApp.expand();
+
+      // Настраиваем внешний вид
+      tgWebApp.setHeaderColor("#0088cc");
+      tgWebApp.setBackgroundColor("#ffffff");
+
+      console.log("Telegram WebApp initialized:", tgWebApp);
+      console.log("Init Data:", tgWebApp.initData);
+      console.log("Init Data Unsafe:", tgWebApp.initDataUnsafe);
+    } else {
+      console.warn(
+        "Telegram WebApp not available - running in development mode"
+      );
+      setError("Telegram WebApp not detected. Please open in Telegram.");
+    }
+  }, []);
+
+  // Функция для отправки данных аутентификации
+  const authenticateWithTelegram = async (initData) => {
+    if (!initData) {
       throw new Error("No init data available");
     }
-    authAttemptedRef.current = true;
+
     setLoading(true);
     setError(null);
-    setAuthInProgress(true);
+
     try {
-      const resp = await fetch(AUTH_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ init_data: initDataStr }),
-      });
-      if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
+      const response = await fetch(
+        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            init_data: initData,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(
-          errJson.detail || `Authentication failed: ${resp.status}`
+          errorData.detail || `Authentication failed: ${response.status}`
         );
       }
-      const data = await resp.json();
+
+      const data = await response.json();
+
+      // Сохраняем данные
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
-      setAuthInProgress(false);
+
+      console.log("✅ Authentication successful:", data);
       return data;
     } catch (err) {
-      console.error("Authentication failed:", err);
-      setError(err.message || String(err));
-      setAuthInProgress(false);
+      console.error("❌ Authentication failed:", err);
+      setError(err.message);
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
+  // Функция для получения информации о текущем пользователе
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
+
     try {
-      const resp = await fetch(ME_URL, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (resp.ok) {
-        const user = await resp.json();
-        setUserInfo(user);
-      } else if (resp.status === 401) {
+      const response = await fetch(
+        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUserInfo(userData);
+      } else if (response.status === 401) {
+        // Токен невалидный, удаляем его
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
       }
@@ -109,171 +140,263 @@ const TelegramAuth = () => {
     }
   };
 
-  // --- fast path: если есть initDataUnsafe.user — сразу устанавливаем telegramUser и диспатчим в стор
+  // Основной эффект для аутентификации
   useEffect(() => {
-    if (initDataUnsafe?.user) {
-      setTelegramUser(initDataUnsafe.user);
-      dispatch({
-        type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: initDataUnsafe.user,
-      });
-      // не пытаемся аутентифицировать неподписанные данные — ждём подписанный initData
-    } else if (initData) {
-      const parsed = parseInitData(initData);
-      if (parsed?.user) {
-        setTelegramUser(parsed.user);
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: parsed.user,
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initDataUnsafe, initData]);
+    if (!webApp) return;
 
-  // --- основный поток: если есть initData -> аутентифицируем; если нет -> короткий long poll (до 30s)
-  useEffect(() => {
-    // если webapp не доступен — ничего не делаем
-    if (!webapp) return;
+    const initData = webApp.initData;
 
-    // если initData есть сразу — аутентифицируем (если ещё не пытались)
-    if (webapp.initData && String(webapp.initData).trim() !== "") {
-      if (!authAttemptedRef.current) {
-        authenticateWithTelegram(webapp.initData).catch((e) =>
-          console.warn("auth immediate failed", e)
-        );
-      }
-      return;
-    }
+    // Собираем отладочную информацию
+    setDebugInfo({
+      initDataAvailable: !!initData,
+      initDataLength: initData?.length || 0,
+      initDataUnsafe: webApp.initDataUnsafe,
+      hasToken: !!localStorage.getItem("access_token"),
+    });
 
-    // если токен есть — подтянуть текущего пользователя
-    if (localStorage.getItem("access_token")) {
+    // Если есть initData, пробуем аутентифицироваться
+    if (initData && initData.trim() !== "") {
+      authenticateWithTelegram(initData).catch(console.error);
+    } else if (localStorage.getItem("access_token")) {
+      // Если нет initData, но есть токен - получаем информацию о пользователе
       fetchCurrentUser();
-      authAttemptedRef.current = true;
-      return;
     }
+  }, [webApp]);
 
-    // иначе — long poll initData до 30s (шаг 250ms)
-    const maxTries = Math.ceil(30000 / 250); // 30s
-    let tries = 0;
-    longPollRef.current = setInterval(async () => {
-      tries += 1;
-      const currentInit = webapp.initData;
-      if (currentInit && String(currentInit).trim() !== "") {
-        clearInterval(longPollRef.current);
-        longPollRef.current = null;
-        if (!authAttemptedRef.current) {
-          try {
-            await authenticateWithTelegram(currentInit);
-          } catch (e) {
-            console.warn("auth after poll failed", e);
-          }
-        }
-      } else if (tries >= maxTries) {
-        clearInterval(longPollRef.current);
-        longPollRef.current = null;
-        // если за 30s не пришёл initData — даём возможность пользователю retry
-        console.warn("initData did not arrive after 30s poll");
-      }
-    }, 250);
-
-    // также при возвращении фокуса/visibilitychange — можно форс-аттач (если используешь hook с forceAttach)
-    const onVisibility = () => {
-      if (typeof forceAttach === "function") {
-        forceAttach();
-      }
-    };
-    window.addEventListener("focus", onVisibility);
-    document.addEventListener("visibilitychange", onVisibility);
-
-    return () => {
-      if (longPollRef.current) {
-        clearInterval(longPollRef.current);
-        longPollRef.current = null;
-      }
-      window.removeEventListener("focus", onVisibility);
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webapp]);
-
-  // ручной retry
-  const handleManualAuth = async () => {
-    setError(null);
-    if (!webapp) {
-      setError("Telegram WebApp not detected. Откройте в приложении Telegram.");
-      return;
+  // Функция для ручного запуска аутентификации
+  const handleManualAuth = () => {
+    if (webApp?.initData) {
+      authenticateWithTelegram(webApp.initData);
+    } else {
+      setError("No init data available. Please open in Telegram.");
     }
-
-    const id = webapp.initData;
-    if (id && String(id).trim() !== "") {
-      try {
-        await authenticateWithTelegram(id);
-      } catch (e) {
-        console.warn("manual auth failed", e);
-      }
-      return;
-    }
-
-    // если нет initData — форс повторную попытку прикрепления (hook должен реализовать forceAttach)
-    if (typeof forceAttach === "function") {
-      forceAttach();
-    }
-    setError(
-      "Init data отсутствует. Попытка повторной привязки запущена — пожалуйста, подождите или нажмите Retry ещё раз."
-    );
   };
 
-  // Если у нас есть только telegramUser (unsafe) — показываем App, но помечаем, что аутентификация в фоне
-  const showApp = !!telegramUser || !!userInfo;
+  // Функция для выхода
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    setUserInfo(null);
+    setError(null);
+  };
+
+  // Функция для парсинга initData для отображения
+  const parseInitData = (initDataString) => {
+    if (!initDataString) return null;
+
+    try {
+      const params = new URLSearchParams(initDataString);
+      const result = {};
+
+      for (const [key, value] of params) {
+        if (key === "user") {
+          try {
+            result[key] = JSON.parse(decodeURIComponent(value));
+          } catch {
+            result[key] = value;
+          }
+        } else {
+          result[key] = value;
+        }
+      }
+
+      return result;
+    } catch (err) {
+      console.error("Error parsing initData:", err);
+      return { raw: initDataString };
+    }
+  };
+
+  // Настройка кнопки закрытия
+  useEffect(() => {
+    if (!webApp || !webApp.MainButton || !userInfo) return;
+
+    try {
+      webApp.MainButton.setText("Close");
+      webApp.MainButton.show();
+
+      const handleClose = () => {
+        webApp.close();
+      };
+
+      webApp.MainButton.onClick(handleClose);
+
+      return () => {
+        webApp.MainButton.offClick(handleClose);
+      };
+    } catch (e) {
+      console.warn("Failed to setup MainButton:", e);
+    }
+  }, [webApp, userInfo]);
 
   return (
-    <>
-      {loading && (
-        <p style={{ margin: 0, color: "#1976d2" }}>🔄 Authenticating...</p>
-      )}
-
-      {!showApp && (
-        <div>
-          <p>Ожидание Telegram WebApp...</p>
-          <p style={{ fontSize: 13, color: "#666" }}>
-            Если вы в мобильном Telegram — подождите до 30 секунд. Если ничего
-            не происходит — нажмите Retry.
-          </p>
-          <button onClick={handleManualAuth}>🔄 Retry</button>
-        </div>
-      )}
-
-      {/* Если есть небезопасный пользователь — показываем предупреждение и отображаем app сразу */}
-      {telegramUser && !userInfo && (
-        <div
+    <div
+      style={{
+        padding: 16,
+        fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+        maxWidth: 600,
+        margin: "0 auto",
+      }}
+    >
+      <header
+        style={{
+          paddingBottom: 16,
+          borderBottom: "1px solid #e0e0e0",
+          marginBottom: 16,
+        }}
+      >
+        <h1
           style={{
-            padding: 8,
-            background: "#fff9c4",
-            borderRadius: 6,
-            marginBottom: 8,
+            margin: "0 0 8px 0",
+            color: "#333",
+            fontSize: 24,
           }}
         >
-          <strong>Внимание:</strong> загружено локальное инфо из Telegram (без
-          серв.подтверждения). Аутентификация может завершиться чуть позже.
-          {authInProgress && (
-            <div style={{ marginTop: 6 }}>
-              Выполняется фоновая аутентификация...
-            </div>
-          )}
-        </div>
-      )}
+          AllTransfer Mini App
+        </h1>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 14,
+            color: "#666",
+          }}
+        >
+          Telegram WebApp {webApp ? "✅ connected" : "❌ not connected"}
+        </p>
+      </header>
 
-      {error && (
-        <div style={{ marginTop: 10 }}>
-          <p>❌ Ошибка: {error}</p>
-          <button onClick={handleManualAuth}>🔄 Retry</button>
-        </div>
-      )}
+      {/* Статус аутентификации */}
+      <section style={{ marginBottom: 16 }}>
+        {loading && (
+          <div
+            style={{
+              padding: 12,
+              backgroundColor: "#e3f2fd",
+              borderRadius: 8,
+              marginBottom: 12,
+            }}
+          >
+            <p style={{ margin: 0, color: "#1976d2" }}>🔄 Authenticating...</p>
+          </div>
+        )}
 
-      {/* Рендерим приложение, если есть хотя бы информация из Telegram (unsafe) или из бэкенда */}
-      {showApp && <App />}
-    </>
+        {error && (
+          <div
+            style={{
+              padding: 12,
+              backgroundColor: "#ffebee",
+              borderRadius: 8,
+              marginBottom: 12,
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 8px 0",
+                color: "#d32f2f",
+                fontWeight: "bold",
+              }}
+            >
+              ❌ Authentication Error
+            </p>
+            <p
+              style={{
+                margin: "0 0 12px 0",
+                fontSize: 14,
+                color: "#d32f2f",
+              }}
+            >
+              {error}
+            </p>
+            <button
+              onClick={handleManualAuth}
+              style={{
+                padding: "8px 16px",
+                fontSize: 14,
+                backgroundColor: "#0088cc",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              🔄 Retry Authentication
+            </button>
+          </div>
+        )}
+
+        {userInfo && (
+          <>
+            <App />
+            {console.log("telegramUser")}
+            {console.log(telegramUser)}
+          </>
+        )}
+      </section>
+
+      {/* Отладочная информация */}
+      <section>
+        <details>
+          <summary
+            style={{
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: "bold",
+              color: "#666",
+              padding: "8px 0",
+            }}
+          >
+            🔍 Debug Information
+          </summary>
+
+          <div
+            style={{
+              backgroundColor: "#f5f5f5",
+              padding: 12,
+              borderRadius: 6,
+              marginTop: 8,
+              fontSize: 12,
+              fontFamily: "monospace",
+            }}
+          >
+            <h4 style={{ margin: "0 0 8px 0" }}>WebApp Status:</h4>
+            <pre style={{ margin: "4px 0" }}>
+              {JSON.stringify(debugInfo, null, 2)}
+              {/* <Profile userInfo={debugInfo?.initDataUnsafe?.user ?? null} /> */}
+            </pre>
+
+            {webApp?.initData && (
+              <>
+                <h4 style={{ margin: "16px 0 8px 0" }}>Parsed Init Data:</h4>
+                <pre style={{ margin: "4px 0" }}>
+                  {JSON.stringify(parseInitData(webApp.initData), null, 2)}
+                  {/* <Profile
+                    userInfo={
+                      webApp?.initDataUnsafe?.user ??
+                      parseInitData(webApp?.initData)?.user ??
+                      null
+                    }
+                  /> */}
+                </pre>
+              </>
+            )}
+
+            {localStorage.getItem("access_token") && (
+              <>
+                <h4 style={{ margin: "16px 0 8px 0" }}>Access Token:</h4>
+                <p
+                  style={{
+                    wordBreak: "break-all",
+                    margin: "4px 0",
+                  }}
+                >
+                  {localStorage.getItem("access_token").substring(0, 50)}...
+                </p>
+              </>
+            )}
+          </div>
+        </details>
+      </section>
+    </div>
   );
 };
 
