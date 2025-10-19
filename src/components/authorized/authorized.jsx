@@ -291,6 +291,8 @@ const TelegramAuth = () => {
 
       {(telegramUser || userInfo) && (
         <>
+          <div>{debugInfo}</div>
+          <hr />
           <App />
         </>
       )}
