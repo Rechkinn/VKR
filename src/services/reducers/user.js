@@ -1,4 +1,4 @@
-import { SET_USER_TELEGRAM_INFO } from "../actions/user";
+import { SET_USER_TELEGRAM_INFO, SET_USER_BACKEND_INFO } from "../actions/user";
 
 // const initialState = {
 //   infoFromTelegram: {
@@ -24,10 +24,12 @@ export const userReducer = (state = initialState, action) => {
     case SET_USER_TELEGRAM_INFO:
       return {
         ...state,
-        infoFromTelegram: Object.assign(
-          state.infoFromTelegram,
-          action.infoFromTelegram
-        ),
+        infoFromTelegram: action.infoFromTelegram,
+      };
+    case SET_USER_BACKEND_INFO:
+      return {
+        ...state,
+        infoFromBackend: action.infoFromBackend,
       };
     default:
       return state;
