@@ -4,151 +4,212 @@ const TelegramInit = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [environment, setEnvironment] = useState('unknown');
   const [debugLog, setDebugLog] = useState([]);
 
-  const addLog = (message) => {
-    console.log(message);
-    setDebugLog(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+  const addLog = (message, data = null) => {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `${timestamp}: ${message}`;
+    
+    console.log(logEntry, data || '');
+    setDebugLog(prev => [...prev, logEntry]);
   };
 
   useEffect(() => {
-    const initTelegramApp = () => {
-      try {
-        addLog('🚀 Инициализация Telegram WebApp...');
+    const detectEnvironment = () => {
+      // Проверяем различные способы определения Telegram
+      const isTelegram = (
+        window.Telegram?.WebApp || 
+        navigator.userAgent.includes('Telegram') ||
+        window.location.hash.includes('tgWebApp') ||
+        document.referrer.includes('telegram')
+      );
 
+      if (isTelegram) {
+        setEnvironment('telegram');
+        addLog('✅ Обнаружена среда Telegram');
+      } else if (window.location.hostname.includes('алитис.рф') || 
+                 window.location.hostname.includes('xn--80aefasgqac6c.xn--p1ai')) {
+        setEnvironment('web');
+        addLog('🌐 Открыто в веб-браузере');
+      } else {
+        setEnvironment('local');
+        addLog('💻 Локальная разработка');
+      }
+    };
+
+    const initTelegramApp = () => {
+      detectEnvironment();
+
+      if (environment === 'web' || environment === 'local') {
+        addLog('ℹ️ Это веб-версия, Telegram WebApp не доступен');
+        setLoading(false);
+        setError('Откройте приложение через Telegram бота для получения данных');
+        return;
+      }
+
+      // Только для Telegram среды
+      try {
         if (!window.Telegram?.WebApp) {
-          addLog('❌ Telegram WebApp не доступен');
-          setError('Telegram WebApp не доступен');
+          addLog('❌ Telegram WebApp объект не найден в Telegram среде');
+          setError('Telegram WebApp не загружен. Возможно проблема с скриптом Telegram.');
           setLoading(false);
           return;
         }
 
         const tg = window.Telegram.WebApp;
         
-        // Логируем базовую информацию
-        addLog(`📱 Платформа: ${tg.platform}`);
-        addLog(`🔢 Версия: ${tg.version}`);
-        addLog(`📊 InitData: ${tg.initData ? 'есть' : 'нет'}`);
-        addLog(`👤 Пользователь: ${tg.initDataUnsafe?.user ? 'есть' : 'нет'}`);
+        addLog('📱 Инициализация Telegram WebApp...');
+        addLog(`Платформа: ${tg.platform}`);
+        addLog(`Версия: ${tg.version}`);
+        addLog(`InitData: ${tg.initData ? 'есть' : 'нет'}`);
+        addLog(`InitDataUnsafe:`, tg.initDataUnsafe);
 
         // Критически важно для iOS!
         tg.ready();
-        tg.expand(); // Раскрываем на весь экран
-        addLog('✅ Telegram WebApp готов и раскрыт');
+        tg.expand();
+        addLog('✅ WebApp готов и раскрыт');
 
-        // Основная функция проверки данных
-        const checkData = () => {
+        // Проверка данных пользователя
+        const checkUserData = () => {
           const userData = tg.initDataUnsafe?.user;
-          addLog(`🔍 Проверка данных пользователя: ${userData ? `ID: ${userData.id}` : 'нет данных'}`);
-          
           if (userData?.id) {
-            addLog(`✅ Данные пользователя получены: ${userData.first_name} (${userData.id})`);
-            setUser(userData);
-            setLoading(false);
+            addLog(`🎉 Данные пользователя получены: ${userData.first_name} (ID: ${userData.id})`);
             return true;
           }
           return false;
         };
 
-        // Проверяем сразу
-        if (checkData()) {
+        // Немедленная проверка
+        if (checkUserData()) {
+          setUser(tg.initDataUnsafe.user);
+          setLoading(false);
           return;
         }
 
         addLog('⏳ Данные не получены сразу, начинаем ожидание...');
 
-        // Способ 1: Событие viewportChanged (лучший для iOS)
+        // Стратегия для iOS
+        let resolved = false;
+        let attempts = 0;
+        const maxAttempts = 50;
+
+        // Событие viewportChanged
         const handleViewportChanged = () => {
-          addLog('🎯 Сработало событие viewportChanged');
-          if (checkData()) {
+          if (resolved) return;
+          addLog('📐 Сработало viewportChanged');
+          if (checkUserData()) {
+            resolved = true;
+            setUser(tg.initDataUnsafe.user);
+            setLoading(false);
             tg.offEvent('viewportChanged', handleViewportChanged);
-            addLog('📡 Событие viewportChanged отключено');
           }
         };
 
         tg.onEvent('viewportChanged', handleViewportChanged);
 
-        // Способ 2: Периодическая проверка
-        let attempts = 0;
-        const maxAttempts = 30; // 30 секунд максимум
-        
-        const intervalId = setInterval(() => {
+        // Периодическая проверка
+        const interval = setInterval(() => {
+          if (resolved) {
+            clearInterval(interval);
+            return;
+          }
+
           attempts++;
           addLog(`🔄 Попытка ${attempts}/${maxAttempts}`);
-          
-          if (checkData()) {
-            clearInterval(intervalId);
+
+          if (checkUserData()) {
+            resolved = true;
+            setUser(tg.initDataUnsafe.user);
+            setLoading(false);
+            clearInterval(interval);
             tg.offEvent('viewportChanged', handleViewportChanged);
+            return;
+          }
+
+          // Диагностика каждые 10 попыток
+          if (attempts % 10 === 0) {
+            addLog(`📊 Диагностика на попытке ${attempts}:`, {
+              initData: tg.initData?.length || 0,
+              hasUser: !!tg.initDataUnsafe?.user,
+              platform: tg.platform
+            });
           }
 
           if (attempts >= maxAttempts) {
-            addLog('⏰ Время ожидания истекло');
-            clearInterval(intervalId);
-            tg.offEvent('viewportChanged', handleViewportChanged);
-            
-            // Финальная проверка
-            const finalData = tg.initDataUnsafe?.user;
-            if (finalData?.id) {
-              addLog(`✅ Данные получены на последней проверке: ${finalData.first_name}`);
-              setUser(finalData);
-            } else {
-              addLog('❌ Не удалось получить данные пользователя');
-              setError('Не удалось загрузить данные пользователя. Попробуйте перезагрузить страницу.');
-            }
+            addLog('⏰ Таймаут: данные не получены');
+            clearInterval(interval);
+            setError(`Не удалось получить данные после ${maxAttempts} попыток. Возможно проблема с iOS.`);
             setLoading(false);
           }
         }, 1000);
 
-        // Способ 3: Триггер по клику пользователя
-        const handleUserClick = () => {
-          addLog('🖱️ Пользователь кликнул - проверяем данные');
-          checkData();
-        };
-
-        document.addEventListener('click', handleUserClick, { once: true });
-
         // Очистка
         return () => {
-          clearInterval(intervalId);
+          clearInterval(interval);
           if (window.Telegram?.WebApp) {
-            window.Telegram.WebApp.offEvent('viewportChanged', handleViewportChanged);
+            tg.offEvent('viewportChanged', handleViewportChanged);
           }
-          document.removeEventListener('click', handleUserClick);
         };
 
       } catch (err) {
         addLog(`❌ Ошибка инициализации: ${err.message}`);
-        setError(`Ошибка инициализации: ${err.message}`);
+        setError(`Ошибка: ${err.message}`);
         setLoading(false);
       }
     };
 
-    // Запускаем когда DOM готов
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initTelegramApp);
-    } else {
-      initTelegramApp();
-    }
-  }, []);
+    // Запускаем с задержкой для стабилизации
+    setTimeout(initTelegramApp, 100);
+  }, [environment]);
 
+  // Рендер
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h3>🔄 Загрузка данных Telegram...</h3>
-        <p>Пожалуйста, подождите. Это может занять несколько секунд.</p>
+      <div style={{ 
+        padding: '20px', 
+        fontFamily: 'Arial, sans-serif',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}>
+        <h2>🔍 Анализ среды выполнения</h2>
+        
         <div style={{ 
-          marginTop: '20px', 
-          padding: '10px', 
-          background: '#f5f5f5', 
-          borderRadius: '5px',
-          fontSize: '12px',
-          textAlign: 'left',
-          maxHeight: '200px',
+          background: '#fff3cd', 
+          padding: '15px', 
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: '1px solid #ffeaa7'
+        }}>
+          <h3>📋 Информация о среде:</h3>
+          <p><strong>Окружение:</strong> {environment === 'telegram' ? 'Telegram' : 
+                                       environment === 'web' ? 'Веб-браузер' : 'Локальная разработка'}</p>
+          <p><strong>User Agent:</strong> {navigator.userAgent}</p>
+          <p><strong>URL:</strong> {window.location.href}</p>
+        </div>
+
+        <h3>🔄 Инициализация Telegram WebApp...</h3>
+
+        <div style={{ 
+          marginTop: '20px',
+          background: '#f8f9fa',
+          padding: '15px',
+          borderRadius: '8px',
+          maxHeight: '400px',
           overflow: 'auto'
         }}>
-          <strong>Лог отладки:</strong>
+          <h4>Лог в реальном времени:</h4>
           {debugLog.map((log, index) => (
-            <div key={index} style={{ margin: '2px 0', fontFamily: 'monospace' }}>{log}</div>
+            <div key={index} style={{ 
+              padding: '4px 8px',
+              margin: '2px 0',
+              background: index % 2 === 0 ? '#fff' : '#f9f9f9',
+              fontFamily: 'monospace',
+              fontSize: '12px',
+              borderLeft: '3px solid #007bff'
+            }}>
+              {log}
+            </div>
           ))}
         </div>
       </div>
@@ -157,34 +218,75 @@ const TelegramInit = () => {
 
   if (error) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
-        <h3>❌ Ошибка</h3>
-        <p>{error}</p>
+      <div style={{ 
+        padding: '20px', 
+        fontFamily: 'Arial, sans-serif',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}>
+        <h2 style={{ color: '#dc3545' }}>❌ Результат инициализации</h2>
+        
+        <div style={{ 
+          background: environment === 'telegram' ? '#f8d7da' : '#d1ecf1', 
+          padding: '15px', 
+          borderRadius: '8px',
+          marginBottom: '20px',
+          border: `1px solid ${environment === 'telegram' ? '#f5c6cb' : '#bee5eb'}`
+        }}>
+          <h3>📋 Статус:</h3>
+          <p><strong>Окружение:</strong> 
+            {environment === 'telegram' ? ' 💬 Telegram' : 
+             environment === 'web' ? ' 🌐 Веб-браузер' : ' 💻 Локальная разработка'}
+          </p>
+          <p><strong>Проблема:</strong> {error}</p>
+          
+          {environment !== 'telegram' && (
+            <div style={{ marginTop: '15px' }}>
+              <h4>🚀 Как протестировать в Telegram:</h4>
+              <ol>
+                <li>Откройте Telegram</li>
+                <li>Найдите вашего бота</li>
+                <li>Нажмите на Menu Button (кнопка меню)</li>
+                <li>Должно открыться это приложение внутри Telegram</li>
+              </ol>
+            </div>
+          )}
+        </div>
+
         <button 
-          onClick={() => window.location.reload()} 
-          style={{ 
-            marginTop: '10px', 
-            padding: '10px 20px', 
-            background: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
+          onClick={() => window.location.reload()}
+          style={{
+            padding: '10px 20px',
+            background: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            marginRight: '10px'
           }}
         >
-          Перезагрузить
+          Обновить страницу
         </button>
+
         <div style={{ 
-          marginTop: '20px', 
-          padding: '10px', 
-          background: '#fff0f0', 
-          borderRadius: '5px',
-          fontSize: '12px',
-          textAlign: 'left'
+          marginTop: '20px',
+          background: '#e9ecef',
+          padding: '15px',
+          borderRadius: '8px',
+          maxHeight: '300px',
+          overflow: 'auto'
         }}>
-          <strong>Лог отладки:</strong>
+          <h4>История логов:</h4>
           {debugLog.map((log, index) => (
-            <div key={index} style={{ margin: '2px 0', fontFamily: 'monospace' }}>{log}</div>
+            <div key={index} style={{ 
+              padding: '4px 8px',
+              margin: '2px 0',
+              background: index % 2 === 0 ? '#fff' : '#f9f9f9',
+              fontFamily: 'monospace',
+              fontSize: '12px'
+            }}>
+              {log}
+            </div>
           ))}
         </div>
       </div>
@@ -192,29 +294,50 @@ const TelegramInit = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h3>✅ Данные пользователя загружены!</h3>
+    <div style={{ 
+      padding: '20px', 
+      fontFamily: 'Arial, sans-serif',
+      maxWidth: '800px',
+      margin: '0 auto'
+    }}>
+      <h2 style={{ color: '#28a745' }}>✅ Успешная инициализация!</h2>
+      
       <div style={{ 
-        marginTop: '15px', 
+        background: '#d4edda', 
         padding: '15px', 
-        background: '#f0f8ff', 
-        borderRadius: '5px',
-        border: '1px solid #007bff'
+        borderRadius: '8px',
+        marginBottom: '20px'
       }}>
-        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+        <h3>🎉 Данные пользователя Telegram:</h3>
+        <pre style={{ 
+          background: 'white', 
+          padding: '15px', 
+          borderRadius: '4px',
+          overflow: 'auto',
+          fontSize: '14px'
+        }}>
           {JSON.stringify(user, null, 2)}
         </pre>
       </div>
+
       <div style={{ 
-        marginTop: '20px', 
-        padding: '10px', 
-        background: '#f0f0f0', 
-        borderRadius: '5px',
-        fontSize: '12px'
+        background: '#f8f9fa',
+        padding: '15px',
+        borderRadius: '8px',
+        maxHeight: '300px',
+        overflow: 'auto'
       }}>
-        <strong>Лог отладки:</strong>
+        <h4>Полный лог инициализации:</h4>
         {debugLog.map((log, index) => (
-          <div key={index} style={{ margin: '2px 0', fontFamily: 'monospace' }}>{log}</div>
+          <div key={index} style={{ 
+            padding: '4px 8px',
+            margin: '2px 0',
+            background: index % 2 === 0 ? '#fff' : '#f9f9f9',
+            fontFamily: 'monospace',
+            fontSize: '12px'
+          }}>
+            {log}
+          </div>
         ))}
       </div>
     </div>
