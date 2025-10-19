@@ -207,10 +207,10 @@ const TelegramAuth = () => {
         setTelegramUser(parsed.user);
         console.log("parsed.user");
         console.log(parsed.user);
-        // dispatch({
-        //   type: SET_USER_TELEGRAM_INFO,
-        //   infoFromTelegram: parsed.user,
-        // });
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: parsed.user,
+        });
       }
     }
 
