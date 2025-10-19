@@ -1,39 +1,36 @@
-import React, { useState, useEffect, useRef } from "react";
+// src/components/TelegramAuth.jsx
+import React, { useEffect, useRef, useState } from "react";
 import App from "../app/app";
 import { useDispatch } from "react-redux";
-import {
-  SET_USER_TELEGRAM_INFO,
-  SET_USER_BACKEND_INFO,
-} from "../../services/actions/user";
+import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
+import useTelegramWebApp from "../../hooks/useTelegramWebApp";
+
+const TELEGRAM_AUTH_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram";
+const TELEGRAM_ME_URL = "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me";
 
 const TelegramAuth = () => {
-  const [webApp, setWebApp] = useState(null);
+  const dispatch = useDispatch();
+
+  const { webapp, ready, initData, initDataUnsafe } = useTelegramWebApp();
+  const [telegramUser, setTelegramUser] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
-  const [telegramUser, setTelegramUser] = useState(null);
 
-  const dispatch = useDispatch();
-
-  // refs to prevent duplicate attempts and keep intervals for cleanup
   const authAttemptedRef = useRef(false);
-  const webAppPollRef = useRef(null);
-  const initDataPollRef = useRef(null);
+  const initPollRef = useRef(null);
 
-  // --- Helper: parse initData (safer) ---
+  // safe parse of initData string -> object
   const parseInitData = (initDataString) => {
     if (!initDataString) return null;
     try {
-      // initData is key1=value1&key2=value2
       const params = new URLSearchParams(initDataString);
       const result = {};
       for (const [key, value] of params) {
         if (key === "user") {
           try {
-            // sometimes user is URL encoded JSON
-            const decoded = decodeURIComponent(value);
-            result[key] = JSON.parse(decoded);
+            result[key] = JSON.parse(decodeURIComponent(value));
           } catch {
             try {
               result[key] = JSON.parse(value);
@@ -52,36 +49,24 @@ const TelegramAuth = () => {
     }
   };
 
-  // --- Authentication with backend ---
-  const authenticateWithTelegram = async (initData) => {
-    if (!initData) {
-      throw new Error("No init data available");
-    }
-
-    // Avoid re-entrancy: mark attempted early (still try once)
+  // authenticate to backend
+  const authenticateWithTelegram = async (initDataStr) => {
+    if (!initDataStr) throw new Error("No init data available");
+    // mark attempted early to avoid double attempts
     authAttemptedRef.current = true;
-
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch(
-        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            init_data: initData,
-          }),
-        }
-      );
+      const response = await fetch(TELEGRAM_AUTH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ init_data: initDataStr }),
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errJson = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.detail || `Authentication failed: ${response.status}`
+          errJson.detail || `Authentication failed: ${response.status}`
         );
       }
 
@@ -89,15 +74,9 @@ const TelegramAuth = () => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
-      dispatch({
-        type: SET_USER_BACKEND_INFO,
-        infoFromBackend: data.user,
-      });
-
-      console.log("✅ Authentication successful:", data);
       return data;
     } catch (err) {
-      console.error("❌ Authentication failed:", err);
+      console.error("authenticateWithTelegram error:", err);
       setError(err.message || String(err));
       throw err;
     } finally {
@@ -105,254 +84,171 @@ const TelegramAuth = () => {
     }
   };
 
-  // --- Fetch current user if token present ---
+  // fetch current user if we already have token
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
-
     try {
-      const response = await fetch(
-        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUserInfo(userData);
-        dispatch({
-          type: SET_USER_BACKEND_INFO,
-          infoFromBackend: userData,
-        });
-      } else if (response.status === 401) {
+      const resp = await fetch(TELEGRAM_ME_URL, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (resp.ok) {
+        const user = await resp.json();
+        setUserInfo(user);
+      } else if (resp.status === 401) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
       }
     } catch (err) {
-      console.error("Failed to fetch user data:", err);
+      console.error("fetchCurrentUser error:", err);
     }
   };
 
-  // --- Initialize Telegram.WebApp when it becomes available (polling fallback) ---
+  // When webapp or initDataUnsafe changes — set telegram user immediately (fast path)
   useEffect(() => {
-    let stopped = false;
-
-    const initTelegram = () => {
-      try {
-        const tg = window.Telegram?.WebApp;
-        if (!tg) return false;
-
-        // only set once
-        setWebApp((prev) => {
-          if (prev) return prev;
-          return tg;
-        });
-
-        // Safe calls (some methods might not exist in older injections)
-        try {
-          tg.ready?.();
-          tg.expand?.();
-          if (tg.setHeaderColor) tg.setHeaderColor("#0088cc");
-          if (tg.setBackgroundColor) tg.setBackgroundColor("#ffffff");
-        } catch (e) {
-          console.warn("Telegram WebApp init helpers failed:", e);
-        }
-
-        console.log("Telegram WebApp initialized:", tg);
-        console.log("Init Data (raw):", tg.initData);
-        console.log("Init Data Unsafe:", tg.initDataUnsafe);
-        return true;
-      } catch (err) {
-        console.error("initTelegram error:", err);
-        return false;
-      }
-    };
-
-    // Try immediately
-    if (initTelegram()) return;
-
-    // Polling: check for WebApp up to ~6 seconds
-    let tries = 0;
-    webAppPollRef.current = setInterval(() => {
-      if (stopped) return;
-      tries += 1;
-      if (initTelegram()) {
-        clearInterval(webAppPollRef.current);
-        webAppPollRef.current = null;
-      } else if (tries >= 30) {
-        // stop after ~30 * 200ms = 6000ms
-        clearInterval(webAppPollRef.current);
-        webAppPollRef.current = null;
-        if (!window.Telegram?.WebApp) {
-          console.warn("Telegram WebApp not available after polling");
-          setError(
-            "Telegram WebApp not detected. Please open inside Telegram."
-          );
-        }
-      }
-    }, 200);
-
-    return () => {
-      stopped = true;
-      if (webAppPollRef.current) {
-        clearInterval(webAppPollRef.current);
-        webAppPollRef.current = null;
-      }
-    };
-    // empty deps: run once
-  }, []);
-
-  // --- When webApp becomes available: handle user data and authentication ---
-  useEffect(() => {
-    if (!webApp) return;
-
-    // set debug info
-    const setDebug = () =>
-      setDebugInfo({
-        initDataAvailable: !!webApp.initData,
-        initDataLength: webApp.initData?.length || 0,
-        initDataUnsafe: webApp.initDataUnsafe,
-        hasToken: !!localStorage.getItem("access_token"),
+    if (initDataUnsafe?.user) {
+      setTelegramUser(initDataUnsafe.user);
+      dispatch({
+        type: SET_USER_TELEGRAM_INFO,
+        infoFromTelegram: initDataUnsafe.user,
       });
-    setDebug();
-
-    // If unsafe user exists — use it immediately
-    try {
-      const unsafe = webApp.initDataUnsafe;
-      if (unsafe?.user) {
-        setTelegramUser(unsafe.user);
+    } else if (initData) {
+      const parsed = parseInitData(initData);
+      if (parsed?.user) {
+        setTelegramUser(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: unsafe.user,
+          infoFromTelegram: parsed.user,
         });
-      } else {
-        // Try to parse initData for user
-        const parsed = parseInitData(webApp.initData);
-        if (parsed?.user) {
-          setTelegramUser(parsed.user);
-          dispatch({
-            type: SET_USER_TELEGRAM_INFO,
-            infoFromTelegram: parsed.user,
-          });
-        }
       }
-    } catch (e) {
-      console.warn("Error extracting user from webApp:", e);
     }
+    setDebugInfo({
+      ready,
+      hasInit: !!initData,
+      initLen: initData?.length || 0,
+      hasToken: !!localStorage.getItem("access_token"),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initData, initDataUnsafe, ready]);
 
-    // If we already have initData -> authenticate
-    const attemptAuthIfHasInitData = async () => {
-      if (authAttemptedRef.current) return;
-      const initData = webApp.initData;
-      if (initData && initData.trim() !== "") {
-        try {
-          await authenticateWithTelegram(initData);
-        } catch (err) {
-          console.error(
-            "authenticateWithTelegram failed on immediate attempt:",
-            err
-          );
+  // Authentication flow: try immediate, else short-poll for initData, else use token
+  useEffect(() => {
+    if (!webapp) return;
+
+    // attempt immediate auth if we have initData
+    const tryAuthImmediately = async () => {
+      const id = webapp.initData;
+      if (id && String(id).trim() !== "") {
+        if (!authAttemptedRef.current) {
+          try {
+            await authenticateWithTelegram(id);
+          } catch (e) {
+            console.warn("Immediate authenticate failed:", e);
+          }
         }
         return;
       }
 
-      // If no initData yet, but there's a token, try to fetch current user
+      // if token exists — fetch user
       if (localStorage.getItem("access_token")) {
         fetchCurrentUser();
         authAttemptedRef.current = true;
         return;
       }
 
-      // If no initData, poll webApp.initData for a short time (mobile might inject with delay)
-      let pollTries = 0;
-      initDataPollRef.current = setInterval(async () => {
-        pollTries += 1;
-        const currentInit = webApp.initData;
-        setDebug(); // update debug while waiting
+      // else, short poll initData for a few seconds (mobile may inject later)
+      let tries = 0;
+      const maxTries = 15; // ~15 * 200ms = 3s
+      initPollRef.current = setInterval(async () => {
+        tries += 1;
+        const currentInit = webapp.initData;
         if (currentInit && String(currentInit).trim() !== "") {
-          clearInterval(initDataPollRef.current);
-          initDataPollRef.current = null;
-          try {
-            await authenticateWithTelegram(currentInit);
-          } catch (err) {
-            console.error(
-              "authenticateWithTelegram failed after polling:",
-              err
-            );
+          clearInterval(initPollRef.current);
+          initPollRef.current = null;
+          if (!authAttemptedRef.current) {
+            try {
+              await authenticateWithTelegram(currentInit);
+            } catch (e) {
+              console.warn("Auth after poll failed:", e);
+            }
           }
-        } else if (pollTries >= 15) {
-          // stop after ~15 * 200ms = 3s
-          clearInterval(initDataPollRef.current);
-          initDataPollRef.current = null;
-          // If after polling nothing, allow manual retry
-          authAttemptedRef.current = false; // we didn't succeed; allow user to retry
-          console.warn("No initData found after short polling.");
+        } else if (tries >= maxTries) {
+          clearInterval(initPollRef.current);
+          initPollRef.current = null;
+          // give control to manual retry (user can press retry)
+          authAttemptedRef.current = false;
+          console.warn("initData not available after short poll");
         }
       }, 200);
     };
 
-    attemptAuthIfHasInitData();
+    // set header/background and expand safely
+    try {
+      webapp.setHeaderColor && webapp.setHeaderColor("#0088cc");
+      webapp.setBackgroundColor && webapp.setBackgroundColor("#ffffff");
+      webapp.ready && typeof webapp.ready === "function" && webapp.ready();
+      webapp.expand && typeof webapp.expand === "function" && webapp.expand();
+    } catch (e) {
+      console.warn("webapp UI calls failed:", e);
+    }
+
+    tryAuthImmediately();
 
     return () => {
-      if (initDataPollRef.current) {
-        clearInterval(initDataPollRef.current);
-        initDataPollRef.current = null;
+      if (initPollRef.current) {
+        clearInterval(initPollRef.current);
+        initPollRef.current = null;
       }
     };
-  }, [webApp, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [webapp]);
 
-  // --- MainButton setup (close) ---
+  // MainButton (close) setup — only when we already have backend user info
   useEffect(() => {
-    if (!webApp || !webApp.MainButton) return;
-
+    if (!webapp || !webapp.MainButton || !userInfo) return;
+    const mb = webapp.MainButton;
     try {
-      webApp.MainButton.setText("Close");
-      webApp.MainButton.show();
+      mb.setText && mb.setText("Close");
+      mb.show && mb.show();
 
-      const handleClose = () => {
+      const onClick = () => {
         try {
-          webApp.close();
+          webapp.close && webapp.close();
         } catch (e) {
-          console.warn("webApp.close failed:", e);
+          console.warn(e);
         }
       };
 
-      webApp.MainButton.onClick(handleClose);
+      mb.onClick && mb.onClick(onClick);
 
       return () => {
-        try {
-          webApp.MainButton.offClick(handleClose);
-        } catch (e) {
-          // older versions might not have offClick
-        }
+        mb.offClick && mb.offClick(onClick);
       };
     } catch (e) {
-      console.warn("Failed to setup MainButton:", e);
+      console.warn("MainButton setup failed:", e);
     }
-  }, [webApp, userInfo]);
+  }, [webapp, userInfo]);
 
-  // --- Manual retry button handler ---
   const handleManualAuth = () => {
     setError(null);
-    if (!webApp) {
+    if (!webapp) {
       setError("Telegram WebApp not detected. Please open inside Telegram.");
       return;
     }
-    if (webApp.initData) {
-      authenticateWithTelegram(webApp.initData).catch((err) =>
-        console.error("Manual auth failed:", err)
+    const id = webapp.initData;
+    if (id && String(id).trim() !== "") {
+      authenticateWithTelegram(id).catch((e) =>
+        console.error("Manual auth error:", e)
       );
-    } else if (webApp.initDataUnsafe?.user) {
-      // If there is only unsafe user, still store it locally and ask user to proceed
-      setTelegramUser(webApp.initDataUnsafe.user);
+    } else if (webapp.initDataUnsafe?.user) {
+      setTelegramUser(webapp.initDataUnsafe.user);
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: webApp.initDataUnsafe.user,
+        infoFromTelegram: webapp.initDataUnsafe.user,
       });
-      setError("Init data not available yet — try again in a moment.");
+      setError(
+        "Init data not present yet — try manual auth again in a moment."
+      );
     } else {
       setError("No init data available. Please open in Telegram.");
     }
@@ -372,7 +268,7 @@ const TelegramAuth = () => {
         </div>
       )}
 
-      {/* Debug info for development (remove in production if you want) */}
+      {/* Dev debug — можно скрыть/удалить в проде */}
       <div style={{ display: "none" }}>
         {debugInfo && (
           <pre style={{ whiteSpace: "pre-wrap" }}>
@@ -381,7 +277,6 @@ const TelegramAuth = () => {
         )}
       </div>
 
-      {/* Render app when we have at least telegram user or backend user info */}
       {telegramUser || userInfo ? <App /> : null}
     </>
   );
