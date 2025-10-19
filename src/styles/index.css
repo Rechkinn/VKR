@@ -3,7 +3,8 @@ body {
   height: 100%; */
   font-family: sans-serif;
   /* background-color: #474747; */
-  background-color: black;
+  /* background-color: black; */
+  background-color: rgb(126, 94, 94);
   height: auto;
 }
 
