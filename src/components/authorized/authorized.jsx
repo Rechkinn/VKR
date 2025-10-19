@@ -150,6 +150,10 @@ const TelegramAuth = () => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
+      dispatch({
+        type: SET_USER_BACKEND_INFO,
+        infoFromBackend: data.user,
+      });
 
       console.log("✅ Authentication successful:", data);
       return data;
