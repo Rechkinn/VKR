@@ -6,10 +6,14 @@ import Balance from "../balance/balance";
 import { useSelector } from "react-redux";
 
 export default function ProfileInfo() {
-  const { infoFromTelegram } = useSelector((store) => store.user);
+  const { infoFromTelegram, infoFromBackend } = useSelector(
+    (store) => store.user
+  );
 
   console.log("infoFromTelegram в ProfileInfo");
   console.log(infoFromTelegram);
+  console.log("infoFromBackend в ProfileInfo");
+  console.log(infoFromBackend);
 
   function renderStars(rating) {
     const array = [];

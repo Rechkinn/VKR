@@ -16,7 +16,7 @@ import { SET_USER_TELEGRAM_INFO, SET_USER_BACKEND_INFO } from "../actions/user";
 
 const initialState = {
   infoFromTelegram: {},
-  infoFromBackend: null,
+  infoFromBackend: {},
 };
 
 export const userReducer = (state = initialState, action) => {
