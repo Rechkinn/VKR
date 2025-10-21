@@ -1,73 +1,97 @@
-import { useEffect, useState } from 'react';
-import { WebApp, init } from '@twa-dev/sdk';
+import { useEffect, useState } from "react";
 
 const TelegramInit = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const initialize = async () => {
+    const initTelegramApp = async () => {
       try {
-        // Инициализируем Telegram Mini App
-        await init();
-        
-        // Говорим Telegram что приложение готово
-        WebApp.ready();
-        WebApp.expand();
-        
-        // Получаем данные пользователя
-        const userData = WebApp.initDataUnsafe?.user;
-        
-        if (userData) {
-          setUser({
-            id: userData.id,
-            firstName: userData.first_name,
-            lastName: userData.last_name, 
-            username: userData.username
-          });
+        // Проверяем доступность Telegram WebApp
+        if (!window.Telegram?.WebApp) {
+          setError("Telegram WebApp не доступен");
+          setLoading(false);
+          return;
         }
-        
-        setLoading(false);
-        
-      } catch (error) {
-        console.log('Ошибка инициализации:', error);
+
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        // Определяем iOS
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isIOS) {
+          // Для iOS: ждем данные с таймаутом
+          await waitForIOSData(tg);
+        } else {
+          // Для других платформ: берем сразу
+          const userData = tg.initDataUnsafe?.user;
+          if (userData?.id) {
+            setUser(userData);
+          } else {
+            setError("Данные пользователя не загружены");
+          }
+          setLoading(false);
+        }
+      } catch (err) {
+        setError(`Ошибка: ${err.message}`);
         setLoading(false);
       }
     };
 
-    initialize();
+    const waitForIOSData = async (tg) => {
+      const maxWaitTime = 10000; // 10 секунд максимум
+      const startTime = Date.now();
+
+      while (Date.now() - startTime < maxWaitTime) {
+        const userData = tg.initDataUnsafe?.user;
+
+        if (userData?.id) {
+          setUser(userData);
+          setLoading(false);
+          return;
+        }
+
+        // Ждем 500ms перед следующей проверкой
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      // Если время вышло
+      const finalData = tg.initDataUnsafe?.user;
+      if (finalData?.id) {
+        setUser(finalData);
+      } else {
+        setError("Не удалось загрузить данные на iOS");
+      }
+      setLoading(false);
+    };
+
+    initTelegramApp();
   }, []);
 
   if (loading) {
     return (
-      <div style={{ padding: 20, textAlign: 'center' }}>
-        <h3>Загрузка Telegram Mini App...</h3>
+      <div>
+        <h3>Загрузка данных Telegram...</h3>
+        <p>Пожалуйста, подождите</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <h3>Ошибка</h3>
+        <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      {user ? (
-        <div>
-          <h2>✅ Приложение инициализировано!</h2>
-          <div style={{ 
-            padding: 15, 
-            background: '#e8f5e8', 
-            borderRadius: 8, 
-            marginTop: 15 
-          }}>
-            <p><strong>ID:</strong> {user.id}</p>
-            <p><strong>Имя:</strong> {user.firstName} {user.lastName}</p>
-            <p><strong>Username:</strong> @{user.username}</p>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h2>❌ Данные не получены</h2>
-          <p>Откройте приложение через Telegram бота</p>
-        </div>
-      )}
+    <div>
+      <h3>Данные пользователя загружены:</h3>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   );
 };
