@@ -82,6 +82,7 @@ export default function ChangeProfileInfo() {
           infoFromTelegram: user,
         });
         console.log(user);
+        closeFormToChangeProfileInfo();
       })
       .catch((error) => console.log(error));
   }
