@@ -75,8 +75,12 @@ export default function ChangeProfileInfo() {
         console.log(response);
         return response.json();
       })
-      .then((data) => {
-        console.log(data);
+      .then((user) => {
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: user,
+        });
+        console.log(user);
       })
       .catch((error) => console.log(error));
   }
