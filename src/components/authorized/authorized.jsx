@@ -274,11 +274,12 @@ const TelegramAuth = () => {
 
       {/* Место для отладки — показываем только если есть debugInfo */}
       {debugInfo && (
-        <div style={{ fontSize: 12, color: "#666", marginTop: 8 }}>
-          <div>initDataAvailable: {String(debugInfo.initDataAvailable)}</div>
-          <div>initDataLength: {debugInfo.initDataLength}</div>
-          <div>hasToken: {String(debugInfo.hasToken)}</div>
-        </div>
+        // <div style={{ fontSize: 12, color: "#666", marginTop: 8 }}>
+        //   <div>initDataAvailable: {String(debugInfo.initDataAvailable)}</div>
+        //   <div>initDataLength: {debugInfo.initDataLength}</div>
+        //   <div>hasToken: {String(debugInfo.hasToken)}</div>
+        // </div>
+        <></>
       )}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
