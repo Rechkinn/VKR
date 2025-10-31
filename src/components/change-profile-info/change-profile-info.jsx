@@ -168,9 +168,10 @@ export default function ChangeProfileInfo() {
 
         <Button
           className={`yellow ${styles.buttonSave}`}
-          onClick={(e) => {
-            e.preventDefault();
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          // }}
+          type="submit"
         >
           Сохранить
         </Button>
