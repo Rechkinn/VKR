@@ -19,7 +19,7 @@ const TelegramAuth = () => {
   const mainBtnHandlerRef = useRef(null);
 
   const [test, setTest] = useState(null);
-  console.log("test");
+  console.log("data2");
   console.log(test);
 
   // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
@@ -106,9 +106,9 @@ const TelegramAuth = () => {
 
       // localStorage
 
-      console.log("token");
-      console.log(token);
-      setTest(token);
+      console.log("data1");
+      console.log(data);
+      setTest(data);
 
       // let parsedBody = null;
       // try {
