@@ -90,18 +90,24 @@ const TelegramAuth = () => {
         }
       );
 
-      // Попытка безопасно распарсить тело ошибки/ответа
-      const text = await response.text();
-      let parsedBody = null;
-      try {
-        parsedBody = text ? JSON.parse(text) : null;
-      } catch {
-        parsedBody = { raw: text };
-      }
-
       if (!response.ok) {
         const detail = parsedBody?.detail || parsedBody?.message || null;
         throw new Error(detail || `Authentication failed: ${response.status}`);
+      }
+
+      // Попытка безопасно распарсить тело ошибки/ответа
+      const token = await response.text();
+
+      console.log("token");
+      console.log(token);
+      console.log("response");
+      console.log(response);
+
+      let parsedBody = null;
+      try {
+        parsedBody = token ? JSON.parse(token) : null;
+      } catch {
+        parsedBody = { raw: token };
       }
 
       // ожидаем структуру { access_token, user }
