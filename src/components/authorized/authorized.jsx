@@ -18,6 +18,10 @@ const TelegramAuth = () => {
   // Храним ссылку на обработчик main button, чтобы коректно снять
   const mainBtnHandlerRef = useRef(null);
 
+  const [test, setTest] = useState(null);
+  console.log("test");
+  console.log(test);
+
   // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
   const parseInitData = (initDataString) => {
     if (!initDataString) return null;
@@ -95,13 +99,14 @@ const TelegramAuth = () => {
         throw new Error(detail || `Authentication failed: ${response.status}`);
       }
 
+      console.log("response");
+      console.log(response);
       // Попытка безопасно распарсить тело ошибки/ответа
       const token = await response.text();
 
       console.log("token");
       console.log(token);
-      console.log("response");
-      console.log(response);
+      setTest(token);
 
       let parsedBody = null;
       try {
