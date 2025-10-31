@@ -102,7 +102,7 @@ const TelegramAuth = () => {
       console.log("response");
       console.log(response);
       // Попытка безопасно распарсить тело ошибки/ответа
-      const token = await response.text();
+      const token = await response.json();
 
       console.log("token");
       console.log(token);
