@@ -104,8 +104,8 @@ const TelegramAuth = () => {
       // Попытка безопасно распарсить тело ошибки/ответа
       const data = await response.json();
       // Если надо посмотреть, что находится в data, то расскоментировать строки ниже
-      // console.log("data1");
-      // console.log(data);
+      console.log("data1");
+      console.log(data);
 
       localStorage.setItem("access_token", data.access_token);
       // if (data.user)

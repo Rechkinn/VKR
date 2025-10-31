@@ -16,6 +16,8 @@ export default function ChangeProfileInfo() {
   const checkboxRef = useRef();
 
   const { infoFromTelegram } = useSelector((store) => store.user);
+  console.log("infoFromTelegram");
+  console.log(infoFromTelegram);
 
   const dispatch = useDispatch();
   function closeFormToChangeProfileInfo() {
@@ -65,6 +67,7 @@ export default function ChangeProfileInfo() {
           name="username"
           initialValue={`@${infoFromTelegram.username}`}
           className={styles.input}
+          readOnly
         />
         <Input
           label="Номер телефона"
