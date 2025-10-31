@@ -19,6 +19,8 @@ export default function ChangeProfileInfo() {
   console.log("infoFromTelegram");
   console.log(infoFromTelegram);
 
+  const formRef = useRef();
+
   const dispatch = useDispatch();
   function closeFormToChangeProfileInfo() {
     dispatch({
@@ -35,6 +37,47 @@ export default function ChangeProfileInfo() {
     });
   }
 
+  function saveNewData(e) {
+    e.preventDefault();
+
+    if (!formRef.current) {
+      console.log("formRef не существует");
+      console.log(formRef);
+      return;
+    }
+
+    const newData = {};
+
+    const inputs = formRef.current.elements;
+    console.log("Массив inputs");
+    console.log(inputs);
+
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].name === "username") continue;
+      newData[inputs[i].name] = inputs[i].value;
+    }
+
+    console.log("Объект newData");
+    console.log(newData);
+
+    const option = {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newData),
+    };
+
+    fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/users/me", option)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Ошибка ${response.status}`);
+        console.log(response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  }
+
   return (
     <section>
       <header className={styles.header}>
@@ -46,18 +89,18 @@ export default function ChangeProfileInfo() {
       <div className={styles.profilePhoto}>
         <ProfilePhoto size={114} />
       </div>
-      <form action="">
+      <form action="" ref={formRef} onSubmit={(e) => saveNewData(e)}>
         <Input
           label="Имя"
           type="text"
-          name="first-name"
+          name="first_name"
           initialValue={infoFromTelegram.first_name}
           className={styles.input}
         />
         <Input
           label="Фамилия"
           type="text"
-          name="last-name"
+          name="last_name"
           initialValue={infoFromTelegram.last_name}
           className={styles.input}
         />
@@ -72,16 +115,14 @@ export default function ChangeProfileInfo() {
         <Input
           label="Номер телефона"
           type="text"
-          name="phone-number"
+          name="phone_number"
           initialValue={
-            localStorage.getItem("account1")
-              ? localStorage.getItem("account1").phone
-              : ""
+            infoFromTelegram?.phone_number ? infoFromTelegram.phone_number : ""
           }
           className={styles.mb18}
         />
 
-        <div className={styles.customCheckboxContainer}>
+        {/* <div className={styles.customCheckboxContainer}>
           <label
             htmlFor="become-driver"
             onClick={() => {
@@ -123,7 +164,7 @@ export default function ChangeProfileInfo() {
             placeholder="Введите код"
             className={styles.inputCode}
           />
-        )}
+        )} */}
 
         <Button
           className={`yellow ${styles.buttonSave}`}
