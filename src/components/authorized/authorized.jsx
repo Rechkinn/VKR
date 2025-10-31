@@ -102,27 +102,31 @@ const TelegramAuth = () => {
       console.log("response");
       console.log(response);
       // Попытка безопасно распарсить тело ошибки/ответа
-      const token = await response.json();
+      const data = await response.json();
+
+      // localStorage
 
       console.log("token");
       console.log(token);
       setTest(token);
 
-      let parsedBody = null;
-      try {
-        parsedBody = token ? JSON.parse(token) : null;
-      } catch {
-        parsedBody = { raw: token };
-      }
+      // let parsedBody = null;
+      // try {
+      //   parsedBody = token ? JSON.parse(token) : null;
+      // } catch {
+      //   parsedBody = { raw: token };
+      // }
 
       // ожидаем структуру { access_token, user }
-      const data = parsedBody;
-      if (!data || !data.access_token) {
-        throw new Error("Invalid auth response from server");
-      }
+      // const data = parsedBody;
+
+      // if (!data || !data.access_token) {
+      //   throw new Error("Invalid auth response from server");
+      // }
 
       localStorage.setItem("access_token", data.access_token);
-      if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+      // if (data.user)
+      localStorage.setItem("user", JSON.stringify(data.user));
       setUserInfo(data.user);
 
       // диспатчим в стор (если нужно)
@@ -133,7 +137,7 @@ const TelegramAuth = () => {
         });
       }
 
-      return data;
+      // return data;
     } catch (err) {
       console.error("❌ Authentication failed:", err);
       setError(err.message || "Authentication error");
@@ -211,9 +215,10 @@ const TelegramAuth = () => {
     if (!authAttemptedRef.current) {
       if (initData && initData.trim() !== "") {
         authAttemptedRef.current = true;
-        authenticateWithTelegram(initData).catch((err) => {
-          console.error("Auth attempt failed:", err);
-        });
+        authenticateWithTelegram(initData);
+        // .catch((err) => {
+        //   console.error("Auth attempt failed:", err);
+        // });
       } else if (localStorage.getItem("access_token")) {
         // нет initData, но есть токен — получаем профиль
         fetchCurrentUser();
