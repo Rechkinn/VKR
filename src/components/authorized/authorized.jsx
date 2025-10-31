@@ -103,26 +103,9 @@ const TelegramAuth = () => {
       console.log(response);
       // Попытка безопасно распарсить тело ошибки/ответа
       const data = await response.json();
-
-      // localStorage
-
-      console.log("data1");
-      console.log(data);
-      setTest(data);
-
-      // let parsedBody = null;
-      // try {
-      //   parsedBody = token ? JSON.parse(token) : null;
-      // } catch {
-      //   parsedBody = { raw: token };
-      // }
-
-      // ожидаем структуру { access_token, user }
-      // const data = parsedBody;
-
-      // if (!data || !data.access_token) {
-      //   throw new Error("Invalid auth response from server");
-      // }
+      // Если надо посмотреть, что находится в data, то расскоментировать строки ниже
+      // console.log("data1");
+      // console.log(data);
 
       localStorage.setItem("access_token", data.access_token);
       // if (data.user)
@@ -160,21 +143,23 @@ const TelegramAuth = () => {
         }
       );
 
-      if (response.ok) {
-        const payload = await response.json();
-        // В разных API ответ может быть { user: {...} } или сразу объект пользователя
-        setUserInfo(payload.user ?? payload);
-        if (payload.user ?? payload) {
-          dispatch({
-            type: SET_USER_TELEGRAM_INFO,
-            infoFromTelegram: payload.user ?? payload,
-          });
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("user");
         }
-      } else if (response.status === 401) {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("user");
+
+        throw new Error(`Ошибка ${response.status}`);
       }
+
+      const data = await response.json();
+      setUserInfo(data.user);
+      dispatch({
+        type: SET_USER_TELEGRAM_INFO,
+        infoFromTelegram: data.user,
+      });
     } catch (err) {
+      setError(err.message || "Authentication error");
       console.error("Failed to fetch user data:", err);
     }
   };
