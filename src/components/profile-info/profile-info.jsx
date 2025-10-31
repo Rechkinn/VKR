@@ -41,12 +41,16 @@ export default function ProfileInfo() {
             <div className={styles.headerPart}>
               <h1 className={styles.ratingText}>Рейтинг</h1>
               <div className={styles.rating}>
-                <div className={styles.stars}>{renderStars(4.3)}</div>
-                <span className={styles.ratingValue}>4.3</span>
+                <div className={styles.stars}>
+                  {renderStars(infoFromTelegram.rating_avg)}
+                </div>
+                <span className={styles.ratingValue}>
+                  {infoFromTelegram.rating_avg}
+                </span>
               </div>
             </div>
             <div className={styles.headerPart}>
-              <Balance balanceValue={2.743} />
+              <Balance balanceValue={infoFromTelegram.balance} />
             </div>
           </header>
 
@@ -57,7 +61,7 @@ export default function ProfileInfo() {
               {`${infoFromTelegram.first_name} ${infoFromTelegram.last_name}`.trim()}
             </h2>
             <p className={styles.userDescription}>
-              В Alltransfer с Января 2025
+              В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]}
             </p>
           </div>
         </section>
