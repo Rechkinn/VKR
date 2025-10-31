@@ -23,6 +23,8 @@ export default function Trips() {
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
 
+  const { infoFromTelegram } = useSelector((store) => store.user);
+
   useEffect(() => {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
@@ -63,7 +65,7 @@ export default function Trips() {
               : `${styles.balance}`
           }
         >
-          <Balance balanceValue={2.743} />
+          <Balance balanceValue={infoFromTelegram.balance} />
           <Button className="black">Пополнить</Button>
         </div>
       </header>
