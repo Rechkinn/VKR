@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { SET_ACTIVE_SECTION_PROFILE } from "../../services/actions/profile";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
+import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
 
 export default function ChangeProfileInfo() {
   // если чекбокс будет активным, то будет показываться поле для вода числового кода
@@ -20,8 +21,8 @@ export default function ChangeProfileInfo() {
   console.log(infoFromTelegram);
 
   const formRef = useRef();
-
   const dispatch = useDispatch();
+
   function closeFormToChangeProfileInfo() {
     dispatch({
       type: SET_VISIBILITY_NAVBAR,
