@@ -157,6 +157,14 @@ export default function FormForNewTrip({ actionType }) {
         required
       />
 
+      <Input
+        label="Куда"
+        iconForLabel={endPointIcon}
+        type="text"
+        name="to_address"
+        required
+      />
+
       <div className={styles.containerForTwoInputs}>
         <div className={styles.container40}>
           <Input
