@@ -16,8 +16,7 @@ export default function FormForNewTrip({ actionType }) {
 
   const formRef = useRef();
 
-  function closeForm(event) {
-    event.preventDefault();
+  function closeForm() {
     dispatch({
       type: actionType,
     });
@@ -110,7 +109,13 @@ export default function FormForNewTrip({ actionType }) {
       className={styles.form}
       onSubmit={(e) => createNewTrip(e)}
     >
-      <Button onClick={closeForm} className={styles.closeButton}>
+      <Button
+        onClick={(e) => {
+          e.preventDefault();
+          closeForm();
+        }}
+        className={styles.closeButton}
+      >
         <img src={closeIcon} alt="Иконка закрытия формы" />
       </Button>
 
