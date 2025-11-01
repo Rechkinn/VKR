@@ -75,15 +75,15 @@ export default function FormForNewTrip({ actionType }) {
     console.log("Объект newData");
     console.log(newData);
 
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwicm9sZSI6ImRyaXZlciIsImV4cCI6MTc2MjA5ODg2NH0.sqHaieRqXjYZCLLfPS_MGcVo1vA4AtrjLR1Pm-20_8A";
+    // const token =
+    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwicm9sZSI6ImRyaXZlciIsImV4cCI6MTc2MjA5ODg2NH0.sqHaieRqXjYZCLLfPS_MGcVo1vA4AtrjLR1Pm-20_8A";
+    // Authorization: `Bearer ${token}`,
 
-    // Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     const option = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
       body: JSON.stringify(newData),
     };
