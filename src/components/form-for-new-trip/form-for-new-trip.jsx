@@ -71,7 +71,8 @@ export default function FormForNewTrip({ actionType }) {
 
       if (
         inputs[i].name === "delegation_commission" ||
-        inputs[i].name === "price"
+        inputs[i].name === "price" ||
+        inputs[i].name === "total_seats"
       ) {
         newData[inputs[i].name] = Number(inputs[i].value);
         continue;
