@@ -41,8 +41,8 @@ export default function FormForNewTrip({ actionType }) {
     }
 
     const newData = {
-      trip_type: "own",
-      is_delegation_active: false,
+      trip_type: "delegated",
+      is_delegation_active: true,
     };
 
     const inputs = formRef.current.elements;
@@ -147,13 +147,6 @@ export default function FormForNewTrip({ actionType }) {
         name="from_address"
         required
       />
-      <Input
-        label="Куда"
-        iconForLabel={endPointIcon}
-        type="text"
-        name="to_address"
-        required
-      />
 
       <div className={styles.containerForTwoInputs}>
         <div className={styles.container40}>
@@ -186,6 +179,13 @@ export default function FormForNewTrip({ actionType }) {
         required
       />
 
+      <Input
+        label="Комссия"
+        type="text"
+        name="delegation_commission"
+        required
+      />
+
       <div>
         <label htmlFor="description" className={styles.label}>
           Дополнительная информация
@@ -202,7 +202,7 @@ export default function FormForNewTrip({ actionType }) {
         // onClick={(e) => e.preventDefault()}
         className={`yellow ${styles.buttonPushForm}`}
       >
-        Опубликовать
+        Отправить в канал
       </Button>
     </form>
   );
