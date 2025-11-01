@@ -69,6 +69,14 @@ export default function FormForNewTrip({ actionType }) {
         continue;
       }
 
+      if (
+        inputs[i].name === "delegation_commission" ||
+        inputs[i].name === "price"
+      ) {
+        newData[inputs[i].name] = Number(inputs[i].value);
+        continue;
+      }
+
       newData[inputs[i].name] = inputs[i].value;
     }
 
@@ -174,14 +182,16 @@ export default function FormForNewTrip({ actionType }) {
       <Input
         label="Номер телефона пассажира"
         iconForLabel={phoneIcon}
-        type="phone"
+        type="tel"
         name="passenger_phone_number"
         required
       />
 
+      <Input label="Стоимость" type="number" name="price" />
+
       <Input
         label="Комссия"
-        type="text"
+        type="number"
         name="delegation_commission"
         required
       />
