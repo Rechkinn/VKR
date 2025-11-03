@@ -4,7 +4,7 @@ import {
 } from "../actions/navbar";
 
 const initialState = {
-  activeSection: "TRIPS",
+  activeSection: "CALENDAR",
   visibility: true,
 };
 
