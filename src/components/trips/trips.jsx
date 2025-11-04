@@ -146,12 +146,12 @@ export default function Trips() {
                   style={styleTripsContainer}
                   className={styles.trips}
                 >
-                  {[1, 2, 3, 4, 5].map((trip) => {
-                    if (trip?.status === currentTab) {
-                      return <Trip status={currentTab} />;
-                    } else {
-                      return <Trip status={currentTab} />;
-                    }
+                  {arrayTrips.map((trip) => {
+                    return <Trip trip={trip} />;
+                    // if (trip?.status === currentTab) {
+                    // } else {
+                    //   return <Trip status={currentTab} trip={trip}  />;
+                    // }
                   })}
                 </div>
               </>

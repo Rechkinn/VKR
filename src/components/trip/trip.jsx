@@ -12,7 +12,7 @@ import { ACTIVE_TAB } from "../../utils/consts";
 import { useDispatch } from "react-redux";
 import { SET_VISIBILITY_MODAL } from "../../services/actions/modal";
 
-export default function Trip({ status }) {
+export default function Trip({ trip }) {
   const dispatch = useDispatch();
   function openModal() {
     dispatch({
@@ -21,11 +21,27 @@ export default function Trip({ status }) {
     });
   }
 
+  function statusInRussian(status) {
+    if (status === "published") {
+      return "Опубликовано";
+    } else if (status === "pending") {
+      return "Ожидание";
+    } else if (status === "confirmed") {
+      return "Подтверждено";
+    } else if (status === "cancelled") {
+      return "Отменено";
+    } else if (status === "completed") {
+      return "Завершено";
+    } else {
+      throw new Error("Передан не существующий статус поездки!");
+    }
+  }
+
   return (
     <article className={styles.trip}>
       <header className={styles.header}>
         <div className={styles.status}>
-          <TripStatus>{status}</TripStatus>
+          <TripStatus>{trip.status}</TripStatus>
           <img
             src={carIcon}
             alt="Иконка автомобиля"
@@ -44,29 +60,33 @@ export default function Trip({ status }) {
       <div className={styles.info}>
         <TripInfoLine>
           <img src={startPointIcon} alt="Иконка начальной точки" />
-          <span>Новокузнецк, Аэропорт</span>
+          <span>{trip.from_address}</span>
         </TripInfoLine>
         <TripInfoLine>
           <img src={endPointIcon} alt="Иконка конечной точки" />
-          <span>Шерегеш, Весенняя 72</span>
+          <span>{trip.to_address}</span>
         </TripInfoLine>
         <div className={styles.containerTimeAndPhone}>
           <TripInfoLine needGreyColor>
             <img src={watchIcon} alt="Иконка часов" />
-            <span>Сегодня 12:00</span>
+            <span>
+              {trip.departure_datetime.split("T")[0] +
+                " " +
+                trip.departure_datetime.split("T")[1].slice(0, 5)}
+            </span>
           </TripInfoLine>
           <TripInfoLine needGreyColor>
             <img src={phoneIcon} alt="Иконка телефонной трубки" />
-            <span>+7(923)777-23-32</span>
+            <span>{trip.passenger_phone_number}</span>
           </TripInfoLine>
         </div>
       </div>
 
-      {status === ACTIVE_TAB && (
+      {/* {trip.status === ACTIVE_TAB && (
         <Button className={`yellow ${styles.buttonFinishTrip}`}>
           Завершить поездку
         </Button>
-      )}
+      )} */}
     </article>
   );
 }
