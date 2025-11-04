@@ -66,6 +66,7 @@ export default function Trips() {
           option
         );
 
+        console.log("response");
         console.log(response);
 
         if (!response.ok) {
@@ -73,6 +74,8 @@ export default function Trips() {
         }
 
         const data = await response.json();
+
+        setArrayTrips("data");
         setArrayTrips(data);
       } catch (err) {
         console.error(err);
