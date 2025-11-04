@@ -2,6 +2,7 @@ import { SET_VISIBILITY_MODAL } from "../actions/modal";
 
 const initialState = {
   visibilityModal: false,
+  currentTrip: null,
 };
 
 export const modalReducer = (state = initialState, action) => {
@@ -10,6 +11,7 @@ export const modalReducer = (state = initialState, action) => {
       return {
         ...state,
         visibilityModal: action.visibilityModal,
+        currentTrip: action.currentTrip,
       };
     default:
       return state;

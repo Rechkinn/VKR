@@ -18,6 +18,7 @@ export default function Trip({ trip }) {
     dispatch({
       type: SET_VISIBILITY_MODAL,
       visibilityModal: true,
+      currentTrip: trip,
     });
   }
 
@@ -51,7 +52,7 @@ export default function Trip({ trip }) {
         <Button onClick={openModal}>
           <img
             src={settingsIcon}
-            alt="Иконка автомобиля"
+            alt="Иконка настроек"
             className={styles.carIcon}
           />
         </Button>
