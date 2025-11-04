@@ -89,7 +89,7 @@ export default function Trips() {
     }
 
     loadData();
-  }, []);
+  }, [rerender]);
 
   function openForm() {
     dispatch({
