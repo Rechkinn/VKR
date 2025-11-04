@@ -211,38 +211,38 @@ const TelegramAuth = () => {
     }
 
     // Настройка MainButton (показываем кнопку закрыть если есть userInfo)
-    if (
-      webApp.MainButton &&
-      (webApp.MainButton.show || webApp.MainButton.onClick)
-    ) {
-      try {
-        webApp.MainButton.setText?.("Close");
-        webApp.MainButton.show?.();
+    // if (
+    //   webApp.MainButton &&
+    //   (webApp.MainButton.show || webApp.MainButton.onClick)
+    // ) {
+    //   try {
+    //     webApp.MainButton.setText?.("Close");
+    //     webApp.MainButton.show?.();
 
-        const handler = () => {
-          try {
-            webApp.close();
-          } catch (e) {
-            console.warn("Failed to close webApp:", e);
-          }
-        };
+    //     const handler = () => {
+    //       try {
+    //         webApp.close();
+    //       } catch (e) {
+    //         console.warn("Failed to close webApp:", e);
+    //       }
+    //     };
 
-        mainBtnHandlerRef.current = handler;
+    //     mainBtnHandlerRef.current = handler;
 
-        // API: onClick может возвращать функцию off, либо использовать offClick
-        const maybeOff = webApp.MainButton.onClick?.(handler);
-        // если onClick вернул функцию, используем её при очистке
-        return () => {
-          if (typeof maybeOff === "function") {
-            maybeOff();
-          } else if (webApp.MainButton.offClick) {
-            webApp.MainButton.offClick(handler);
-          }
-        };
-      } catch (e) {
-        console.warn("Failed to setup MainButton:", e);
-      }
-    }
+    //     // API: onClick может возвращать функцию off, либо использовать offClick
+    //     const maybeOff = webApp.MainButton.onClick?.(handler);
+    //     // если onClick вернул функцию, используем её при очистке
+    //     return () => {
+    //       if (typeof maybeOff === "function") {
+    //         maybeOff();
+    //       } else if (webApp.MainButton.offClick) {
+    //         webApp.MainButton.offClick(handler);
+    //       }
+    //     };
+    //   } catch (e) {
+    //     console.warn("Failed to setup MainButton:", e);
+    //   }
+    // }
     // если ничего возвращаем — cleanup не требуется
     return undefined;
   }, [webApp, dispatch]);
