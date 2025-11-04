@@ -41,7 +41,7 @@ export default function Trip({ trip }) {
     <article className={styles.trip}>
       <header className={styles.header}>
         <div className={styles.status}>
-          <TripStatus>{trip.status}</TripStatus>
+          <TripStatus>{statusInRussian(trip.status)}</TripStatus>
           <img
             src={carIcon}
             alt="Иконка автомобиля"
