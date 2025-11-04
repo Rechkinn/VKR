@@ -31,16 +31,16 @@ export default function ModalOverlay() {
       }),
     };
 
-    fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/trips", option).then(
-      ((response) => {
+    fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/trips", option)
+      .then((response) => {
         if (!response.ok) {
           throw new Error("Ошибка удаления поездки!");
         }
         console.log();
-      }).catch((error) => {
-        console.error(error.message);
       })
-    );
+      .catch((error) => {
+        console.error(error.message);
+      });
 
     closeModal();
   }
