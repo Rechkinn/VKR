@@ -14,7 +14,8 @@
 
 .activeDay {
   composes: day;
-  color: #4a5660;
+  /* color: #4a5660; */
+  color: #afb6bc;
 }
 
 .currentDay {

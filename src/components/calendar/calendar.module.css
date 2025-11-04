@@ -20,7 +20,8 @@
 .calendar {
   margin-bottom: 25px;
   padding: 24px;
-  background-color: rgb(72, 0, 0);
+  /* background-color: rgb(72, 0, 0); */
+  background-color: black;
   width: 100%;
   border-radius: 8px;
 }
@@ -53,6 +54,7 @@
 .containerTrips {
   border: 1px solid #fdcd03;
   border-radius: 5px;
+  overflow-y: auto;
 }
 
 .containerTripsHeader {
