@@ -36,7 +36,7 @@ export default function ModalOverlay() {
         if (!response.ok) {
           throw new Error("Ошибка удаления поездки!");
         }
-        console.log();
+        console.log(response);
       })
       .catch((error) => {
         console.error(error.message);
