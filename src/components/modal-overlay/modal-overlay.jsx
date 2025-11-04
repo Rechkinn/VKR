@@ -26,12 +26,12 @@ export default function ModalOverlay() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
-      body: JSON.stringify({
-        id: currentTrip.id,
-      }),
     };
 
-    fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/trips", option)
+    fetch(
+      `https://xn--80aqak6ae.xn--p1ai/api/v1/trips/${currentTrip.id}`,
+      option
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Ошибка удаления поездки!");
