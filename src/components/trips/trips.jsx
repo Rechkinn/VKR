@@ -42,6 +42,49 @@ export default function Trips() {
     });
   }, []);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [arrayTrips, setArrayTrips] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      setError(null);
+
+      const option = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwicm9sZSI6ImRyaXZlciIsImV4cCI6MTc2MjM0OTM2OX0.FYqEtRXuOqQuhY6YFOv7D0icIHPpJsVdLCknCDlbhIU`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "https://xn--80aqak6ae.xn--p1ai/api/v1/trips/search?trip_type=delegated&skip=0&limit=50",
+          option
+        );
+
+        console.log(response);
+
+        if (!response.ok) {
+          throw new Error("Ошибка запроса поздок!");
+        }
+
+        const data = await response.json();
+        setArrayTrips(data);
+      } catch (err) {
+        console.error(err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, []);
+
   function openForm() {
     dispatch({
       type: SET_VISIBILITY_NAVBAR,
@@ -53,58 +96,65 @@ export default function Trips() {
   }
 
   return (
-    <section ref={sectionRef} className={styles.section}>
-      {visibilityModal && <ModalOverlay />}
-      <header className={styles.header}>
-        <h1 className={styles.title}>Мои поездки</h1>
+    <>
+      {loading && <div>Загрузка данных...</div>}
+      {!loading && error && <div>Ошибка загрузки данных! {error.message}</div>}
 
-        <div
-          className={
-            isOpeningForm
-              ? `${styles.hiddenBalance} ${styles.balance}`
-              : `${styles.balance}`
-          }
-        >
-          <Balance balanceValue={infoFromTelegram.balance} />
-          <Button className="black">Пополнить</Button>
-        </div>
-      </header>
-      <div
-        className={
-          isOpeningForm
-            ? `${styles.containerCreateTrip} ${styles.animationOpenForm}`
-            : `${styles.containerCreateTrip}`
-        }
-      >
-        {isOpeningForm ? (
-          <FormForNewTrip actionType={CLOSE_FORM_SECTION_TRIP} />
-        ) : (
-          <>
-            <Button className={styles.buttonCreateTrip} onClick={openForm}>
-              <span className={styles.buttonIconBackground}>
-                <img src={carIcon} alt="Иконка автомобиля" />
-              </span>
-              <span className={styles.buttonText}>Создать поездку</span>
-            </Button>
-
-            <Tabs />
+      {!loading && !error && arrayTrips && (
+        <section ref={sectionRef} className={styles.section}>
+          {visibilityModal && <ModalOverlay />}
+          <header className={styles.header}>
+            <h1 className={styles.title}>Мои поездки</h1>
 
             <div
-              ref={tripsContainerRef}
-              style={styleTripsContainer}
-              className={styles.trips}
+              className={
+                isOpeningForm
+                  ? `${styles.hiddenBalance} ${styles.balance}`
+                  : `${styles.balance}`
+              }
             >
-              {[1, 2, 3, 4, 5].map((trip) => {
-                if (trip?.status === currentTab) {
-                  return <Trip status={currentTab} />;
-                } else {
-                  return <Trip status={currentTab} />;
-                }
-              })}
+              <Balance balanceValue={infoFromTelegram.balance} />
+              <Button className="black">Пополнить</Button>
             </div>
-          </>
-        )}
-      </div>
-    </section>
+          </header>
+          <div
+            className={
+              isOpeningForm
+                ? `${styles.containerCreateTrip} ${styles.animationOpenForm}`
+                : `${styles.containerCreateTrip}`
+            }
+          >
+            {isOpeningForm ? (
+              <FormForNewTrip actionType={CLOSE_FORM_SECTION_TRIP} />
+            ) : (
+              <>
+                <Button className={styles.buttonCreateTrip} onClick={openForm}>
+                  <span className={styles.buttonIconBackground}>
+                    <img src={carIcon} alt="Иконка автомобиля" />
+                  </span>
+                  <span className={styles.buttonText}>Создать поездку</span>
+                </Button>
+
+                {/* <Tabs /> */}
+
+                <div
+                  ref={tripsContainerRef}
+                  style={styleTripsContainer}
+                  className={styles.trips}
+                >
+                  {[1, 2, 3, 4, 5].map((trip) => {
+                    if (trip?.status === currentTab) {
+                      return <Trip status={currentTab} />;
+                    } else {
+                      return <Trip status={currentTab} />;
+                    }
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      )}
+    </>
   );
 }
