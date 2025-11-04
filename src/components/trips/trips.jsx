@@ -74,8 +74,9 @@ export default function Trips() {
         }
 
         const data = await response.json();
+        console.log("data");
+        console.log(data);
 
-        setArrayTrips("data");
         setArrayTrips(data);
       } catch (err) {
         console.error(err);
