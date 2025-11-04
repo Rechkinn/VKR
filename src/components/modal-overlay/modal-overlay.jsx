@@ -43,6 +43,7 @@ export default function ModalOverlay() {
       });
 
     closeModal();
+    window.location.reload();
   }
 
   return createPortal(
