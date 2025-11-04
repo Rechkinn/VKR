@@ -280,9 +280,9 @@ export default function Calendar() {
           </Button>
         </header>
         <div className={styles.trips}>
-          {[1, 2, 3, 4, 5].map((element) => {
+          {/* {[1, 2, 3, 4, 5].map((element) => {
             return <Trip key={element} status="Запланировано" />;
-          })}
+          })} */}
         </div>
       </div>
     </section>

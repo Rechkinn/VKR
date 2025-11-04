@@ -11,7 +11,11 @@ import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import Input from "../input/input";
 import { useRef } from "react";
 
-export default function FormForNewTrip({ actionType }) {
+export default function FormForNewTrip({
+  actionType,
+  rerender,
+  functionForRerender,
+}) {
   const dispatch = useDispatch();
 
   const formRef = useRef();
@@ -107,6 +111,7 @@ export default function FormForNewTrip({ actionType }) {
         console.log("trip");
         console.log(trip);
         closeForm();
+        functionForRerender();
       })
       .catch((error) => console.log(error));
   }

@@ -15,6 +15,8 @@ import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 
 export default function Trips() {
+  const [rerender, setRerender] = useState(false);
+
   const dispatch = useDispatch();
   const { currentTab, isOpeningForm } = useSelector((store) => store.trips);
   const { visibilityModal } = useSelector((store) => store.modal);
@@ -99,6 +101,10 @@ export default function Trips() {
     });
   }
 
+  function functionForRerender() {
+    setRerender((prev) => !prev);
+  }
+
   return (
     <>
       {loading && <div>Загрузка данных...</div>}
@@ -129,7 +135,11 @@ export default function Trips() {
             }
           >
             {isOpeningForm ? (
-              <FormForNewTrip actionType={CLOSE_FORM_SECTION_TRIP} />
+              <FormForNewTrip
+                actionType={CLOSE_FORM_SECTION_TRIP}
+                rerender={rerender}
+                functionForRerender={functionForRerender}
+              />
             ) : (
               <>
                 <Button className={styles.buttonCreateTrip} onClick={openForm}>
@@ -147,7 +157,7 @@ export default function Trips() {
                   className={styles.trips}
                 >
                   {arrayTrips.map((trip) => {
-                    return <Trip trip={trip} />;
+                    return <Trip key={id} trip={trip} />;
                     // if (trip?.status === currentTab) {
                     // } else {
                     //   return <Trip status={currentTab} trip={trip}  />;
