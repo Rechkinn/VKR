@@ -157,7 +157,7 @@ export default function Trips() {
                   className={styles.trips}
                 >
                   {arrayTrips.map((trip) => {
-                    return <Trip key={id} trip={trip} />;
+                    return <Trip key={trip.id} trip={trip} />;
                     // if (trip?.status === currentTab) {
                     // } else {
                     //   return <Trip status={currentTab} trip={trip}  />;
