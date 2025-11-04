@@ -31,8 +31,8 @@ function renderApp() {
   root.render(
     <StrictMode>
       <Provider store={store}>
-        {/* <Authorized /> */}
-        <App />
+        <Authorized />
+        {/* <App /> */}
       </Provider>
     </StrictMode>
   );
