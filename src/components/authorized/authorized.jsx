@@ -15,12 +15,6 @@ const TelegramAuth = () => {
 
   // Флаг, чтобы не запускать authenticate несколько раз
   const authAttemptedRef = useRef(false);
-  // Храним ссылку на обработчик main button, чтобы коректно снять
-  const mainBtnHandlerRef = useRef(null);
-
-  const [test, setTest] = useState(null);
-  console.log("data2");
-  console.log(test);
 
   // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
   const parseInitData = (initDataString) => {
@@ -101,15 +95,13 @@ const TelegramAuth = () => {
 
       console.log("response");
       console.log(response);
-      // Попытка безопасно распарсить тело ошибки/ответа
+
       const data = await response.json();
-      // Если надо посмотреть, что находится в data, то расскоментировать строки ниже
-      console.log("data1");
       console.log(data);
 
       localStorage.setItem("access_token", data.access_token);
-      // if (data.user)
       localStorage.setItem("user", JSON.stringify(data.user));
+
       setUserInfo(data.user);
 
       // диспатчим в стор (если нужно)
@@ -124,7 +116,7 @@ const TelegramAuth = () => {
     } catch (err) {
       console.error("❌ Authentication failed:", err);
       setError(err.message || "Authentication error");
-      throw err;
+      // throw err;
     } finally {
       setLoading(false);
     }
@@ -172,13 +164,13 @@ const TelegramAuth = () => {
     const initData = webApp.initData;
 
     // debug info
-    setDebugInfo({
-      initDataAvailable: !!initData,
-      initDataLength: initData?.length || 0,
-      initDataUnsafe: unsafe,
-      hasToken: !!localStorage.getItem("access_token"),
-      platform: webApp.platform ?? null,
-    });
+    // setDebugInfo({
+    //   initDataAvailable: !!initData,
+    //   initDataLength: initData?.length || 0,
+    //   initDataUnsafe: unsafe,
+    //   hasToken: !!localStorage.getItem("access_token"),
+    //   platform: webApp.platform ?? null,
+    // });
 
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
@@ -201,9 +193,6 @@ const TelegramAuth = () => {
       if (initData && initData.trim() !== "") {
         authAttemptedRef.current = true;
         authenticateWithTelegram(initData);
-        // .catch((err) => {
-        //   console.error("Auth attempt failed:", err);
-        // });
       } else if (localStorage.getItem("access_token")) {
         // нет initData, но есть токен — получаем профиль
         fetchCurrentUser();
@@ -270,16 +259,6 @@ const TelegramAuth = () => {
           <p>{error}</p>
           <button onClick={handleManualAuth}>🔄 Retry Authentication</button>
         </div>
-      )}
-
-      {/* Место для отладки — показываем только если есть debugInfo */}
-      {debugInfo && (
-        // <div style={{ fontSize: 12, color: "#666", marginTop: 8 }}>
-        //   <div>initDataAvailable: {String(debugInfo.initDataAvailable)}</div>
-        //   <div>initDataLength: {debugInfo.initDataLength}</div>
-        //   <div>hasToken: {String(debugInfo.hasToken)}</div>
-        // </div>
-        <></>
       )}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
