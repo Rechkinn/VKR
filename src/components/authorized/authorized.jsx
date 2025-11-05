@@ -189,14 +189,15 @@ const TelegramAuth = () => {
     console.log("перед аутентифицкацией");
     // if (!authAttemptedRef.current) {
     console.log("аутентифицируемся..........");
-    if (initData && initData.trim() !== "") {
-      console.log("прошла аутентификация");
-      authAttemptedRef.current = true;
-      authenticateWithTelegram(initData);
-    } else if (localStorage.getItem("access_token")) {
+
+    if (localStorage.getItem("access_token")) {
       console.log("аутентификация по токену");
       // нет initData, но есть токен — получаем профиль
       fetchCurrentUser();
+    } else if (initData && initData.trim() !== "") {
+      console.log("прошла аутентификация initData");
+      authAttemptedRef.current = true;
+      authenticateWithTelegram(initData);
     }
     // }
 
