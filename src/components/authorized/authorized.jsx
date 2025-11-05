@@ -1,9 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import App from "../app/app";
-import { useDispatch } from "react-redux";
-import { SET_USER_TELEGRAM_INFO } from "../../services/actions/user";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  authenticatedWithAccessToken,
+  authentication,
+  authenticationWithAccessToken,
+  SET_USER_TELEGRAM_INFO,
+  USER_TELEGRAM_INFO_REQUEST_ERROR,
+} from "../../services/actions/user";
 
 const TelegramAuth = () => {
+  const {
+    infoFromTelegram,
+    userTelegramInfoRequest,
+    userTelegramInfoRequestError,
+  } = useSelector((store) => store.user);
+
   const [webApp, setWebApp] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,8 +47,13 @@ const TelegramAuth = () => {
       }
       return result;
     } catch (err) {
-      console.error("Error parsing initData:", err);
-      return { raw: initDataString };
+      dispatch({
+        type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+      });
+
+      // console.error("Error parsing initData:", err);
+      // return { raw: initDataString };
+      return null;
     }
   };
 
@@ -62,105 +79,107 @@ const TelegramAuth = () => {
         console.warn("Telegram WebApp initialization warning:", e);
       }
     } else {
-      console.warn(
-        "Telegram WebApp not available - running in development mode or outside Telegram."
-      );
-      setError("Telegram WebApp not detected. Please open in Telegram.");
+      // console.warn(
+      //   "Telegram WebApp not available - running in development mode or outside Telegram."
+      // );
+      dispatch({
+        type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+      });
     }
   }, []);
 
   // Универсальная функция аутентификации (без утечек)
-  const authenticateWithTelegram = async (initData) => {
-    if (!initData) {
-      throw new Error("No init data available");
-    }
+  // const authenticateWithTelegram = async (initData) => {
+  //   if (!initData) {
+  //     throw new Error("No init data available");
+  //   }
 
-    setLoading(true);
-    setError(null);
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      const response = await fetch(
-        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ init_data: initData }),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/telegram",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ init_data: initData }),
+  //       }
+  //     );
 
-      if (!response.ok) {
-        const detail = parsedBody?.detail || parsedBody?.message || null;
-        throw new Error(detail || `Authentication failed: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       const detail = parsedBody?.detail || parsedBody?.message || null;
+  //       throw new Error(detail || `Authentication failed: ${response.status}`);
+  //     }
 
-      console.log("response");
-      console.log(response);
+  //     console.log("response");
+  //     console.log(response);
 
-      const data = await response.json();
-      console.log(data);
+  //     const data = await response.json();
+  //     console.log(data);
 
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+  //     localStorage.setItem("access_token", data.access_token);
+  //     localStorage.setItem("user", JSON.stringify(data.user));
 
-      setUserInfo(data.user);
+  //     setUserInfo(data.user);
 
-      // диспатчим в стор (если нужно)
-      if (data.user) {
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: data.user,
-        });
-      }
+  //     // диспатчим в стор (если нужно)
+  //     if (data.user) {
+  //       dispatch({
+  //         type: SET_USER_TELEGRAM_INFO,
+  //         infoFromTelegram: data.user,
+  //       });
+  //     }
 
-      // return data;
-    } catch (err) {
-      console.error("❌ Authentication failed:", err);
-      setError(err.message || "Authentication error");
-      // throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // return data;
+  //   } catch (err) {
+  //     console.error("❌ Authentication failed:", err);
+  //     setError(err.message || "Authentication error");
+  //     // throw err;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  // Получение текущего пользователя по токену
-  const fetchCurrentUser = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) return;
+  // // Получение текущего пользователя по токену
+  // const fetchCurrentUser = async () => {
+  //   const token = localStorage.getItem("access_token");
+  //   if (!token) return;
 
-    try {
-      const response = await fetch(
-        "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       "https://xn--80aqak6ae.xn--p1ai/api/v1/auth/me",
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("user");
-        }
+  //     if (!response.ok) {
+  //       if (response.status === 401) {
+  //         localStorage.removeItem("access_token");
+  //         localStorage.removeItem("user");
+  //       }
 
-        throw new Error(`Ошибка ${response.status}`);
-      }
+  //       throw new Error(`Ошибка ${response.status}`);
+  //     }
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      console.log(
-        "это приходит по запросу https:/xn--80aqak6ae.xn--p1ai/api/v1/auth/me"
-      );
-      console.log(data);
+  //     console.log(
+  //       "это приходит по запросу https:/xn--80aqak6ae.xn--p1ai/api/v1/auth/me"
+  //     );
+  //     console.log(data);
 
-      setUserInfo(data);
-      dispatch({
-        type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: data,
-      });
-    } catch (err) {
-      setError(err.message || "Authentication error");
-      console.error("Failed to fetch user data:", err);
-    }
-  };
+  //     setUserInfo(data);
+  //     dispatch({
+  //       type: SET_USER_TELEGRAM_INFO,
+  //       infoFromTelegram: data,
+  //     });
+  //   } catch (err) {
+  //     setError(err.message || "Authentication error");
+  //     console.error("Failed to fetch user data:", err);
+  //   }
+  // };
 
   // Основной эффект — реагируем на появление webApp и делаем одну логичную последовательность
   useEffect(() => {
@@ -169,15 +188,9 @@ const TelegramAuth = () => {
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
 
-    console.log("unsafe");
-    console.log(unsafe);
-    console.log("initData");
-    console.log(initData);
-
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
-
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
@@ -199,15 +212,19 @@ const TelegramAuth = () => {
     if (localStorage.getItem("access_token")) {
       console.log("аутентификация по токену");
       // нет initData, но есть токен — получаем профиль
-      fetchCurrentUser();
+      // fetchCurrentUser();
+
+      authenticationWithAccessToken();
     } else if (initData && initData.trim() !== "") {
       console.log("прошла аутентификация initData");
       authAttemptedRef.current = true;
-      authenticateWithTelegram(initData);
+      // authenticateWithTelegram(initData);
+
+      authentication(initData);
     }
     // }
 
-    return undefined;
+    // return undefined;
   }, [webApp, dispatch]);
 
   // ручная аутентификация (кнопка Retry)
@@ -223,23 +240,20 @@ const TelegramAuth = () => {
 
   return (
     <>
-      {loading && (
-        <p style={{ margin: 0, color: "#1976d2" }}>🔄 Authenticating...</p>
+      {userTelegramInfoRequest && (
+        <p style={{ color: "blue" }}>Аутентификация...</p>
       )}
 
-      {error && (
-        <div>
-          <p>❌ Authentication Error</p>
-          <p>{error}</p>
-          {/* <button onClick={handleManualAuth}>🔄 Retry Authentication</button> */}
-        </div>
+      {userTelegramInfoRequestError && (
+        <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {(telegramUser || userInfo) && <App />}
+      {/* {(telegramUser || userInfo) && <App />} */}
+      {(telegramUser || infoFromTelegram?.id) && <App />}
 
       {/* если ничего нет — краткая подсказка */}
-      {!telegramUser && !userInfo && !loading && (
+      {!telegramUser && !infoFromTelegram?.id && !userTelegramInfoRequest && (
         <div style={{ color: "#666", marginTop: 12 }}>
           Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
           вы в браузере — убедитесь, что приложение запущено через кнопку
