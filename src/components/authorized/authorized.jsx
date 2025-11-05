@@ -194,6 +194,11 @@ const TelegramAuth = () => {
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
 
+    console.log("webApp");
+    console.log(webApp);
+    console.log("webApp.initData");
+    console.log(webApp.initData);
+
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       // setTelegramUser(unsafe.user);

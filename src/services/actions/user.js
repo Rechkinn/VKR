@@ -15,7 +15,7 @@ export const REMOVE_USER_ACCESS_TOKEN = "REMOVE_USER_ACCESS_TOKEN";
 export const REMOVE_USER_DATA_IN_LOCAL_STORAGE =
   "REMOVE_USER_DATA_IN_LOCAL_STORAGE";
 
-export const authentication = (initData) => {
+export function authentication(initData) {
   console.log("защли в функцию аутентификации");
   return function (dispatch) {
     dispatch({
@@ -57,7 +57,7 @@ export const authentication = (initData) => {
         });
       });
   };
-};
+}
 
 export const authenticationWithAccessToken = () => {
   return function (dispatch) {
