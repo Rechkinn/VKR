@@ -1,6 +1,5 @@
 import {
   SET_USER_TELEGRAM_INFO,
-  // SET_USER_BACKEND_INFO,
   USER_TELEGRAM_INFO_REQUEST_ERROR,
   USER_TELEGRAM_INFO_REQUEST,
   USER_TELEGRAM_INFO_REQUEST_SUCCESS,
@@ -26,7 +25,6 @@ import {
 
 const initialState = {
   infoFromTelegram: {},
-  // infoFromBackend: {},
   userTelegramInfoRequest: false,
   userTelegramInfoRequestError: false,
 };

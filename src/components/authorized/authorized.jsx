@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import App from "../app/app";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,27 +6,17 @@ import {
   authenticationWithAccessToken,
   SET_USER_TELEGRAM_INFO,
   USER_TELEGRAM_INFO_REQUEST_ERROR,
-  USER_TELEGRAM_INFO_REQUEST_SUCCESS,
 } from "../../services/actions/user";
 
 const TelegramAuth = () => {
+  const [webApp, setWebApp] = useState(null);
+  const dispatch = useDispatch();
+
   const {
     infoFromTelegram,
     userTelegramInfoRequest,
     userTelegramInfoRequestError,
   } = useSelector((store) => store.user);
-
-  const [webApp, setWebApp] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState(null);
-  const [telegramUser, setTelegramUser] = useState(null);
-
-  const dispatch = useDispatch();
-
-  // Флаг, чтобы не запускать authenticate несколько раз
-  const authAttemptedRef = useRef(false);
 
   // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
   const parseInitData = (initDataString) => {
@@ -46,20 +36,13 @@ const TelegramAuth = () => {
         }
       }
 
-      console.log("result");
-      console.log(result);
-
       return result;
     } catch (err) {
-      // dispatch({
-      //   type: USER_TELEGRAM_INFO_REQUEST_ERROR,
-      // });
+      dispatch({
+        type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+      });
 
-      // console.error("Error parsing initData:", err);
-      console.log("{ raw: initDataString }");
-      console.log({ raw: initDataString });
       return { raw: initDataString };
-      // return null;
     }
   };
 
@@ -73,21 +56,13 @@ const TelegramAuth = () => {
         tgWebApp.ready();
         // expand может не сработать в некоторых контекстах, но попытка безопасна
         if (typeof tgWebApp.expand === "function") tgWebApp.expand();
-
-        // Подстройка внешнего вида (в новых версиях методы поддерживаются)
-        // if (typeof tgWebApp.setHeaderColor === "function")
-        //   tgWebApp.setHeaderColor("#0088cc");
-        // if (typeof tgWebApp.setBackgroundColor === "function")
-        //   tgWebApp.setBackgroundColor("#ffffff");
-
-        console.log("Telegram WebApp initialized:", tgWebApp);
       } catch (e) {
         console.warn("Telegram WebApp initialization warning:", e);
+        dispatch({
+          type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+        });
       }
     } else {
-      // console.warn(
-      //   "Telegram WebApp not available - running in development mode or outside Telegram."
-      // );
       dispatch({
         type: USER_TELEGRAM_INFO_REQUEST_ERROR,
       });
@@ -206,20 +181,12 @@ const TelegramAuth = () => {
       }
     }
 
-    console.log("аутентифицируемся..........");
-
     if (localStorage.getItem("access_token")) {
-      console.log("аутентификация по токену");
-
       dispatch(authenticationWithAccessToken());
     } else if (initData && initData.trim() !== "") {
       dispatch(authentication(initData));
     }
   }, [webApp, dispatch]);
-
-  console.log("userTelegramInfoRequest", userTelegramInfoRequest);
-  console.log("userTelegramInfoRequestError", userTelegramInfoRequestError);
-  console.log("infoFromTelegram", infoFromTelegram);
 
   return (
     <>
@@ -231,21 +198,19 @@ const TelegramAuth = () => {
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
-      {/* показываем основной апп, если есть telegramUser или userInfo */}
-      {/* {(telegramUser || userInfo) && <App />} */}
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && <App />}
 
-      {/* если ничего нет — краткая подсказка */}
-
-      {!infoFromTelegram?.telegram_id && !userTelegramInfoRequest && (
-        <div style={{ color: "#666", marginTop: 12 }}>
-          Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
-          вы в браузере — убедитесь, что приложение запущено через кнопку
-          бота/inline-клавиатуру, чтобы telegram передал initData.
-        </div>
-      )}
+      {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        !infoFromTelegram?.telegram_id && (
+          <div style={{ color: "#666", marginTop: 12 }}>
+            Откройте мини-приложение внутри Telegram (в мобильной версии/на
+            десктопе). Если вы в браузере — убедитесь, что приложение запущено
+            через кнопку открытия приложения.
+          </div>
+        )}
     </>
   );
 };
