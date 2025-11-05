@@ -81,6 +81,10 @@ const TelegramAuth = () => {
         //   tgWebApp.setBackgroundColor("#ffffff");
 
         console.log("Telegram WebApp initialized:", tgWebApp);
+
+        console.log("ПРОБУЕМ АВТОРИЗОВАТЬСЯ");
+        setDataCustom(tgWebApp);
+        console.log("ПОСЛЕ АВТОРИЗАЦИИ");
       } catch (e) {
         console.warn("Telegram WebApp initialization warning:", e);
       }
@@ -93,6 +97,58 @@ const TelegramAuth = () => {
       });
     }
   }, []);
+
+  function setDataCustom(webApp) {
+    if (!webApp) return;
+
+    const unsafe = webApp.initDataUnsafe;
+    const initData = webApp.initData;
+
+    console.log("webApp");
+    console.log(webApp);
+    console.log("webApp.initData");
+    console.log(webApp.initData);
+
+    // Если есть user в unsafe — используем его сразу
+    if (unsafe?.user) {
+      // setTelegramUser(unsafe.user);
+      dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
+    } else {
+      // пробуем спарсить initData (если есть)
+      const parsed = parseInitData(initData);
+      if (parsed?.user) {
+        // setTelegramUser(parsed.user);
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: parsed.user,
+        });
+      }
+    }
+
+    // Если уже есть токен в localStorage — пробуем получить профиль
+    console.log("перед аутентифицкацией");
+    // if (!infoFromTelegram?.telegram_id) {
+    console.log("аутентифицируемся..........");
+
+    if (localStorage.getItem("access_token")) {
+      console.log("аутентификация по токену");
+      // нет initData, но есть токен — получаем профиль
+      // fetchCurrentUser();
+
+      authenticationWithAccessToken();
+    } else if (initData && initData.trim() !== "") {
+      console.log("аутентификация initData");
+      console.log("initData");
+      console.log(initData);
+
+      // authAttemptedRef.current = true;
+      // authenticateWithTelegram(initData);
+
+      // authentication(initData);
+    }
+    // }
+    authentication(initData);
+  }
 
   // Универсальная функция аутентификации (без утечек)
   // const authenticateWithTelegram = async (initData) => {
@@ -189,55 +245,47 @@ const TelegramAuth = () => {
 
   // Основной эффект — реагируем на появление webApp и делаем одну логичную последовательность
   useEffect(() => {
-    if (!webApp) return;
-
-    const unsafe = webApp.initDataUnsafe;
-    const initData = webApp.initData;
-
-    console.log("webApp");
-    console.log(webApp);
-    console.log("webApp.initData");
-    console.log(webApp.initData);
-
-    // Если есть user в unsafe — используем его сразу
-    if (unsafe?.user) {
-      // setTelegramUser(unsafe.user);
-      dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
-    } else {
-      // пробуем спарсить initData (если есть)
-      const parsed = parseInitData(initData);
-      if (parsed?.user) {
-        // setTelegramUser(parsed.user);
-        dispatch({
-          type: SET_USER_TELEGRAM_INFO,
-          infoFromTelegram: parsed.user,
-        });
-      }
-    }
-
-    // Если уже есть токен в localStorage — пробуем получить профиль
-    console.log("перед аутентифицкацией");
-    // if (!infoFromTelegram?.telegram_id) {
-    console.log("аутентифицируемся..........");
-
-    if (localStorage.getItem("access_token")) {
-      console.log("аутентификация по токену");
-      // нет initData, но есть токен — получаем профиль
-      // fetchCurrentUser();
-
-      authenticationWithAccessToken();
-    } else if (initData && initData.trim() !== "") {
-      console.log("аутентификация initData");
-      console.log("initData");
-      console.log(initData);
-
-      // authAttemptedRef.current = true;
-      // authenticateWithTelegram(initData);
-
-      // authentication(initData);
-    }
+    // if (!webApp) return;
+    // const unsafe = webApp.initDataUnsafe;
+    // const initData = webApp.initData;
+    // console.log("webApp");
+    // console.log(webApp);
+    // console.log("webApp.initData");
+    // console.log(webApp.initData);
+    // // Если есть user в unsafe — используем его сразу
+    // if (unsafe?.user) {
+    //   // setTelegramUser(unsafe.user);
+    //   dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
+    // } else {
+    //   // пробуем спарсить initData (если есть)
+    //   const parsed = parseInitData(initData);
+    //   if (parsed?.user) {
+    //     // setTelegramUser(parsed.user);
+    //     dispatch({
+    //       type: SET_USER_TELEGRAM_INFO,
+    //       infoFromTelegram: parsed.user,
+    //     });
+    //   }
     // }
-    authentication(initData);
+    // // Если уже есть токен в localStorage — пробуем получить профиль
+    // console.log("перед аутентифицкацией");
+    // // if (!infoFromTelegram?.telegram_id) {
+    // console.log("аутентифицируемся..........");
+    // if (localStorage.getItem("access_token")) {
+    //   console.log("аутентификация по токену");
+    //   // нет initData, но есть токен — получаем профиль
+    //   // fetchCurrentUser();
+    //   authenticationWithAccessToken();
+    // } else if (initData && initData.trim() !== "") {
+    //   console.log("аутентификация initData");
+    //   console.log("initData");
+    //   console.log(initData);
+    //   // authAttemptedRef.current = true;
+    //   // authenticateWithTelegram(initData);
+    //   // authentication(initData);
+    // }
+    // // }
+    // authentication(initData);
     // return undefined;
   }, [webApp, dispatch]);
 
