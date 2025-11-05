@@ -45,15 +45,21 @@ const TelegramAuth = () => {
           result[key] = value;
         }
       }
+
+      console.log("result");
+      console.log(result);
+
       return result;
     } catch (err) {
-      dispatch({
-        type: USER_TELEGRAM_INFO_REQUEST_ERROR,
-      });
+      // dispatch({
+      //   type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+      // });
 
       // console.error("Error parsing initData:", err);
-      // return { raw: initDataString };
-      return null;
+      console.log("{ raw: initDataString }");
+      console.log({ raw: initDataString });
+      return { raw: initDataString };
+      // return null;
     }
   };
 
@@ -217,6 +223,9 @@ const TelegramAuth = () => {
       authenticationWithAccessToken();
     } else if (initData && initData.trim() !== "") {
       console.log("аутентификация initData");
+      console.log("initData");
+      console.log(initData);
+
       // authAttemptedRef.current = true;
       // authenticateWithTelegram(initData);
 

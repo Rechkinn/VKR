@@ -40,13 +40,6 @@ export const userReducer = (state = initialState, action) => {
           ...Object.assign(state.infoFromTelegram, action.infoFromTelegram),
         },
       };
-    // case SET_USER_BACKEND_INFO:
-    //   return {
-    //     ...state,
-    //     infoFromBackend: {
-    //       ...Object.assign(state.infoFromBackend, action.infoFromBackend),
-    //     },
-    //   };
     case USER_TELEGRAM_INFO_REQUEST:
       return {
         ...state,
