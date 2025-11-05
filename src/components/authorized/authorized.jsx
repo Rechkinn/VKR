@@ -257,6 +257,7 @@ const TelegramAuth = () => {
         "userTelegramInfoRequestError",
         userTelegramInfoRequestError
       )}
+      {console.log("infoFromTelegram", infoFromTelegram)}
       {!telegramUser &&
         !infoFromTelegram?.telegram_id &&
         !userTelegramInfoRequest && (
