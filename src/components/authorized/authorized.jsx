@@ -175,11 +175,19 @@ const TelegramAuth = () => {
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
+      console.log("unsafe");
+      console.log(unsafe);
+      console.log("unsafe?.user");
+      console.log(unsafe?.user);
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
+        console.log("parsed");
+        console.log(parsed);
+        console.log("parsed?.user");
+        console.log(parsed?.user);
         setTelegramUser(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
