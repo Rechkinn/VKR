@@ -22,6 +22,9 @@ export const authentication = (initData) => {
       type: USER_TELEGRAM_INFO_REQUEST,
     });
 
+    console.log("initData в функции authentication");
+    console.log(initData);
+
     const option = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
