@@ -6,6 +6,7 @@ import {
   authenticationWithAccessToken,
   SET_USER_TELEGRAM_INFO,
   USER_TELEGRAM_INFO_REQUEST_ERROR,
+  USER_TELEGRAM_INFO_REQUEST_SUCCESS,
 } from "../../services/actions/user";
 
 const TelegramAuth = () => {
@@ -205,23 +206,27 @@ const TelegramAuth = () => {
 
     // Если уже есть токен в localStorage — пробуем получить профиль
     console.log("перед аутентифицкацией");
-    // if (!authAttemptedRef.current) {
-    console.log("аутентифицируемся..........");
+    if (!infoFromTelegram?.telegram_id) {
+      console.log("аутентифицируемся..........");
 
-    if (localStorage.getItem("access_token")) {
-      console.log("аутентификация по токену");
-      // нет initData, но есть токен — получаем профиль
-      // fetchCurrentUser();
+      if (localStorage.getItem("access_token")) {
+        console.log("аутентификация по токену");
+        // нет initData, но есть токен — получаем профиль
+        // fetchCurrentUser();
 
-      authenticationWithAccessToken();
-    } else if (initData && initData.trim() !== "") {
-      console.log("прошла аутентификация initData");
-      authAttemptedRef.current = true;
-      // authenticateWithTelegram(initData);
+        authenticationWithAccessToken();
+      } else if (initData && initData.trim() !== "") {
+        console.log("прошла аутентификация initData");
+        authAttemptedRef.current = true;
+        // authenticateWithTelegram(initData);
 
-      authentication(initData);
+        authentication(initData);
+      }
+    } else {
+      dispatch({
+        type: USER_TELEGRAM_INFO_REQUEST_SUCCESS,
+      });
     }
-    // }
 
     // return undefined;
   }, [webApp, dispatch]);
@@ -243,13 +248,15 @@ const TelegramAuth = () => {
         <p style={{ color: "blue" }}>Аутентификация...</p>
       )}
 
-      {userTelegramInfoRequestError && (
+      {!userTelegramInfoRequest && userTelegramInfoRequestError && (
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {/* {(telegramUser || userInfo) && <App />} */}
-      {(telegramUser || infoFromTelegram?.telegram_id) && <App />}
+      {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        (telegramUser || infoFromTelegram?.telegram_id) && <App />}
 
       {/* если ничего нет — краткая подсказка */}
       {console.log("userTelegramInfoRequest", userTelegramInfoRequest)}
