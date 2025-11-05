@@ -27,7 +27,7 @@ import {
 const initialState = {
   infoFromTelegram: {},
   // infoFromBackend: {},
-  userTelegramInfoRequest: true,
+  userTelegramInfoRequest: false,
   userTelegramInfoRequestError: false,
 };
 

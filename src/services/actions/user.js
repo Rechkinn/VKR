@@ -16,6 +16,7 @@ export const REMOVE_USER_DATA_IN_LOCAL_STORAGE =
   "REMOVE_USER_DATA_IN_LOCAL_STORAGE";
 
 export const authentication = (initData) => {
+  console.log("защли в функцию аутентификации");
   return function (dispatch) {
     dispatch({
       type: USER_TELEGRAM_INFO_REQUEST,
