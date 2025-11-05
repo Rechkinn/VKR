@@ -52,10 +52,10 @@ const TelegramAuth = () => {
         if (typeof tgWebApp.expand === "function") tgWebApp.expand();
 
         // Подстройка внешнего вида (в новых версиях методы поддерживаются)
-        if (typeof tgWebApp.setHeaderColor === "function")
-          tgWebApp.setHeaderColor("#0088cc");
-        if (typeof tgWebApp.setBackgroundColor === "function")
-          tgWebApp.setBackgroundColor("#ffffff");
+        // if (typeof tgWebApp.setHeaderColor === "function")
+        //   tgWebApp.setHeaderColor("#0088cc");
+        // if (typeof tgWebApp.setBackgroundColor === "function")
+        //   tgWebApp.setBackgroundColor("#ffffff");
 
         console.log("Telegram WebApp initialized:", tgWebApp);
       } catch (e) {
@@ -163,31 +163,20 @@ const TelegramAuth = () => {
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
 
-    // debug info
-    // setDebugInfo({
-    //   initDataAvailable: !!initData,
-    //   initDataLength: initData?.length || 0,
-    //   initDataUnsafe: unsafe,
-    //   hasToken: !!localStorage.getItem("access_token"),
-    //   platform: webApp.platform ?? null,
-    // });
+    console.log("unsafe");
+    console.log(unsafe);
+    console.log("initData");
+    console.log(initData);
 
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
       setTelegramUser(unsafe.user);
-      console.log("unsafe");
-      console.log(unsafe);
-      console.log("unsafe?.user");
-      console.log(unsafe?.user);
+
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
-        console.log("parsed");
-        console.log(parsed);
-        console.log("parsed?.user");
-        console.log(parsed?.user);
         setTelegramUser(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
@@ -197,63 +186,33 @@ const TelegramAuth = () => {
     }
 
     // Если уже есть токен в localStorage — пробуем получить профиль
+    console.log("перед аутентифицкацией");
     if (!authAttemptedRef.current) {
+      console.log("аутентифицируемся..........");
       if (initData && initData.trim() !== "") {
+        console.log("прошла аутентификация");
         authAttemptedRef.current = true;
         authenticateWithTelegram(initData);
       } else if (localStorage.getItem("access_token")) {
+        console.log("аутентификация по токену");
         // нет initData, но есть токен — получаем профиль
         fetchCurrentUser();
       }
     }
 
-    // Настройка MainButton (показываем кнопку закрыть если есть userInfo)
-    // if (
-    //   webApp.MainButton &&
-    //   (webApp.MainButton.show || webApp.MainButton.onClick)
-    // ) {
-    //   try {
-    //     webApp.MainButton.setText?.("Close");
-    //     webApp.MainButton.show?.();
-
-    //     const handler = () => {
-    //       try {
-    //         webApp.close();
-    //       } catch (e) {
-    //         console.warn("Failed to close webApp:", e);
-    //       }
-    //     };
-
-    //     mainBtnHandlerRef.current = handler;
-
-    //     // API: onClick может возвращать функцию off, либо использовать offClick
-    //     const maybeOff = webApp.MainButton.onClick?.(handler);
-    //     // если onClick вернул функцию, используем её при очистке
-    //     return () => {
-    //       if (typeof maybeOff === "function") {
-    //         maybeOff();
-    //       } else if (webApp.MainButton.offClick) {
-    //         webApp.MainButton.offClick(handler);
-    //       }
-    //     };
-    //   } catch (e) {
-    //     console.warn("Failed to setup MainButton:", e);
-    //   }
-    // }
-    // если ничего возвращаем — cleanup не требуется
     return undefined;
   }, [webApp, dispatch]);
 
   // ручная аутентификация (кнопка Retry)
-  const handleManualAuth = () => {
-    if (webApp?.initData) {
-      authenticateWithTelegram(webApp.initData).catch((err) => {
-        console.error("Manual auth failed:", err);
-      });
-    } else {
-      setError("No init data available. Please open inside Telegram.");
-    }
-  };
+  // const handleManualAuth = () => {
+  //   if (webApp?.initData) {
+  //     authenticateWithTelegram(webApp.initData).catch((err) => {
+  //       console.error("Manual auth failed:", err);
+  //     });
+  //   } else {
+  //     setError("No init data available. Please open inside Telegram.");
+  //   }
+  // };
 
   return (
     <>
@@ -265,7 +224,7 @@ const TelegramAuth = () => {
         <div>
           <p>❌ Authentication Error</p>
           <p>{error}</p>
-          <button onClick={handleManualAuth}>🔄 Retry Authentication</button>
+          {/* <button onClick={handleManualAuth}>🔄 Retry Authentication</button> */}
         </div>
       )}
 
