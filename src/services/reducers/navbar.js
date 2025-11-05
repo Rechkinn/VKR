@@ -5,7 +5,8 @@ import {
 
 const initialState = {
   // activeSection: "CALENDAR",
-  activeSection: "TRIPS",
+  // activeSection: "TRIPS",
+  activeSection: "PROFILE",
   visibility: true,
 };
 
