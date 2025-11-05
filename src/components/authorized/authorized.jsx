@@ -190,13 +190,13 @@ const TelegramAuth = () => {
 
     // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
-      setTelegramUser(unsafe.user);
+      // setTelegramUser(unsafe.user);
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
       // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
-        setTelegramUser(parsed.user);
+        // setTelegramUser(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: parsed.user,
@@ -252,7 +252,7 @@ const TelegramAuth = () => {
       {/* {(telegramUser || userInfo) && <App />} */}
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        (telegramUser || infoFromTelegram?.telegram_id) && <App />}
+        infoFromTelegram?.telegram_id && <App />}
 
       {/* если ничего нет — краткая подсказка */}
       {console.log("userTelegramInfoRequest", userTelegramInfoRequest)}
@@ -261,15 +261,13 @@ const TelegramAuth = () => {
         userTelegramInfoRequestError
       )}
       {console.log("infoFromTelegram", infoFromTelegram)}
-      {!telegramUser &&
-        !infoFromTelegram?.telegram_id &&
-        !userTelegramInfoRequest && (
-          <div style={{ color: "#666", marginTop: 12 }}>
-            Откройте мини-приложение внутри Telegram (в мобильном/десктопе).
-            Если вы в браузере — убедитесь, что приложение запущено через кнопку
-            бота/inline-клавиатуру, чтобы telegram передал initData.
-          </div>
-        )}
+      {!infoFromTelegram?.telegram_id && !userTelegramInfoRequest && (
+        <div style={{ color: "#666", marginTop: 12 }}>
+          Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
+          вы в браузере — убедитесь, что приложение запущено через кнопку
+          бота/inline-клавиатуру, чтобы telegram передал initData.
+        </div>
+      )}
     </>
   );
 };
