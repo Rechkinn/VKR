@@ -31,6 +31,9 @@ export function authentication(initData) {
       body: JSON.stringify({ init_data: initData }),
     };
 
+    console.log("option");
+    console.log(option);
+
     doRequest("/auth/telegram", option)
       .then((data) => {
         console.log("data");

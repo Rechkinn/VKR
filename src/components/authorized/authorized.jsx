@@ -252,6 +252,12 @@ const TelegramAuth = () => {
   //   }
   // };
 
+  console.log("userTelegramInfoRequest", userTelegramInfoRequest);
+
+  console.log("userTelegramInfoRequestError", userTelegramInfoRequestError);
+
+  console.log("infoFromTelegram", infoFromTelegram);
+
   return (
     <>
       {userTelegramInfoRequest && (
@@ -269,12 +275,7 @@ const TelegramAuth = () => {
         infoFromTelegram?.telegram_id && <App />}
 
       {/* если ничего нет — краткая подсказка */}
-      {console.log("userTelegramInfoRequest", userTelegramInfoRequest)}
-      {console.log(
-        "userTelegramInfoRequestError",
-        userTelegramInfoRequestError
-      )}
-      {console.log("infoFromTelegram", infoFromTelegram)}
+
       {!infoFromTelegram?.telegram_id && !userTelegramInfoRequest && (
         <div style={{ color: "#666", marginTop: 12 }}>
           Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
