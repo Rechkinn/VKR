@@ -194,20 +194,11 @@ const TelegramAuth = () => {
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
 
-    console.log("webApp");
-    console.log(webApp);
-    console.log("webApp.initData");
-    console.log(webApp.initData);
-
-    // Если есть user в unsafe — используем его сразу
     if (unsafe?.user) {
-      // setTelegramUser(unsafe.user);
       dispatch({ type: SET_USER_TELEGRAM_INFO, infoFromTelegram: unsafe.user });
     } else {
-      // пробуем спарсить initData (если есть)
       const parsed = parseInitData(initData);
       if (parsed?.user) {
-        // setTelegramUser(parsed.user);
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: parsed.user,
@@ -215,47 +206,19 @@ const TelegramAuth = () => {
       }
     }
 
-    // Если уже есть токен в localStorage — пробуем получить профиль
-    console.log("перед аутентифицкацией");
-    // if (!infoFromTelegram?.telegram_id) {
     console.log("аутентифицируемся..........");
 
     if (localStorage.getItem("access_token")) {
       console.log("аутентификация по токену");
-      // нет initData, но есть токен — получаем профиль
-      // fetchCurrentUser();
 
       dispatch(authenticationWithAccessToken());
     } else if (initData && initData.trim() !== "") {
-      console.log("аутентификация initData");
-      console.log("initData");
-      console.log(initData);
-
-      // authAttemptedRef.current = true;
-      // authenticateWithTelegram(initData);
-
-      // authentication(initData);
       dispatch(authentication(initData));
     }
-    // }
-    // return undefined;
   }, [webApp, dispatch]);
 
-  // ручная аутентификация (кнопка Retry)
-  // const handleManualAuth = () => {
-  //   if (webApp?.initData) {
-  //     authenticateWithTelegram(webApp.initData).catch((err) => {
-  //       console.error("Manual auth failed:", err);
-  //     });
-  //   } else {
-  //     setError("No init data available. Please open inside Telegram.");
-  //   }
-  // };
-
   console.log("userTelegramInfoRequest", userTelegramInfoRequest);
-
   console.log("userTelegramInfoRequestError", userTelegramInfoRequestError);
-
   console.log("infoFromTelegram", infoFromTelegram);
 
   return (

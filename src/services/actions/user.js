@@ -80,6 +80,9 @@ export const authenticationWithAccessToken = () => {
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: data,
         });
+        dispatch({
+          type: USER_TELEGRAM_INFO_REQUEST_SUCCESS,
+        });
       })
       .catch(() => {
         dispatch({
