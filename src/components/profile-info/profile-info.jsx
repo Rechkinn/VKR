@@ -61,7 +61,8 @@ export default function ProfileInfo() {
               {`${infoFromTelegram.first_name} ${infoFromTelegram.last_name}`.trim()}
             </h2>
             <p className={styles.userDescription}>
-              В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]}
+              {/* В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]} */}
+              В Alltransfer с Января {infoFromTelegram.created_at}
             </p>
           </div>
         </section>
