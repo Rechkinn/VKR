@@ -234,10 +234,10 @@ const TelegramAuth = () => {
       // authAttemptedRef.current = true;
       // authenticateWithTelegram(initData);
 
-      authentication(initData);
+      // authentication(initData);
     }
     // }
-
+    authentication(initData);
     // return undefined;
   }, [webApp, dispatch]);
 
