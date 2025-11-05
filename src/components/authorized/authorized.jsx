@@ -145,10 +145,16 @@ const TelegramAuth = () => {
       }
 
       const data = await response.json();
-      setUserInfo(data.user);
+
+      console.log(
+        "это приходит по запросу https:/xn--80aqak6ae.xn--p1ai/api/v1/auth/me"
+      );
+      console.log(data);
+
+      setUserInfo(data);
       dispatch({
         type: SET_USER_TELEGRAM_INFO,
-        infoFromTelegram: data.user,
+        infoFromTelegram: data,
       });
     } catch (err) {
       setError(err.message || "Authentication error");
