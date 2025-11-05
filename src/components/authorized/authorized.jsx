@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import App from "../app/app";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  authenticatedWithAccessToken,
   authentication,
   authenticationWithAccessToken,
   SET_USER_TELEGRAM_INFO,
@@ -250,16 +249,23 @@ const TelegramAuth = () => {
 
       {/* показываем основной апп, если есть telegramUser или userInfo */}
       {/* {(telegramUser || userInfo) && <App />} */}
-      {(telegramUser || infoFromTelegram?.id) && <App />}
+      {(telegramUser || infoFromTelegram?.telegram_id) && <App />}
 
       {/* если ничего нет — краткая подсказка */}
-      {!telegramUser && !infoFromTelegram?.id && !userTelegramInfoRequest && (
-        <div style={{ color: "#666", marginTop: 12 }}>
-          Откройте мини-приложение внутри Telegram (в мобильном/десктопе). Если
-          вы в браузере — убедитесь, что приложение запущено через кнопку
-          бота/inline-клавиатуру, чтобы telegram передал initData.
-        </div>
+      {console.log("userTelegramInfoRequest", userTelegramInfoRequest)}
+      {console.log(
+        "userTelegramInfoRequestError",
+        userTelegramInfoRequestError
       )}
+      {!telegramUser &&
+        !infoFromTelegram?.telegram_id &&
+        !userTelegramInfoRequest && (
+          <div style={{ color: "#666", marginTop: 12 }}>
+            Откройте мини-приложение внутри Telegram (в мобильном/десктопе).
+            Если вы в браузере — убедитесь, что приложение запущено через кнопку
+            бота/inline-клавиатуру, чтобы telegram передал initData.
+          </div>
+        )}
     </>
   );
 };
