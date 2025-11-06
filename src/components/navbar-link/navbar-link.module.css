@@ -1,18 +1,16 @@
-.a {
+.link {
   display: block;
   text-decoration: none;
+  font-size: 9px;
+  color: #a3a9b5;
+}
+
+.activeLink {
+  composes: link;
+  color: #fdcd03;
 }
 
 .icon {
   margin: auto;
   display: block;
-}
-
-.text {
-  font-size: 9px;
-  color: #a3a9b5;
-}
-
-.active {
-  color: #fdcd03;
 }
