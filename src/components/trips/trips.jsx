@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CLOSE_FORM_SECTION_TRIP,
+  getTrips,
   OPEN_FORM_SECTION_TRIP,
 } from "../../services/actions/trips";
 import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
@@ -17,17 +18,17 @@ import Loader from "../loader/loader";
 import { useNavigate } from "react-router";
 
 export default function Trips() {
-  const [rerender, setRerender] = useState(false);
-
   const dispatch = useDispatch();
-  const { currentTab, isOpeningForm } = useSelector((store) => store.trips);
+  const navigate = useNavigate();
+  const { infoFromTelegram } = useSelector((store) => store.user);
   const { visibilityModal } = useSelector((store) => store.modal);
+  const { trips, getTripsRequest, getTripsRequestError } = useSelector(
+    (store) => store.trips
+  );
 
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
-
-  const { infoFromTelegram } = useSelector((store) => store.user);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -46,69 +47,22 @@ export default function Trips() {
     });
   }, []);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [arrayTrips, setArrayTrips] = useState(null);
-
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      setError(null);
-
-      const option = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwicm9sZSI6ImRyaXZlciIsImV4cCI6MTc2MjM0OTM2OX0.FYqEtRXuOqQuhY6YFOv7D0icIHPpJsVdLCknCDlbhIU`,
-        },
-      };
-
-      try {
-        const response = await fetch(
-          "https://xn--80aqak6ae.xn--p1ai/api/v1/trips/search?trip_type=delegated&skip=0&limit=50",
-          option
-        );
-
-        console.log("response");
-        console.log(response);
-
-        if (!response.ok) {
-          throw new Error("Ошибка запроса поздок!");
-        }
-
-        const data = await response.json();
-        console.log("data");
-        console.log(data);
-
-        setArrayTrips(data);
-      } catch (err) {
-        console.error(err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
-  }, [rerender]);
-
-  const navigate = useNavigate();
+    if (!trips) dispatch(getTrips());
+  }, []);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip");
   }
 
-  function functionForRerender() {
-    setRerender((prev) => !prev);
-  }
-
   return (
     <>
-      {loading && <Loader>Узнаём о ваших поездках...</Loader>}
-      {!loading && error && <div>Ошибка загрузки данных! {error.message}</div>}
+      {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
+      {!getTripsRequest && getTripsRequestError && (
+        <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
+      )}
 
-      {!loading && !error && arrayTrips && (
+      {!getTripsRequest && !getTripsRequestError && trips && (
         <section ref={sectionRef} className={styles.section}>
           {visibilityModal && <ModalOverlay />}
           <header className={styles.header}>
@@ -137,7 +91,7 @@ export default function Trips() {
               style={styleTripsContainer}
               className={styles.trips}
             >
-              {arrayTrips.map((trip) => {
+              {trips.map((trip) => {
                 return <Trip key={trip.id} trip={trip} />;
               })}
             </div>
