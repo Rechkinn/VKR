@@ -1,3 +1,26 @@
+.header {
+  margin: auto;
+  margin-bottom: 27px;
+  max-width: 321px;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 11px;
+}
+
+.containerCreateTrip {
+  color: white;
+  margin: auto;
+  max-width: 321px;
+  width: 100%;
+  height: 80vh;
+  background-color: black;
+  border-radius: 20px;
+}
+
 .form {
   padding: 20px;
   max-height: 100%;
