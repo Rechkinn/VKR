@@ -25,6 +25,11 @@ export default function Trips() {
   const tripsContainerRef = useRef();
 
   useEffect(() => {
+    // if (!trips)
+    dispatch(getTrips());
+  }, []);
+
+  useEffect(() => {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
 
@@ -39,11 +44,6 @@ export default function Trips() {
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
-  }, []);
-
-  useEffect(() => {
-    // if (!trips)
-    dispatch(getTrips());
   }, []);
 
   function openFormToCreateTrip() {
