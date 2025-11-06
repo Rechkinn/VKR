@@ -7,6 +7,7 @@ import {
   SET_USER_TELEGRAM_INFO,
   USER_TELEGRAM_INFO_REQUEST_ERROR,
 } from "../../services/actions/user";
+import Loader from "../loader/loader";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
