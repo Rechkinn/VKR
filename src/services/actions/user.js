@@ -85,3 +85,35 @@ export const authenticationWithAccessToken = () => {
       });
   };
 };
+
+export function changeUserInfo(newUserInfo, functionToCloseForm = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: USER_TELEGRAM_INFO_REQUEST,
+    });
+
+    const option = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify(newUserInfo),
+    };
+
+    doRequest("/users/me", option)
+      .then((user) => {
+        dispatch({
+          type: SET_USER_TELEGRAM_INFO,
+          infoFromTelegram: user,
+        });
+        console.log(user);
+        functionToCloseForm();
+      })
+      .catch(() => {
+        dispatch({
+          type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+        });
+      });
+  };
+}
