@@ -96,9 +96,7 @@ const TelegramAuth = () => {
 
   return (
     <>
-      {userTelegramInfoRequest && (
-        <p style={{ color: "blue" }}>Аутентификация...</p>
-      )}
+      {userTelegramInfoRequest && <Loader>Аутентификация...</Loader>}
 
       {!userTelegramInfoRequest && userTelegramInfoRequestError && (
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
