@@ -13,6 +13,8 @@ import {
 import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import ModalOverlay from "../modal-overlay/modal-overlay";
+import Loader from "../loader/loader";
+import { useNavigate } from "react-router";
 
 export default function Trips() {
   const [rerender, setRerender] = useState(false);
@@ -91,14 +93,10 @@ export default function Trips() {
     loadData();
   }, [rerender]);
 
-  function openForm() {
-    dispatch({
-      type: SET_VISIBILITY_NAVBAR,
-      visibility: false,
-    });
-    dispatch({
-      type: OPEN_FORM_SECTION_TRIP,
-    });
+  const navigate = useNavigate();
+
+  function openFormToCreateTrip() {
+    navigate("/create-new-trip");
   }
 
   function functionForRerender() {
@@ -107,7 +105,7 @@ export default function Trips() {
 
   return (
     <>
-      {loading && <div>Загрузка данных...</div>}
+      {loading && <Loader>Узнаём о ваших поездках...</Loader>}
       {!loading && error && <div>Ошибка загрузки данных! {error.message}</div>}
 
       {!loading && !error && arrayTrips && (
@@ -116,56 +114,33 @@ export default function Trips() {
           <header className={styles.header}>
             <h1 className={styles.title}>Мои поездки</h1>
 
-            <div
-              className={
-                isOpeningForm
-                  ? `${styles.hiddenBalance} ${styles.balance}`
-                  : `${styles.balance}`
-              }
-            >
+            <div className={styles.balance}>
               <Balance balanceValue={infoFromTelegram.balance} />
               <Button className="black">Пополнить</Button>
             </div>
           </header>
-          <div
-            className={
-              isOpeningForm
-                ? `${styles.containerCreateTrip} ${styles.animationOpenForm}`
-                : `${styles.containerCreateTrip}`
-            }
-          >
-            {isOpeningForm ? (
-              <FormForNewTrip
-                actionType={CLOSE_FORM_SECTION_TRIP}
-                rerender={rerender}
-                functionForRerender={functionForRerender}
-              />
-            ) : (
-              <>
-                <Button className={styles.buttonCreateTrip} onClick={openForm}>
-                  <span className={styles.buttonIconBackground}>
-                    <img src={carIcon} alt="Иконка автомобиля" />
-                  </span>
-                  <span className={styles.buttonText}>Создать поездку</span>
-                </Button>
+          <div className={styles.containerCreateTrip}>
+            <Button
+              className={styles.buttonCreateTrip}
+              onClick={openFormToCreateTrip}
+            >
+              <span className={styles.buttonIconBackground}>
+                <img src={carIcon} alt="Иконка автомобиля" />
+              </span>
+              <span className={styles.buttonText}>Создать поездку</span>
+            </Button>
 
-                {/* <Tabs /> */}
+            {/* <Tabs /> */}
 
-                <div
-                  ref={tripsContainerRef}
-                  style={styleTripsContainer}
-                  className={styles.trips}
-                >
-                  {arrayTrips.map((trip) => {
-                    return <Trip key={trip.id} trip={trip} />;
-                    // if (trip?.status === currentTab) {
-                    // } else {
-                    //   return <Trip status={currentTab} trip={trip}  />;
-                    // }
-                  })}
-                </div>
-              </>
-            )}
+            <div
+              ref={tripsContainerRef}
+              style={styleTripsContainer}
+              className={styles.trips}
+            >
+              {arrayTrips.map((trip) => {
+                return <Trip key={trip.id} trip={trip} />;
+              })}
+            </div>
           </div>
         </section>
       )}
