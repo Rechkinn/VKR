@@ -42,7 +42,8 @@ export default function Trips() {
   }, []);
 
   useEffect(() => {
-    if (!trips) dispatch(getTrips());
+    // if (!trips)
+    dispatch(getTrips());
   }, []);
 
   function openFormToCreateTrip() {
@@ -51,12 +52,12 @@ export default function Trips() {
 
   return (
     <>
-      {!trips && getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
-      {!trips && getTripsRequestError && (
+      {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
+      {!getTripsRequest && getTripsRequestError && (
         <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
       )}
 
-      {trips && (
+      {!getTripsRequest && !getTripsRequestError && trips && (
         <section ref={sectionRef} className={styles.section}>
           {visibilityModal && <ModalOverlay />}
           <header className={styles.header}>
