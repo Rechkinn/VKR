@@ -1,5 +1,6 @@
 import { ACTIVE_TAB } from "../../utils/consts";
 import {
+  ADD_TRIP,
   GET_TRIPS_REQUEST,
   GET_TRIPS_REQUEST_ERROR,
   GET_TRIPS_REQUEST_SUCCESS,
@@ -19,6 +20,11 @@ export const tripsReducer = (state = initialState, action) => {
       return {
         ...state,
         currentTab: action.currentTab,
+      };
+    case ADD_TRIP:
+      return {
+        ...state,
+        trips: [...state.trips, action.newTrip],
       };
     case GET_TRIPS_REQUEST:
       return {
