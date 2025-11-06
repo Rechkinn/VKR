@@ -1,23 +1,28 @@
 import styles from "./app.module.css";
 import Profile from "../profile/profile";
-import StartPage from "../start-page/start-page";
 import Navbar from "../navbar/navbar";
 import Trips from "../trips/trips";
 import { useSelector } from "react-redux";
-import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
 import Calendar from "../calendar/calendar";
+import { Route, Routes } from "react-router";
+import ProfileInfo from "../profile-info/profile-info";
+import ChangeProfileInfo from "../change-profile-info/change-profile-info";
 
 export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
-  const { activeSection } = useSelector((store) => store.navbar);
 
   return (
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
-        {activeSection === PROFILE && <Profile />}
-        {activeSection === TRIPS && <Trips />}
-        {activeSection === CALENDAR && <Calendar />}
+        <Routes>
+          <Route path="/" element={<Profile />}>
+            <Route path="profile" element={<ProfileInfo />} />
+            <Route path="profile/change" element={<ChangeProfileInfo />} />
+          </Route>
+          <Route path="/trips" element={<Trips />} />
+          <Route path="/calendar" element={<Calendar />} />
+        </Routes>
         <Navbar />
       </main>
     </>
