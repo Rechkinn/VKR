@@ -6,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./services/reducers";
 
 import Authorized from "./components/authorized/authorized";
+import { BrowserRouter } from "react-router";
 
 const store = configureStore({
   reducer: rootReducer,
@@ -30,10 +31,12 @@ function renderApp() {
   const root = createRoot(document.getElementById("root"));
   root.render(
     <StrictMode>
-      <Provider store={store}>
-        <Authorized />
-        {/* <App /> */}
-      </Provider>
+      <BrowserRouter>
+        <Provider store={store}>
+          <Authorized />
+          {/* <App /> */}
+        </Provider>
+      </BrowserRouter>
     </StrictMode>
   );
 }
