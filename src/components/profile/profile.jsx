@@ -4,9 +4,9 @@ import { useEffect } from "react";
 export default function Profile() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    navigate("/profile");
-  }, []);
+  // useEffect(() => {
+  //   navigate("/profile");
+  // }, []);
 
   return <Outlet />;
 }
