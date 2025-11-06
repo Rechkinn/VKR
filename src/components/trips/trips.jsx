@@ -53,11 +53,11 @@ export default function Trips() {
   return (
     <>
       {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
-      {!getTripsRequest && getTripsRequestError && (
+      {getTripsRequestError && (
         <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
       )}
 
-      {!getTripsRequest && !getTripsRequestError && trips && (
+      {trips && (
         <section ref={sectionRef} className={styles.section}>
           {visibilityModal && <ModalOverlay />}
           <header className={styles.header}>
