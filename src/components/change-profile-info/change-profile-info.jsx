@@ -2,17 +2,19 @@ import Button from "../button/button";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import styles from "./change-profile-info.module.css";
 import arrowLeftIcon from "../../image/change-profile-info/arrow-left.svg";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../input/input";
 import moreDetailIcon from "../../image/change-profile-info/more-details.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import {
+  CHANGE_USER_INFO_REQUEST_SUCCESS,
   changeUserInfo,
   SET_USER_TELEGRAM_INFO,
 } from "../../services/actions/user";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import Loader from "../loader/loader";
 
 export default function ChangeProfileInfo() {
   // если чекбокс будет активным, то будет показываться поле для вода числового кода
@@ -31,6 +33,12 @@ export default function ChangeProfileInfo() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch({
+      type: CHANGE_USER_INFO_REQUEST_SUCCESS,
+    });
+  }, []);
 
   function closeFormToChangeProfileInfo() {
     dispatch({
@@ -89,11 +97,14 @@ export default function ChangeProfileInfo() {
 
   return (
     <section>
-      {changeUserInfoRequest && (
-        <div style={{ color: "white" }}>Отправка данных...</div>
-      )}
+      {changeUserInfoRequest && <Loader>Отправка данных на сервер...</Loader>}
       {!changeUserInfoRequest && changeUserInfoRequestError && (
-        <div style={{ color: "white" }}>Ошибка отправки данных!</div>
+        <>
+          <div style={{ color: "white" }}>Ошибка отправки данных!</div>
+          <Link to="/profile" onClick={closeFormToChangeProfileInfo}>
+            Вернуться в профиль
+          </Link>
+        </>
       )}
 
       {!changeUserInfoRequest && !changeUserInfoRequestError && (
@@ -186,13 +197,7 @@ export default function ChangeProfileInfo() {
           />
         )} */}
 
-            <Button
-              className={`yellow ${styles.buttonSave}`}
-              // onClick={(e) => {
-              //   e.preventDefault();
-              // }}
-              type="submit"
-            >
+            <Button className={`yellow ${styles.buttonSave}`} type="submit">
               Сохранить
             </Button>
           </form>
