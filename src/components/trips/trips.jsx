@@ -46,7 +46,11 @@ export default function Trips() {
   }, []);
 
   function openFormToCreateTrip() {
-    navigate("/create-new-trip");
+    navigate("/create-new-trip", {
+      state: {
+        toRoute: "/trips",
+      },
+    });
   }
 
   return (
