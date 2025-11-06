@@ -1,6 +1,9 @@
 import { ACTIVE_TAB } from "../../utils/consts";
 import {
   ADD_TRIP,
+  ADD_TRIP_REQUEST,
+  ADD_TRIP_REQUEST_ERROR,
+  ADD_TRIP_REQUEST_SUCCESS,
   GET_TRIPS_REQUEST,
   GET_TRIPS_REQUEST_ERROR,
   GET_TRIPS_REQUEST_SUCCESS,
@@ -12,6 +15,9 @@ const initialState = {
   trips: null,
   getTripsRequest: false,
   getTripsRequestError: false,
+
+  addTripRequest: false,
+  addTripRequestError: false,
 };
 
 export const tripsReducer = (state = initialState, action) => {
@@ -20,11 +26,6 @@ export const tripsReducer = (state = initialState, action) => {
       return {
         ...state,
         currentTab: action.currentTab,
-      };
-    case ADD_TRIP:
-      return {
-        ...state,
-        trips: [...state.trips, action.newTrip],
       };
     case GET_TRIPS_REQUEST:
       return {
@@ -45,6 +46,31 @@ export const tripsReducer = (state = initialState, action) => {
         getTripsRequestError: false,
         trips: action.trips,
       };
+
+    case ADD_TRIP:
+      return {
+        ...state,
+        trips: [...state.trips, action.newTrip],
+      };
+    case ADD_TRIP_REQUEST:
+      return {
+        ...state,
+        addTripRequest: true,
+        addTripRequestError: false,
+      };
+    case ADD_TRIP_REQUEST_ERROR:
+      return {
+        ...state,
+        addTripRequest: false,
+        addTripRequestError: true,
+      };
+    case ADD_TRIP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        addTripRequest: false,
+        addTripRequestError: false,
+      };
+
     default:
       return state;
   }
