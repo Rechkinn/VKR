@@ -41,9 +41,9 @@ export const tripsReducer = (state = initialState, action) => {
     case GET_TRIPS_REQUEST_SUCCESS:
       return {
         ...state,
-        trips: action.trips,
         getTripsRequest: false,
         getTripsRequestError: false,
+        trips: action.trips,
       };
     default:
       return state;
