@@ -6,13 +6,14 @@ import {
 const initialState = {
   // activeSection: "CALENDAR",
   // activeSection: "TRIPS",
-  activeSection: "PROFILE",
+  activeSection: localStorage.getItem("activeSectionNavbar") ?? "PROFILE",
   visibility: true,
 };
 
 export const navbarReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_ACTIVE_SECTION_NAVBAR:
+      localStorage.setItem("activeSectionNavbar", action.activeSection);
       return {
         ...state,
         activeSection: action.activeSection,
