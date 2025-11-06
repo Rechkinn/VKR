@@ -11,7 +11,9 @@ import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
 import NavbarLink from "../navbar-link/navbar-link";
 
 export default function Navbar() {
-  const { visibility } = useSelector((store) => store.navbar);
+  const { visibility, activeSection } = useSelector((store) => store.navbar);
+
+  console.log("activeSection", activeSection);
 
   const dispatch = useDispatch();
   function setActiveSection(section) {
@@ -28,18 +30,16 @@ export default function Navbar() {
           <ul className={styles.ul}>
             <li className={styles.li} onClick={() => setActiveSection(PROFILE)}>
               <NavbarLink
-                section={PROFILE}
-                activeIcon={userActiveIcon}
-                icon={userIcon}
+                toRoute="/profile"
+                icon={activeSection === PROFILE ? userActiveIcon : userIcon}
               >
                 Профиль
               </NavbarLink>
             </li>
             <li className={styles.li} onClick={() => setActiveSection(TRIPS)}>
               <NavbarLink
-                section={TRIPS}
-                activeIcon={carActiveIcon}
-                icon={carIcon}
+                toRoute="/trips"
+                icon={activeSection === TRIPS ? carActiveIcon : carIcon}
               >
                 Поездки
               </NavbarLink>
@@ -49,9 +49,10 @@ export default function Navbar() {
               onClick={() => setActiveSection(CALENDAR)}
             >
               <NavbarLink
-                section={CALENDAR}
-                activeIcon={calendarActiveIcon}
-                icon={calendarIcon}
+                toRoute="/calendar"
+                icon={
+                  activeSection === CALENDAR ? calendarActiveIcon : calendarIcon
+                }
               >
                 Календарь
               </NavbarLink>
