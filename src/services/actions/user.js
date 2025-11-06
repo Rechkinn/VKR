@@ -12,6 +12,11 @@ export const REMOVE_USER_ACCESS_TOKEN = "REMOVE_USER_ACCESS_TOKEN";
 export const REMOVE_USER_DATA_IN_LOCAL_STORAGE =
   "REMOVE_USER_DATA_IN_LOCAL_STORAGE";
 
+export const CHANGE_USER_INFO_REQUEST = "CHANGE_USER_INFO_REQUEST";
+export const CHANGE_USER_INFO_REQUEST_ERROR = "CHANGE_USER_INFO_REQUEST_ERROR";
+export const CHANGE_USER_INFO_REQUEST_SUCCESS =
+  "CHANGE_USER_INFO_REQUEST_SUCCESS";
+
 export function authentication(initData) {
   return function (dispatch) {
     dispatch({
@@ -89,7 +94,7 @@ export const authenticationWithAccessToken = () => {
 export function changeUserInfo(newUserInfo, functionToCloseForm = () => {}) {
   return function (dispatch) {
     dispatch({
-      type: USER_TELEGRAM_INFO_REQUEST,
+      type: CHANGE_USER_INFO_REQUEST,
     });
 
     const option = {
@@ -107,12 +112,15 @@ export function changeUserInfo(newUserInfo, functionToCloseForm = () => {}) {
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: user,
         });
+        dispatch({
+          type: CHANGE_USER_INFO_REQUEST_SUCCESS,
+        });
         console.log(user);
         functionToCloseForm();
       })
       .catch(() => {
         dispatch({
-          type: USER_TELEGRAM_INFO_REQUEST_ERROR,
+          type: CHANGE_USER_INFO_REQUEST_ERROR,
         });
       });
   };
