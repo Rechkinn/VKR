@@ -7,6 +7,9 @@ import {
   SET_USER_ACCESS_TOKEN,
   REMOVE_USER_ACCESS_TOKEN,
   REMOVE_USER_DATA_IN_LOCAL_STORAGE,
+  CHANGE_USER_INFO_REQUEST,
+  CHANGE_USER_INFO_REQUEST_ERROR,
+  CHANGE_USER_INFO_REQUEST_SUCCESS,
 } from "../actions/user";
 
 // const initialState = {
@@ -32,12 +35,17 @@ import {
 //   },
 //   userTelegramInfoRequest: false,
 //   userTelegramInfoRequestError: false,
+
+//   changeUserInfoRequest: false,
+//   changeUserInfoRequestError: false,
 // };
 
 const initialState = {
   infoFromTelegram: {},
   userTelegramInfoRequest: false,
   userTelegramInfoRequestError: false,
+  changeUserInfoRequest: false,
+  changeUserInfoRequestError: false,
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -79,6 +87,25 @@ export const userReducer = (state = initialState, action) => {
     case REMOVE_USER_DATA_IN_LOCAL_STORAGE:
       localStorage.removeItem("user");
       return state;
+
+    case CHANGE_USER_INFO_REQUEST:
+      return {
+        ...state,
+        changeUserInfoRequest: true,
+        changeUserInfoRequestError: false,
+      };
+    case CHANGE_USER_INFO_REQUEST_ERROR:
+      return {
+        ...state,
+        changeUserInfoRequest: false,
+        changeUserInfoRequestError: true,
+      };
+    case CHANGE_USER_INFO_REQUEST_SUCCESS:
+      return {
+        ...state,
+        changeUserInfoRequest: false,
+        changeUserInfoRequestError: false,
+      };
     default:
       return state;
   }
