@@ -21,8 +21,8 @@ export default function ChangeProfileInfo() {
 
   const {
     infoFromTelegram,
-    userTelegramInfoRequest,
-    userTelegramInfoRequestError,
+    changeUserInfoRequest,
+    changeUserInfoRequestError,
   } = useSelector((store) => store.user);
   console.log("infoFromTelegram");
   console.log(infoFromTelegram);
@@ -89,14 +89,14 @@ export default function ChangeProfileInfo() {
 
   return (
     <section>
-      {userTelegramInfoRequest && (
+      {changeUserInfoRequest && (
         <div style={{ color: "white" }}>Отправка данных...</div>
       )}
-      {!userTelegramInfoRequest && userTelegramInfoRequestError && (
-        <div style={{ color: "white" }}>Ошибка отправки данных</div>
+      {!changeUserInfoRequest && changeUserInfoRequestError && (
+        <div style={{ color: "white" }}>Ошибка отправки данных!</div>
       )}
 
-      {!userTelegramInfoRequest && !userTelegramInfoRequestError && (
+      {!changeUserInfoRequest && !changeUserInfoRequestError && (
         <>
           <header className={styles.header}>
             <Button onClick={closeFormToChangeProfileInfo}>
