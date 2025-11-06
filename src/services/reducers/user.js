@@ -11,16 +11,27 @@ import {
 
 // const initialState = {
 //   infoFromTelegram: {
-//     id: 870593529,
-//     first_name: "Aleks",
-//     last_name: "",
-//     username: "Rechkinnnn",
-//     language_code: "ru",
 //     allows_write_to_pm: true,
+//     balance: 1000000.56,
+//     created_at: "2025-10-29T11:31:34.834898Z",
+//     first_name: "Крутой Челикс ",
+//     id: 3,
+//     is_active: true,
+//     is_verified: true,
+//     language_code: "ru",
+//     last_name: "ЛАдно",
+//     phone_number: "899999999",
 //     photo_url:
 //       "https://t.me/i/userpic/320/JtGPbJBctx4LLq_nm2R9calFGN2KxnnIKkyKLZQyodE.svg",
+//     rating_avg: 4.9,
+//     rating_count: 0,
+//     role: "driver",
+//     telegram_id: 870593529,
+//     updated_at: "2025-11-05T18:27:24.082736Z",
+//     username: "Rechkinnnn",
 //   },
-//   infoFromBackend: null,
+//   userTelegramInfoRequest: false,
+//   userTelegramInfoRequestError: false,
 // };
 
 const initialState = {
