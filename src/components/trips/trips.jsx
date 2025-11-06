@@ -6,13 +6,7 @@ import Tabs from "../tabs/tabs";
 import Trip from "../trip/trip";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  CLOSE_FORM_SECTION_TRIP,
-  getTrips,
-  OPEN_FORM_SECTION_TRIP,
-} from "../../services/actions/trips";
-import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
-import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
+import { getTrips } from "../../services/actions/trips";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Loader from "../loader/loader";
 import { useNavigate } from "react-router";
@@ -57,12 +51,12 @@ export default function Trips() {
 
   return (
     <>
-      {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
-      {!getTripsRequest && getTripsRequestError && (
+      {!trips && getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
+      {!trips && getTripsRequestError && (
         <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
       )}
 
-      {!getTripsRequest && !getTripsRequestError && trips && (
+      {trips && (
         <section ref={sectionRef} className={styles.section}>
           {visibilityModal && <ModalOverlay />}
           <header className={styles.header}>
