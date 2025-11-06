@@ -1,25 +1,19 @@
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import styles from "./navbar-link.module.css";
+import { NavLink } from "react-router";
+import { useDispatch } from "react-redux";
+import { SET_ACTIVE_SECTION_NAVBAR } from "../../services/actions/navbar";
 
-export default function NavbarLink({ children, section, activeIcon, icon }) {
-  const { activeSection } = useSelector((store) => store.navbar);
-
+export default function NavbarLink({ children, toRoute, icon }) {
   return (
-    <a href="#" className={styles.a}>
-      <img
-        src={activeSection === section ? activeIcon : icon}
-        alt={`Иконка секции "${children}"`}
-        className={styles.icon}
-      />
-      <p
-        className={
-          activeSection === section
-            ? `${styles.text} ${styles.active}`
-            : `${styles.text}`
-        }
-      >
-        {children}
-      </p>
-    </a>
+    <NavLink
+      to={toRoute}
+      className={({ isActive }) => {
+        return isActive ? styles.activeLink : styles.link;
+      }}
+    >
+      <img src={icon} alt="" className={styles.icon} />
+      <p>{children}</p>
+    </NavLink>
   );
 }
