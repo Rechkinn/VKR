@@ -7,6 +7,7 @@ import Calendar from "../calendar/calendar";
 import { Route, Routes } from "react-router";
 import ProfileInfo from "../profile-info/profile-info";
 import ChangeProfileInfo from "../change-profile-info/change-profile-info";
+import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
 
 export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
@@ -22,6 +23,7 @@ export default function App() {
           </Route>
           <Route path="/trips" element={<Trips />} />
           <Route path="/calendar" element={<Calendar />} />
+          <Route path="/create-new-trip" element={<FormForNewTrip />} />
         </Routes>
         <Navbar />
       </main>
