@@ -25,8 +25,7 @@ export default function Trips() {
   const tripsContainerRef = useRef();
 
   useEffect(() => {
-    // if (!trips)
-    dispatch(getTrips());
+    if (!trips) dispatch(getTrips());
   }, []);
 
   useEffect(() => {
