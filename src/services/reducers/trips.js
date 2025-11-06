@@ -1,13 +1,16 @@
 import { ACTIVE_TAB } from "../../utils/consts";
 import {
-  CLOSE_FORM_SECTION_TRIP,
-  OPEN_FORM_SECTION_TRIP,
+  GET_TRIPS_REQUEST,
+  GET_TRIPS_REQUEST_ERROR,
+  GET_TRIPS_REQUEST_SUCCESS,
   SET_CURRENT_TAB,
 } from "../actions/trips";
 
 const initialState = {
   currentTab: ACTIVE_TAB,
-  isOpeningForm: false,
+  trips: null,
+  getTripsRequest: false,
+  getTripsRequestError: false,
 };
 
 export const tripsReducer = (state = initialState, action) => {
@@ -17,15 +20,24 @@ export const tripsReducer = (state = initialState, action) => {
         ...state,
         currentTab: action.currentTab,
       };
-    case OPEN_FORM_SECTION_TRIP:
+    case GET_TRIPS_REQUEST:
       return {
         ...state,
-        isOpeningForm: true,
+        getTripsRequest: true,
+        getTripsRequestError: false,
       };
-    case CLOSE_FORM_SECTION_TRIP:
+    case GET_TRIPS_REQUEST_ERROR:
       return {
         ...state,
-        isOpeningForm: false,
+        getTripsRequest: false,
+        getTripsRequestError: true,
+      };
+    case GET_TRIPS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        trips: action.trips,
+        getTripsRequest: false,
+        getTripsRequestError: false,
       };
     default:
       return state;
