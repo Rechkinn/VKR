@@ -56,11 +56,11 @@ export default function Trips() {
       });
     }
 
-    window.addEventListener("resize", setMaxHeightContainerTrips);
+    // window.addEventListener("resize", setMaxHeightContainerTrips);
 
     setMaxHeightContainerTrips();
-    return () =>
-      window.removeEventListener("resize", setMaxHeightContainerTrips);
+    // return () =>
+    //   window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
