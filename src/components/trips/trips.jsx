@@ -84,7 +84,11 @@ export default function Trips() {
                 <Button className="black">Пополнить</Button>
               </div>
             </header>
-            <div className={styles.containerCreateTrip}>
+            <div
+              ref={tripsContainerRef}
+              style={styleTripsContainer}
+              className={styles.containerCreateTrip}
+            >
               <Button
                 className={styles.buttonCreateTrip}
                 onClick={openFormToCreateTrip}
@@ -98,8 +102,8 @@ export default function Trips() {
               {/* <Tabs /> */}
 
               <div
-                ref={tripsContainerRef}
-                style={styleTripsContainer}
+                // ref={tripsContainerRef}
+                // style={styleTripsContainer}
                 className={styles.trips}
               >
                 {trips.map((trip) => {
