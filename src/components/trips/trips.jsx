@@ -113,8 +113,8 @@ export default function Trips() {
 
               <div
                 ref={tripsContainerRef}
-                style={styleTripsContainer}
                 className={styles.trips}
+                style={styleTripsContainer}
               >
                 {trips.map((trip) => {
                   return (
