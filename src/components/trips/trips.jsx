@@ -25,6 +25,8 @@ export default function Trips() {
   const { visibilityModal, openModal, closeModal } = useModal();
 
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
+  console.log("styleTripsContainer");
+  console.log(styleTripsContainer);
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
 
@@ -45,7 +47,7 @@ export default function Trips() {
       const tripsContainerBorders = tripsContainer.getBoundingClientRect();
 
       const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
-
+      console.log("устанавливаем значение");
       setStyleTripsContainer({
         maxHeight: maxHeight,
       });
