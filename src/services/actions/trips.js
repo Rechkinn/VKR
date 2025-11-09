@@ -96,9 +96,6 @@ export function removeTrip(tripId, closeSettings = () => {}) {
 
     doRequest(`/trips/${tripId}`, option)
       .then((data) => {
-        console.log("какая-то дата");
-        console.log(data);
-
         dispatch({
           type: REMOVE_TRIP_REQUEST_SUCCESS,
           idTripForRemove: tripId,
@@ -110,8 +107,6 @@ export function removeTrip(tripId, closeSettings = () => {}) {
         closeSettings();
       })
       .catch((error) => {
-        console.log("какой-то error");
-        console.log(error);
         dispatch({
           type: REMOVE_TRIP_REQUEST_ERROR,
         });
