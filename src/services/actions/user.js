@@ -55,7 +55,9 @@ export function authentication(initData) {
   };
 }
 
-export const authenticationWithAccessToken = () => {
+export const authenticationWithAccessToken = (
+  defaultAuthentication = () => {}
+) => {
   return function (dispatch) {
     dispatch({
       type: USER_TELEGRAM_INFO_REQUEST,
@@ -87,6 +89,7 @@ export const authenticationWithAccessToken = () => {
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
+        defaultAuthentication();
       });
   };
 };

@@ -88,17 +88,20 @@ const TelegramAuth = () => {
       }
     }
 
-    if (localStorage.getItem("access_token")) {
-      dispatch(authenticationWithAccessToken());
-      if (userTelegramInfoRequestError) {
-        if (initData && initData.trim() !== "") {
-          dispatch(authentication(initData));
-        }
+    if (initData && initData.trim() !== "") {
+      if (localStorage.getItem("access_token")) {
+        dispatch(
+          authenticationWithAccessToken(defaultAuthentication(initData))
+        );
+      } else {
+        defaultAuthentication(initData);
       }
-    } else if (initData && initData.trim() !== "") {
-      dispatch(authentication(initData));
     }
   }, [webApp, dispatch]);
+
+  function defaultAuthentication(initData) {
+    dispatch(authentication(initData));
+  }
 
   return (
     <>
