@@ -33,20 +33,29 @@ export default function Trips() {
   }, []);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    const tripsContainer = tripsContainerRef.current;
+    function setMaxHeightContainerTrips() {
+      const section = sectionRef.current;
+      const tripsContainer = tripsContainerRef.current;
 
-    if (!section) return;
-    if (!tripsContainer) return;
+      if (!section) return;
+      if (!tripsContainer) return;
 
-    const sectionBorders = section.getBoundingClientRect();
-    const tripsContainerBorders = tripsContainer.getBoundingClientRect();
+      const sectionBorders = section.getBoundingClientRect();
+      const tripsContainerBorders = tripsContainer.getBoundingClientRect();
 
-    const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
+      const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
 
-    setStyleTripsContainer({
-      maxHeight: maxHeight,
-    });
+      setStyleTripsContainer({
+        maxHeight: maxHeight,
+      });
+    }
+
+    setMaxHeightContainerTrips();
+
+    document.addEventListener("resize", setMaxHeightContainerTrips);
+
+    return () =>
+      document.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
   function openFormToCreateTrip() {
