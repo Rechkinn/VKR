@@ -14,6 +14,12 @@ import SettingsTrip from "../settings-trip/settings-trip";
 import { useModal } from "../../hooks/useModal";
 
 export default function Trips() {
+  const sectionRef = useRef(null);
+  console.log("sectionRef");
+  console.log(sectionRef);
+  const tripsContainerRef = useRef(null);
+  console.log("tripsContainerRef");
+  console.log(tripsContainerRef);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -27,8 +33,6 @@ export default function Trips() {
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
   console.log("styleTripsContainer");
   console.log(styleTripsContainer);
-  const sectionRef = useRef();
-  const tripsContainerRef = useRef();
 
   useEffect(() => {
     if (!trips) dispatch(getTrips());
@@ -40,8 +44,7 @@ export default function Trips() {
       const section = sectionRef.current;
       const tripsContainer = tripsContainerRef.current;
 
-      if (!section) return;
-      if (!tripsContainer) return;
+      if (!section || !tripsContainer) return;
 
       const sectionBorders = section.getBoundingClientRect();
       const tripsContainerBorders = tripsContainer.getBoundingClientRect();
@@ -95,11 +98,7 @@ export default function Trips() {
                 <Button className="black">Пополнить</Button>
               </div>
             </header>
-            <div
-              // ref={tripsContainerRef}
-              // style={styleTripsContainer}
-              className={styles.containerCreateTrip}
-            >
+            <div className={styles.containerCreateTrip}>
               <Button
                 className={styles.buttonCreateTrip}
                 onClick={openFormToCreateTrip}
