@@ -90,6 +90,11 @@ const TelegramAuth = () => {
 
     if (localStorage.getItem("access_token")) {
       dispatch(authenticationWithAccessToken());
+      if (userTelegramInfoRequestError) {
+        if (initData && initData.trim() !== "") {
+          dispatch(authentication(initData));
+        }
+      }
     } else if (initData && initData.trim() !== "") {
       dispatch(authentication(initData));
     }
