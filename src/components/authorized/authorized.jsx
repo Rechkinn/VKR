@@ -92,7 +92,7 @@ const TelegramAuth = () => {
       if (localStorage.getItem("access_token")) {
         console.log("пробуем аутентифицироваться через токен");
         dispatch(
-          authenticationWithAccessToken(defaultAuthentication(initData))
+          authenticationWithAccessToken(() => defaultAuthentication(initData))
         );
       } else {
         console.log("пробуем аутентифицироваться БЕЗ токена");
