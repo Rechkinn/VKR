@@ -3,6 +3,7 @@ import ModalOverlay from "../modal-overlay/modal-overlay";
 import styles from "./settings-trip.module.css";
 import { removeTrip } from "../../services/actions/trips";
 import Loader from "../loader/loader";
+import Button from "../button/button";
 
 export default function SettingsTrip({ closeSettings = null }) {
   const { tripForSettings, removeTripRequest, removeTripRequestError } =
