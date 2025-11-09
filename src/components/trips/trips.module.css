@@ -28,7 +28,7 @@
   max-width: 321px;
   width: 100%;
   /* height: 139px; */
-  /* height: auto; */
+  height: auto;
   background-color: black;
   border-radius: 20px;
 }
@@ -90,5 +90,5 @@
 .trips {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 35vh;
+  /* max-height: 35vh; */
 }

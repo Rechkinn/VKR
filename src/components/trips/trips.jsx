@@ -45,7 +45,7 @@ export default function Trips() {
     const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
 
     setStyleTripsContainer({
-      height: maxHeight,
+      maxHeight: maxHeight,
     });
   }, []);
 
@@ -85,8 +85,8 @@ export default function Trips() {
               </div>
             </header>
             <div
-              ref={tripsContainerRef}
-              style={styleTripsContainer}
+              // ref={tripsContainerRef}
+              // style={styleTripsContainer}
               className={styles.containerCreateTrip}
             >
               <Button
@@ -102,8 +102,8 @@ export default function Trips() {
               {/* <Tabs /> */}
 
               <div
-                // ref={tripsContainerRef}
-                // style={styleTripsContainer}
+                ref={tripsContainerRef}
+                style={styleTripsContainer}
                 className={styles.trips}
               >
                 {trips.map((trip) => {
