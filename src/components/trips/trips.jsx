@@ -10,12 +10,14 @@ import { getTrips } from "../../services/actions/trips";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Loader from "../loader/loader";
 import { useNavigate } from "react-router";
+import SettingsTrip from "../settings-trip/settings-trip";
+import { useModal } from "../../hooks/useModal";
 
 export default function Trips() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { infoFromTelegram } = useSelector((store) => store.user);
-  const { visibilityModal } = useSelector((store) => store.modal);
+  // const { visibilityModal } = useSelector((store) => store.modal);
   const { trips, getTripsRequest, getTripsRequestError } = useSelector(
     (store) => store.trips
   );
@@ -62,7 +64,6 @@ export default function Trips() {
 
       {trips && (
         <section ref={sectionRef} className={styles.section}>
-          {visibilityModal && <ModalOverlay />}
           <header className={styles.header}>
             <h1 className={styles.title}>Мои поездки</h1>
 
