@@ -1,0 +1,8 @@
+.containerForButton {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  max-width: 320px;
+  height: 100%;
+}
