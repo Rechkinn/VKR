@@ -17,10 +17,7 @@ export default function SettingsTrip({ closeSettings = null }) {
 
   return (
     <ModalOverlay closeModal={closeSettings}>
-      <div
-        className={styles.containerForButton}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={styles.containerForButton}>
         {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
         {!removeTripRequest && removeTripRequestError && (
           <p style={{ color: "red", textAlign: "center" }}>
