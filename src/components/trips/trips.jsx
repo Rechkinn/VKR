@@ -22,6 +22,8 @@ export default function Trips() {
     (store) => store.trips
   );
 
+  const { visibilityModal, openModal, closeModal } = useModal();
+
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
@@ -55,6 +57,14 @@ export default function Trips() {
     });
   }
 
+  function openSettingsTrip(trip) {
+    dispatch({
+      type: SET_TRIP_FOR_SETTINGS,
+      tripForSettings: trip,
+    });
+    openModal();
+  }
+
   return (
     <>
       {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
@@ -63,39 +73,48 @@ export default function Trips() {
       )}
 
       {trips && (
-        <section ref={sectionRef} className={styles.section}>
-          <header className={styles.header}>
-            <h1 className={styles.title}>Мои поездки</h1>
+        <>
+          {visibilityModal && <SettingsTrip closeSettings={closeModal} />}
+          <section ref={sectionRef} className={styles.section}>
+            <header className={styles.header}>
+              <h1 className={styles.title}>Мои поездки</h1>
 
-            <div className={styles.balance}>
-              <Balance balanceValue={infoFromTelegram.balance} />
-              <Button className="black">Пополнить</Button>
+              <div className={styles.balance}>
+                <Balance balanceValue={infoFromTelegram.balance} />
+                <Button className="black">Пополнить</Button>
+              </div>
+            </header>
+            <div className={styles.containerCreateTrip}>
+              <Button
+                className={styles.buttonCreateTrip}
+                onClick={openFormToCreateTrip}
+              >
+                <span className={styles.buttonIconBackground}>
+                  <img src={carIcon} alt="Иконка автомобиля" />
+                </span>
+                <span className={styles.buttonText}>Создать поездку</span>
+              </Button>
+
+              {/* <Tabs /> */}
+
+              <div
+                ref={tripsContainerRef}
+                style={styleTripsContainer}
+                className={styles.trips}
+              >
+                {trips.map((trip) => {
+                  return (
+                    <Trip
+                      key={trip.id}
+                      trip={trip}
+                      openSettingsTrip={() => openSettingsTrip(trip)}
+                    />
+                  );
+                })}
+              </div>
             </div>
-          </header>
-          <div className={styles.containerCreateTrip}>
-            <Button
-              className={styles.buttonCreateTrip}
-              onClick={openFormToCreateTrip}
-            >
-              <span className={styles.buttonIconBackground}>
-                <img src={carIcon} alt="Иконка автомобиля" />
-              </span>
-              <span className={styles.buttonText}>Создать поездку</span>
-            </Button>
-
-            {/* <Tabs /> */}
-
-            <div
-              ref={tripsContainerRef}
-              style={styleTripsContainer}
-              className={styles.trips}
-            >
-              {trips.map((trip) => {
-                return <Trip key={trip.id} trip={trip} />;
-              })}
-            </div>
-          </div>
-        </section>
+          </section>
+        </>
       )}
     </>
   );
