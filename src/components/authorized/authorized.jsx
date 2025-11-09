@@ -90,19 +90,16 @@ const TelegramAuth = () => {
 
     if (initData && initData.trim() !== "") {
       if (localStorage.getItem("access_token")) {
-        console.log("пробуем аутентифицироваться через токен");
         dispatch(
           authenticationWithAccessToken(() => defaultAuthentication(initData))
         );
       } else {
-        console.log("пробуем аутентифицироваться БЕЗ токена");
         defaultAuthentication(initData);
       }
     }
   }, [webApp, dispatch]);
 
   function defaultAuthentication(initData) {
-    console.log("функция запуска аутентификации");
     dispatch(authentication(initData));
   }
 
