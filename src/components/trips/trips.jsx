@@ -39,26 +39,26 @@ export default function Trips() {
   }, []);
 
   useEffect(() => {
-    function setMaxHeightContainerTrips() {
-      console.log("запускаем установку максимальной высоты");
-      const section = sectionRef.current;
-      const tripsContainer = tripsContainerRef.current;
+    // function setMaxHeightContainerTrips() {
+    console.log("запускаем установку максимальной высоты");
+    const section = sectionRef.current;
+    const tripsContainer = tripsContainerRef.current;
 
-      if (!section || !tripsContainer) return;
+    if (!section || !tripsContainer) return;
 
-      const sectionBorders = section.getBoundingClientRect();
-      const tripsContainerBorders = tripsContainer.getBoundingClientRect();
+    const sectionBorders = section.getBoundingClientRect();
+    const tripsContainerBorders = tripsContainer.getBoundingClientRect();
 
-      const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
-      console.log("устанавливаем значение");
-      setStyleTripsContainer({
-        maxHeight: maxHeight,
-      });
-    }
+    const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
+    console.log("устанавливаем значение");
+    setStyleTripsContainer({
+      maxHeight: maxHeight,
+    });
+    // }
 
     // window.addEventListener("resize", setMaxHeightContainerTrips);
 
-    setMaxHeightContainerTrips();
+    // setMaxHeightContainerTrips();
     // return () =>
     //   window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
