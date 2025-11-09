@@ -45,7 +45,7 @@ export default function Trips() {
     const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
 
     setStyleTripsContainer({
-      maxHeight: maxHeight,
+      height: maxHeight,
     });
   }, []);
 
