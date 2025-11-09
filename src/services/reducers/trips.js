@@ -7,7 +7,11 @@ import {
   GET_TRIPS_REQUEST,
   GET_TRIPS_REQUEST_ERROR,
   GET_TRIPS_REQUEST_SUCCESS,
+  REMOVE_TRIP_REQUEST,
+  REMOVE_TRIP_REQUEST_ERROR,
+  REMOVE_TRIP_REQUEST_SUCCESS,
   SET_CURRENT_TAB,
+  SET_TRIP_FOR_SETTINGS,
 } from "../actions/trips";
 
 const initialState = {
@@ -18,10 +22,47 @@ const initialState = {
 
   addTripRequest: false,
   addTripRequestError: false,
+
+  tripForSettings: null,
+
+  removeTripRequest: false,
+  removeTripRequestError: false,
 };
 
 export const tripsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REMOVE_TRIP_REQUEST:
+      return {
+        ...state,
+        removeTripRequest: true,
+        removeTripRequestError: false,
+      };
+
+    case REMOVE_TRIP_REQUEST_ERROR:
+      return {
+        ...state,
+        removeTripRequest: false,
+        removeTripRequestError: true,
+      };
+
+    case REMOVE_TRIP_REQUEST_SUCCESS:
+      return {
+        ...state,
+        trips: [
+          ...trips.filter((trip) => {
+            trip.id !== action.idTripForRemove;
+          }),
+        ],
+        removeTripRequest: false,
+        removeTripRequestError: false,
+      };
+
+    case SET_TRIP_FOR_SETTINGS:
+      return {
+        ...state,
+        tripForSettings: action.tripForSettings,
+      };
+
     case SET_CURRENT_TAB:
       return {
         ...state,
