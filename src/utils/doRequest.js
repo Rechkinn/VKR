@@ -4,7 +4,7 @@ function checkResponse(response) {
   if (response.ok) {
     console.log("Успешный респонс");
     console.log(response);
-    return response?.json() ?? response;
+    return response.json();
   }
   console.log("неУспешный респонс");
   return Promise.reject(`Ошибка ${response.status}`);
