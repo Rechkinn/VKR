@@ -50,10 +50,9 @@ export default function Trips() {
       });
     }
 
-    setMaxHeightContainerTrips();
-
     document.addEventListener("resize", setMaxHeightContainerTrips);
 
+    setMaxHeightContainerTrips();
     return () =>
       document.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
