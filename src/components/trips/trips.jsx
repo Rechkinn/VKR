@@ -6,7 +6,7 @@ import Tabs from "../tabs/tabs";
 import Trip from "../trip/trip";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getTrips } from "../../services/actions/trips";
+import { getTrips, SET_TRIP_FOR_SETTINGS } from "../../services/actions/trips";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Loader from "../loader/loader";
 import { useNavigate } from "react-router";
