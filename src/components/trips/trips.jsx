@@ -68,7 +68,7 @@ export default function Trips() {
   useEffect(() => {
     setMaxHeightContainerTrips();
     // },[])
-  }, [sectionRef, tripsContainerRef]);
+  }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
