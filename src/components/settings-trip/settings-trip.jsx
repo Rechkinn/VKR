@@ -10,7 +10,8 @@ export default function SettingsTrip({ closeSettings = null }) {
     useSelector((store) => store.trips);
 
   const dispatch = useDispatch();
-  function tryRemoveTrip() {
+  function tryRemoveTrip(e) {
+    e.stopPropagation();
     dispatch(removeTrip(tripForSettings.id, closeSettings));
   }
 
@@ -22,7 +23,9 @@ export default function SettingsTrip({ closeSettings = null }) {
       >
         {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
         {!removeTripRequest && removeTripRequestError && (
-          <p>Не удалось выполнить удаление поездки!</p>
+          <p style={{ color: "red", textAlign: "center" }}>
+            Ошибка удаления поездки!
+          </p>
         )}
         <Button
           className="modal modalUpper"
@@ -30,7 +33,7 @@ export default function SettingsTrip({ closeSettings = null }) {
         >
           Изменить
         </Button>
-        <Button className="modal modalLower" onClick={tryRemoveTrip}>
+        <Button className="modal modalLower" onClick={(e) => tryRemoveTrip(e)}>
           Удалить
         </Button>
         <Button className="modal modalSingle" onClick={closeSettings}>
