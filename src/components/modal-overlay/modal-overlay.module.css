@@ -11,12 +11,3 @@
   backdrop-filter: blur(2px);
   z-index: 500;
 }
-
-.containerForButton {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  max-width: 320px;
-  height: 100%;
-}
