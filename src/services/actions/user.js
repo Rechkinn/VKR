@@ -31,6 +31,7 @@ export function authentication(initData) {
 
     doRequest("/auth/telegram", option)
       .then((data) => {
+        console.log("аутентификация дефолт успешна");
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: data.user,
@@ -48,6 +49,7 @@ export function authentication(initData) {
         });
       })
       .catch(() => {
+        console.log("аутентификация дефолт неУспешна");
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
@@ -71,6 +73,7 @@ export const authenticationWithAccessToken = (
 
     doRequest("/auth/me", option)
       .then((data) => {
+        console.log("аутентификация через токен успешна");
         dispatch({
           type: SET_USER_TELEGRAM_INFO,
           infoFromTelegram: data,
@@ -80,6 +83,7 @@ export const authenticationWithAccessToken = (
         });
       })
       .catch(() => {
+        console.log("аутентификация через токен неУспешна");
         dispatch({
           type: REMOVE_USER_ACCESS_TOKEN,
         });
@@ -89,6 +93,7 @@ export const authenticationWithAccessToken = (
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
+        console.log("пробуем повторно аутентифицироваться без токена");
         defaultAuthentication();
       });
   };
