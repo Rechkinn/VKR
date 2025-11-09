@@ -58,7 +58,7 @@ export default function Trips() {
     setMaxHeightContainerTrips();
     return () =>
       window.removeEventListener("resize", setMaxHeightContainerTrips);
-  }, []);
+  }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
