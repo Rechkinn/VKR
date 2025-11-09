@@ -15,7 +15,7 @@ import SettingsTrip from "../settings-trip/settings-trip";
 import { SET_TRIP_FOR_SETTINGS } from "../../services/actions/trips";
 import { useModal } from "../../hooks/useModal";
 
-export default function Trip({ trip }) {
+export default function Trip({ trip, openSettingsTrip }) {
   const { visibilityModal, openModal, closeModal } = useModal();
 
   const dispatch = useDispatch();
@@ -43,17 +43,16 @@ export default function Trip({ trip }) {
     }
   }
 
-  function openSettingsTrip() {
-    dispatch({
-      type: SET_TRIP_FOR_SETTINGS,
-      tripForSettings: trip,
-    });
-    openModal();
-  }
+  // function openSettingsTrip() {
+  //   dispatch({
+  //     type: SET_TRIP_FOR_SETTINGS,
+  //     tripForSettings: trip,
+  //   });
+  //   openModal();
+  // }
 
   return (
     <>
-      {visibilityModal && <SettingsTrip closeSettings={closeModal} />}
       <article className={styles.trip}>
         <header className={styles.header}>
           <div className={styles.status}>
