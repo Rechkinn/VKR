@@ -34,6 +34,7 @@ export default function Trips() {
 
   useEffect(() => {
     function setMaxHeightContainerTrips() {
+      console.log("запускаем установку максимальной высоты");
       const section = sectionRef.current;
       const tripsContainer = tripsContainerRef.current;
 
@@ -50,11 +51,11 @@ export default function Trips() {
       });
     }
 
-    document.addEventListener("resize", setMaxHeightContainerTrips);
+    window.addEventListener("resize", setMaxHeightContainerTrips);
 
     setMaxHeightContainerTrips();
     return () =>
-      document.removeEventListener("resize", setMaxHeightContainerTrips);
+      window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
   function openFormToCreateTrip() {
