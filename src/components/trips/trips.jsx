@@ -22,6 +22,9 @@ export default function Trips() {
     (store) => store.trips
   );
 
+  console.log("trips");
+  console.log(trips);
+
   const { visibilityModal, openModal, closeModal } = useModal();
 
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
