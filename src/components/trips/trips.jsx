@@ -17,9 +17,13 @@ export default function Trips() {
   const sectionRef = useRef(null);
   console.log("sectionRef");
   console.log(sectionRef);
+  console.log("sectionRef.current");
+  console.log(sectionRef.current);
   const tripsContainerRef = useRef(null);
   console.log("tripsContainerRef");
   console.log(tripsContainerRef);
+  console.log("tripsContainerRef.current");
+  console.log(tripsContainerRef.current);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -38,8 +42,7 @@ export default function Trips() {
     if (!trips) dispatch(getTrips());
   }, []);
 
-  useEffect(() => {
-    // function setMaxHeightContainerTrips() {
+  function setMaxHeightContainerTrips() {
     console.log("запускаем установку максимальной высоты");
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
@@ -54,15 +57,18 @@ export default function Trips() {
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
-    // }
+  }
 
-    // window.addEventListener("resize", setMaxHeightContainerTrips);
-
-    // setMaxHeightContainerTrips();
-    // return () =>
-    //   window.removeEventListener("resize", setMaxHeightContainerTrips);
+  useEffect(() => {
+    window.addEventListener("resize", setMaxHeightContainerTrips);
+    return () =>
+      window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
-  // }, [sectionRef.current, tripsContainerRef.current]);
+
+  useEffect(() => {
+    setMaxHeightContainerTrips();
+    // },[])
+  }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
