@@ -11,6 +11,12 @@ export const ADD_TRIP_REQUEST = "ADD_TRIP_REQUEST";
 export const ADD_TRIP_REQUEST_ERROR = "ADD_TRIP_REQUEST_ERROR";
 export const ADD_TRIP_REQUEST_SUCCESS = "ADD_TRIP_REQUEST_SUCCESS";
 
+export const SET_TRIP_FOR_SETTINGS = "SET_TRIP_FOR_SETTINGS";
+
+export const REMOVE_TRIP_REQUEST = "REMOVE_TRIP_REQUEST";
+export const REMOVE_TRIP_REQUEST_ERROR = "REMOVE_TRIP_REQUEST_ERROR";
+export const REMOVE_TRIP_REQUEST_SUCCESS = "REMOVE_TRIP_REQUEST_SUCCESS";
+
 export function getTrips() {
   return function (dispatch) {
     dispatch({
@@ -69,6 +75,40 @@ export function addTrip(newTrip, closeForm = () => {}) {
       .catch(() => {
         dispatch({
           type: ADD_TRIP_REQUEST_ERROR,
+        });
+      });
+  };
+}
+
+export function removeTrip(tripId, closeSettings = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: REMOVE_TRIP_REQUEST,
+    });
+
+    const option = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    };
+
+    doRequest(`/trips/${tripId}`, option)
+      .then(() => {
+        dispatch({
+          type: REMOVE_TRIP_REQUEST_SUCCESS,
+          idTripForRemove: tripId,
+        });
+        dispatch({
+          type: SET_TRIP_FOR_SETTINGS,
+          tripForSettings: null,
+        });
+        closeSettings();
+      })
+      .catch(() => {
+        dispatch({
+          type: REMOVE_TRIP_REQUEST_ERROR,
         });
       });
   };
