@@ -11,7 +11,10 @@ import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import Input from "../input/input";
 import { useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { addTrip } from "../../services/actions/trips";
+import {
+  ADD_TRIP_REQUEST_SUCCESS,
+  addTrip,
+} from "../../services/actions/trips";
 import Loader from "../loader/loader";
 
 export default function FormForNewTrip() {
@@ -80,28 +83,10 @@ export default function FormForNewTrip() {
     }
 
     dispatch(addTrip(newTrip, closeForm));
+  }
 
-    // const option = {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    //   },
-    //   body: JSON.stringify(newTrip),
-    // };
-
-    // fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/trips", option)
-    //   .then((response) => {
-    //     if (!response.ok) throw new Error(`Ошибка ${response.status}`);
-    //     console.log(response);
-    //     return response.json();
-    //   })
-    //   .then((trip) => {
-    //     console.log("trip");
-    //     console.log(trip);
-    //     closeForm();
-    //   })
-    //   .catch((error) => console.log(error));
+  function resetError() {
+    dispatch({ type: ADD_TRIP_REQUEST_SUCCESS });
   }
 
   return (
@@ -110,7 +95,9 @@ export default function FormForNewTrip() {
       {addTripRequestError ? (
         <>
           <div>Ошибка создания новой поездки!</div>
-          <Link to="/profile">Вернуться в профиль</Link>
+          <Link to="/profile" onClick={resetError}>
+            Вернуться в профиль
+          </Link>
         </>
       ) : (
         <>
