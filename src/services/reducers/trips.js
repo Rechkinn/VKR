@@ -49,11 +49,7 @@ export const tripsReducer = (state = initialState, action) => {
       return {
         ...state,
         trips: [
-          ...trips.filter((trip) => {
-            if (trip.id !== action.idTripForRemove) {
-              return trip;
-            }
-          }),
+          ...state.trips.filter((trip) => trip.id !== action.idTripForRemove),
         ],
         removeTripRequest: false,
         removeTripRequestError: false,
