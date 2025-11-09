@@ -11,16 +11,20 @@ import TripInfoLine from "../trip-info-line/trip-info-line";
 import { ACTIVE_TAB } from "../../utils/consts";
 import { useDispatch } from "react-redux";
 import { SET_VISIBILITY_MODAL } from "../../services/actions/modal";
+import SettingsTrip from "../settings-trip/settings-trip";
+import { SET_TRIP_FOR_SETTINGS } from "../../services/actions/trips";
 
 export default function Trip({ trip }) {
+  const { visibilityModal, openModal, closeModal } = useModal();
+
   const dispatch = useDispatch();
-  function openModal() {
-    dispatch({
-      type: SET_VISIBILITY_MODAL,
-      visibilityModal: true,
-      currentTrip: trip,
-    });
-  }
+  // function openModal() {
+  //   dispatch({
+  //     type: SET_VISIBILITY_MODAL,
+  //     visibilityModal: true,
+  //     currentTrip: trip,
+  //   });
+  // }
 
   function statusInRussian(status) {
     if (status === "published") {
@@ -38,56 +42,67 @@ export default function Trip({ trip }) {
     }
   }
 
+  function openSettingsTrip() {
+    dispatch({
+      type: SET_TRIP_FOR_SETTINGS,
+      tripForSettings: trip,
+    });
+    openModal();
+  }
+
   return (
-    <article className={styles.trip}>
-      <header className={styles.header}>
-        <div className={styles.status}>
-          <TripStatus>{statusInRussian(trip.status)}</TripStatus>
-          <img
-            src={carIcon}
-            alt="Иконка автомобиля"
-            className={styles.carIcon}
-          />
-        </div>
-        <Button onClick={openModal}>
-          <img
-            src={settingsIcon}
-            alt="Иконка настроек"
-            className={styles.carIcon}
-          />
-        </Button>
-      </header>
+    <>
+      {visibilityModal && <SettingsTrip closeSettings={closeModal} />}
+      <article className={styles.trip}>
+        <header className={styles.header}>
+          <div className={styles.status}>
+            <TripStatus>{statusInRussian(trip.status)}</TripStatus>
+            <img
+              src={carIcon}
+              alt="Иконка автомобиля"
+              className={styles.carIcon}
+            />
+          </div>
+          <Button onClick={openSettingsTrip}>
+            <img
+              src={settingsIcon}
+              alt="Иконка настроек"
+              className={styles.carIcon}
+            />
+          </Button>
+        </header>
 
-      <div className={styles.info}>
-        <TripInfoLine>
-          <img src={startPointIcon} alt="Иконка начальной точки" />
-          <span>{trip.from_address}</span>
-        </TripInfoLine>
-        <TripInfoLine>
-          <img src={endPointIcon} alt="Иконка конечной точки" />
-          <span>{trip.to_address}</span>
-        </TripInfoLine>
-        <div className={styles.containerTimeAndPhone}>
-          <TripInfoLine needGreyColor>
-            <img src={watchIcon} alt="Иконка часов" />
-            <span>
-              {trip.departure_datetime.split("T")[0] +
-                " " +
-                trip.departure_datetime.split("T")[1].slice(0, 5)}
-            </span>
+        <div className={styles.info}>
+          <TripInfoLine>
+            <img src={startPointIcon} alt="Иконка начальной точки" />
+            <span>{trip.from_address}</span>
           </TripInfoLine>
-          <TripInfoLine needGreyColor>
-            <img src={phoneIcon} alt="Иконка телефонной трубки" />
-            <span>{trip.passenger_phone_number}</span>
+          <TripInfoLine>
+            <img src={endPointIcon} alt="Иконка конечной точки" />
+            <span>{trip.to_address}</span>
           </TripInfoLine>
+          <div className={styles.containerTimeAndPhone}>
+            <TripInfoLine needGreyColor>
+              <img src={watchIcon} alt="Иконка часов" />
+              <span>
+                {trip.departure_datetime.split("T")[0] +
+                  " " +
+                  trip.departure_datetime.split("T")[1].slice(0, 5)}
+              </span>
+            </TripInfoLine>
+            <TripInfoLine needGreyColor>
+              <img src={phoneIcon} alt="Иконка телефонной трубки" />
+              <span>{trip.passenger_phone_number}</span>
+            </TripInfoLine>
+          </div>
         </div>
-      </div>
 
-      {/* {trip.status === ACTIVE_TAB && (
+        {/* {trip.status === ACTIVE_TAB && (
         <Button className={`yellow ${styles.buttonFinishTrip}`}>
           Завершить поездку
         </Button>
       )} */}
-    </article>
+      </article>
+    </>
   );
 }
