@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { SET_VISIBILITY_MODAL } from "../../services/actions/modal";
 import SettingsTrip from "../settings-trip/settings-trip";
 import { SET_TRIP_FOR_SETTINGS } from "../../services/actions/trips";
+import { useModal } from "../../hooks/useModal";
 
 export default function Trip({ trip }) {
   const { visibilityModal, openModal, closeModal } = useModal();
