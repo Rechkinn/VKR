@@ -6,7 +6,6 @@ import { SET_ACTIVE_SECTION_NAVBAR } from "../../services/actions/navbar";
 
 export default function NavbarLink({ children, toRoute, activeIcon, icon }) {
   const { pathname } = useLocation();
-  console.log(pathname);
 
   return (
     <Link
