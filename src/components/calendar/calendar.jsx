@@ -228,14 +228,14 @@ export default function Calendar() {
       </header>
       <article className={styles.calendar}>
         <header className={styles.calendarHeader}>
-          <Button>
-            <img src={arrowLeftIcon} alt="" onClick={() => changeMonth(-1)} />
+          <Button onClick={() => changeMonth(-1)}>
+            <img src={arrowLeftIcon} alt="" />
           </Button>
           <h2 className={styles.calendarTitle}>
             {getNameMonth()} {date.getFullYear()}
           </h2>
-          <Button>
-            <img src={arrowRightIcon} alt="" onClick={() => changeMonth(1)} />
+          <Button onClick={() => changeMonth(1)}>
+            <img src={arrowRightIcon} alt="" />
           </Button>
         </header>
         <div className={styles.daysOfWeek}>
