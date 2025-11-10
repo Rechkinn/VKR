@@ -6,10 +6,7 @@ import userActiveIcon from "../../image/navbar/userActive.svg";
 import carActiveIcon from "../../image/navbar/carActive.svg";
 import calendarActiveIcon from "../../image/navbar/calendarActive.svg";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  SET_ACTIVE_SECTION_NAVBAR,
-  SET_VISIBILITY_NAVBAR,
-} from "../../services/actions/navbar";
+import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { CALENDAR, PROFILE, TRIPS } from "../../utils/consts";
 import NavbarLink from "../navbar-link/navbar-link";
 import { useLocation } from "react-router";
@@ -31,19 +28,19 @@ export default function Navbar() {
     });
   }, [pathname]);
 
-  function setActiveSection(section) {
-    dispatch({
-      type: SET_ACTIVE_SECTION_NAVBAR,
-      activeSection: section,
-    });
-  }
+  // function setActiveSection(section) {
+  //   dispatch({
+  //     type: SET_ACTIVE_SECTION_NAVBAR,
+  //     activeSection: section,
+  //   });
+  // }
 
   return (
     <>
       {visibility && (
         <nav className={styles.nav}>
           <ul className={styles.ul}>
-            <li className={styles.li} onClick={() => setActiveSection(PROFILE)}>
+            <li className={styles.li}>
               <NavbarLink
                 toRoute="/profile"
                 activeIcon={userActiveIcon}
@@ -52,7 +49,7 @@ export default function Navbar() {
                 Профиль
               </NavbarLink>
             </li>
-            <li className={styles.li} onClick={() => setActiveSection(TRIPS)}>
+            <li className={styles.li}>
               <NavbarLink
                 toRoute="/trips"
                 activeIcon={carActiveIcon}
@@ -61,10 +58,7 @@ export default function Navbar() {
                 Поездки
               </NavbarLink>
             </li>
-            <li
-              className={styles.li}
-              onClick={() => setActiveSection(CALENDAR)}
-            >
+            <li className={styles.li}>
               <NavbarLink
                 toRoute="/calendar"
                 activeIcon={calendarActiveIcon}

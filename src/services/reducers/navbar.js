@@ -1,25 +1,22 @@
 import { PROFILE } from "../../utils/consts";
-import {
-  SET_ACTIVE_SECTION_NAVBAR,
-  SET_VISIBILITY_NAVBAR,
-} from "../actions/navbar";
+import { SET_VISIBILITY_NAVBAR } from "../actions/navbar";
 
 const initialState = {
   // activeSection: "CALENDAR",
   // activeSection: "TRIPS",
-  activeSection: PROFILE,
+  // activeSection: PROFILE,
   // activeSection: "PROFILE",
   visibility: true,
 };
 
 export const navbarReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_ACTIVE_SECTION_NAVBAR:
-      // localStorage.setItem("activeSectionNavbar", action.activeSection);
-      return {
-        ...state,
-        activeSection: action.activeSection,
-      };
+    // case SET_ACTIVE_SECTION_NAVBAR:
+    //   // localStorage.setItem("activeSectionNavbar", action.activeSection);
+    //   return {
+    //     ...state,
+    //     activeSection: action.activeSection,
+    //   };
     case SET_VISIBILITY_NAVBAR:
       return {
         ...state,
