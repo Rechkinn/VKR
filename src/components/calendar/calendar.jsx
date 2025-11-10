@@ -202,7 +202,7 @@ export default function Calendar() {
       arrayDate[3] = currentYear;
 
       setDate(new Date(arrayDate.slice(1, 4)));
-    } else if (way === -1) {
+    } else {
       const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
       // console.log(numberNextMonth);
       let currentYear = date.getFullYear();
@@ -216,9 +216,10 @@ export default function Calendar() {
       arrayDate[3] = currentYear;
 
       setDate(new Date(arrayDate.slice(1, 4)));
-    } else {
-      throw new Error("Задайте значение изменения месяца календаря!");
     }
+    // else {
+    //   throw new Error("Задайте значение изменения месяца календаря!");
+    // }
   }
 
   return (
@@ -228,15 +229,15 @@ export default function Calendar() {
       </header>
       <article className={styles.calendar}>
         <header className={styles.calendarHeader}>
-          {/* <Button onClick={() => changeMonth(-1)}> */}
-          <Button>
+          <Button onClick={() => changeMonth(-1)}>
+            {/* <Button> */}
             <img src={arrowLeftIcon} alt="" />
           </Button>
           <h2 className={styles.calendarTitle}>
             {getNameMonth()} {date.getFullYear()}
           </h2>
-          {/* <Button onClick={() => changeMonth(1)}> */}
-          <Button>
+          <Button onClick={() => changeMonth(1)}>
+            {/* <Button> */}
             <img src={arrowRightIcon} alt="" />
           </Button>
         </header>
