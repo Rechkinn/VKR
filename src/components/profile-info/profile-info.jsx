@@ -4,6 +4,7 @@ import starEmpty from "../../image/star-empty.svg";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import Balance from "../balance/balance";
 import { useSelector } from "react-redux";
+import Cars from "../cars/cars";
 
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -60,6 +61,8 @@ export default function ProfileInfo() {
               В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]}
             </p>
           </div>
+
+          <Cars />
         </section>
       )}
     </>
