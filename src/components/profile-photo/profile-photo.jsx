@@ -27,7 +27,7 @@ export default function ProfilePhoto({
       sunVisibility: false,
     });
 
-    navigate("change");
+    navigate("/profile/change");
   }
 
   return (

@@ -15,19 +15,19 @@ export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
 
   const navigate = useNavigate();
-  useEffect(() => {
-    navigate("/profile");
-  }, []);
+  // useEffect(() => {
+  //   navigate("/profile");
+  // }, []);
 
   return (
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
         <Routes>
-          <Route path="/" element={<Profile />}>
-            <Route path="profile" element={<ProfileInfo />} />
-            <Route path="profile/change" element={<ChangeProfileInfo />} />
-          </Route>
+          <Route path="/" element={<ProfileInfo />} />
+          <Route path="/profile/change" element={<ChangeProfileInfo />} />
+          {/* <Route path="/" element={<Profile />}>
+          </Route> */}
           <Route path="/trips" element={<Trips />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/create-new-trip" element={<FormForNewTrip />} />
