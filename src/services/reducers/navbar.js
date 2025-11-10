@@ -15,7 +15,7 @@ const initialState = {
 export const navbarReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_ACTIVE_SECTION_NAVBAR:
-      localStorage.setItem("activeSectionNavbar", action.activeSection);
+      // localStorage.setItem("activeSectionNavbar", action.activeSection);
       return {
         ...state,
         activeSection: action.activeSection,
