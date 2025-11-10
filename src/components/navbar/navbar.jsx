@@ -16,7 +16,7 @@ import { useLocation } from "react-router";
 import { useEffect } from "react";
 
 export default function Navbar() {
-  const { visibility, activeSection } = useSelector((store) => store.navbar);
+  const { visibility } = useSelector((store) => store.navbar);
   const dispatch = useDispatch();
   const { pathname } = useLocation();
 
@@ -46,7 +46,8 @@ export default function Navbar() {
             <li className={styles.li} onClick={() => setActiveSection(PROFILE)}>
               <NavbarLink
                 toRoute="/profile"
-                icon={activeSection === PROFILE ? userActiveIcon : userIcon}
+                activeIcon={userActiveIcon}
+                icon={userIcon}
               >
                 Профиль
               </NavbarLink>
@@ -54,7 +55,8 @@ export default function Navbar() {
             <li className={styles.li} onClick={() => setActiveSection(TRIPS)}>
               <NavbarLink
                 toRoute="/trips"
-                icon={activeSection === TRIPS ? carActiveIcon : carIcon}
+                activeIcon={carActiveIcon}
+                icon={carIcon}
               >
                 Поездки
               </NavbarLink>
@@ -65,9 +67,8 @@ export default function Navbar() {
             >
               <NavbarLink
                 toRoute="/calendar"
-                icon={
-                  activeSection === CALENDAR ? calendarActiveIcon : calendarIcon
-                }
+                activeIcon={calendarActiveIcon}
+                icon={calendarIcon}
               >
                 Календарь
               </NavbarLink>
