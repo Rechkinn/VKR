@@ -16,9 +16,7 @@ export default function App() {
 
   const navigate = useNavigate();
   useEffect(() => {
-    // navigate(
-    //   `/${localStorage.getItem("activeSectionNavbar").toLowerCase()}` ?? "/"
-    // );
+    navigate("/profile");
   }, []);
 
   return (
