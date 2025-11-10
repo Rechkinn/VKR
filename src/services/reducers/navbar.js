@@ -1,3 +1,4 @@
+import { PROFILE } from "../../utils/consts";
 import {
   SET_ACTIVE_SECTION_NAVBAR,
   SET_VISIBILITY_NAVBAR,
@@ -6,7 +7,8 @@ import {
 const initialState = {
   // activeSection: "CALENDAR",
   // activeSection: "TRIPS",
-  activeSection: localStorage.getItem("activeSectionNavbar") ?? "PROFILE",
+  activeSection: PROFILE,
+  // activeSection: "PROFILE",
   visibility: true,
 };
 
