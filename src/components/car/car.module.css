@@ -1,0 +1,31 @@
+.car {
+  position: relative;
+  padding: 10px;
+  display: flex;
+
+  gap: 10px;
+  color: white;
+  border: 1px solid #fdcd03;
+  border-radius: 10px;
+}
+
+.img {
+  width: 67px;
+  height: 60px;
+
+  object-fit: cover;
+
+  border-radius: 7px;
+}
+
+.name,
+.registrationNumber {
+  margin: 0;
+  font-size: 14px;
+}
+
+.settingsButton {
+  position: absolute;
+  top: 19px;
+  right: 10px;
+}
