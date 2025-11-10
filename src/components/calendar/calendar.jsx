@@ -93,139 +93,244 @@ export default function Calendar() {
     }
   }
 
+  function getDaysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+
   function changeFormatValue(value) {
     return `${value}`.length === 1 ? `0${value}` : `${value}`;
   }
 
+  // function getArrayForRender(date) {
+  //   const resultArrayDays = [];
+  //   // const date = new Date();
+  //   let daysInPreviousMonth = getDaysInMonth(
+  //     date,
+  //     date.getMonth() === 0 ? 12 : date.getMonth()
+  //   );
+  //   let daysInCurrentMonth = getDaysInMonth(date, date.getMonth() + 1);
+
+  //   const arr = `${date}`.split(" ");
+  //   arr[2] = "01";
+  //   const newDateFirstDay = new Date(arr.join(" "));
+  //   const dayOfWeekFirstDay =
+  //     newDateFirstDay.getDay() === 0 ? 7 : newDateFirstDay.getDay();
+  //   daysInPreviousMonth -= dayOfWeekFirstDay - 1 - 1;
+  //   for (let i = 0; i < dayOfWeekFirstDay - 1; i++) {
+  //     const day = {
+  //       value: daysInPreviousMonth,
+  //       isActiveDay: false,
+  //       month:
+  //         date.getMonth() === 0 ? "12" : changeFormatValue(date.getMonth()),
+  //       year: `${
+  //         date.getMonth() + 1 === 1
+  //           ? date.getFullYear() - 1
+  //           : date.getFullYear()
+  //       }`,
+  //     };
+  //     day["hasTrips"] = true;
+
+  //     resultArrayDays.push(day);
+  //     daysInPreviousMonth++;
+  //   }
+
+  //   for (let i = 1; i < daysInCurrentMonth + 1; i++) {
+  //     const day = {
+  //       value: i,
+  //       isActiveDay: true,
+  //       month: changeFormatValue(date.getMonth() + 1),
+  //       year: `${date.getFullYear()}`,
+  //     };
+  //     day["hasTrips"] = true;
+  //     // console.log("day");
+  //     // console.log(day);
+  //     // console.log("currentDate");
+  //     // console.log(currentDate);
+  //     if (
+  //       currentDate.getDate() == day.value &&
+  //       currentDate.getMonth() + 1 == day.month &&
+  //       currentDate.getFullYear() == day.year
+  //     ) {
+  //       day["isCurrentDay"] = true;
+  //     } else {
+  //       day["isCurrentDay"] = false;
+  //     }
+  //     resultArrayDays.push(day);
+  //   }
+
+  //   arr[2] = `${daysInCurrentMonth}`;
+  //   const newDateLastDay = new Date(arr.join(" "));
+
+  //   const dayOfWeekLastDay =
+  //     newDateLastDay.getDay() === 0 ? 7 : newDateLastDay.getDay();
+
+  //   // console.log("dayOfWeekLastDay");
+  //   // console.log(dayOfWeekLastDay);
+
+  //   for (let i = 0; i < 7 - dayOfWeekLastDay; i++) {
+  //     const day = {
+  //       value: i + 1,
+  //       isActiveDay: false,
+  //       month:
+  //         date.getMonth() + 2 === 13
+  //           ? "01"
+  //           : changeFormatValue(date.getMonth() + 2),
+  //       year: `${
+  //         date.getMonth() + 1 === 12
+  //           ? date.getFullYear() + 1
+  //           : date.getFullYear()
+  //       }`,
+  //     };
+  //     day["hasTrips"] = true;
+  //     resultArrayDays.push(day);
+  //   }
+  //   // setArrayForRender(resultArrayDays);
+  //   // console.log("resultArrayDays");
+  //   // console.log(resultArrayDays);
+  //   return resultArrayDays;
+  // }
+
   function getArrayForRender(date) {
     const resultArrayDays = [];
-    // const date = new Date();
-    let daysInPreviousMonth = getDaysInMonth(
-      date,
-      date.getMonth() === 0 ? 12 : date.getMonth()
-    );
-    let daysInCurrentMonth = getDaysInMonth(date, date.getMonth() + 1);
 
-    const arr = `${date}`.split(" ");
-    arr[2] = "01";
-    const newDateFirstDay = new Date(arr.join(" "));
-    const dayOfWeekFirstDay =
-      newDateFirstDay.getDay() === 0 ? 7 : newDateFirstDay.getDay();
-    daysInPreviousMonth -= dayOfWeekFirstDay - 1 - 1;
-    for (let i = 0; i < dayOfWeekFirstDay - 1; i++) {
-      const day = {
-        value: daysInPreviousMonth,
+    // Первый день текущего месяца
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    // Последний день текущего месяца
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    // День недели первого дня (0 - воскресенье, 1 - понедельник и т.д.)
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    // Корректируем для нашего календаря (пн - 0, вт - 1, ..., вс - 6)
+    const startDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+
+    // Дни из предыдущего месяца
+    const daysInPrevMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      0
+    ).getDate();
+
+    // Заполняем дни предыдущего месяца
+    for (let i = startDay - 1; i >= 0; i--) {
+      const dayValue = daysInPrevMonth - i;
+      resultArrayDays.push({
+        value: dayValue,
         isActiveDay: false,
-        month:
-          date.getMonth() === 0 ? "12" : changeFormatValue(date.getMonth()),
+        month: changeFormatValue(date.getMonth() === 0 ? 12 : date.getMonth()),
         year: `${
-          date.getMonth() + 1 === 1
-            ? date.getFullYear() - 1
-            : date.getFullYear()
+          date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()
         }`,
-      };
-      day["hasTrips"] = true;
-
-      resultArrayDays.push(day);
-      daysInPreviousMonth++;
+        hasTrips: true,
+        isCurrentDay: false,
+      });
     }
 
-    for (let i = 1; i < daysInCurrentMonth + 1; i++) {
-      const day = {
+    // Дни текущего месяца
+    const daysInCurrentMonth = lastDayOfMonth.getDate();
+    for (let i = 1; i <= daysInCurrentMonth; i++) {
+      const isCurrentDay =
+        currentDate.getDate() === i &&
+        currentDate.getMonth() === date.getMonth() &&
+        currentDate.getFullYear() === date.getFullYear();
+
+      resultArrayDays.push({
         value: i,
         isActiveDay: true,
         month: changeFormatValue(date.getMonth() + 1),
         year: `${date.getFullYear()}`,
-      };
-      day["hasTrips"] = true;
-      // console.log("day");
-      // console.log(day);
-      // console.log("currentDate");
-      // console.log(currentDate);
-      if (
-        currentDate.getDate() == day.value &&
-        currentDate.getMonth() + 1 == day.month &&
-        currentDate.getFullYear() == day.year
-      ) {
-        day["isCurrentDay"] = true;
-      } else {
-        day["isCurrentDay"] = false;
-      }
-      resultArrayDays.push(day);
+        hasTrips: true,
+        isCurrentDay: isCurrentDay,
+      });
     }
 
-    arr[2] = `${daysInCurrentMonth}`;
-    const newDateLastDay = new Date(arr.join(" "));
+    // Дни следующего месяца
+    const totalCells = 42; // 6 недель * 7 дней
+    const remainingDays = totalCells - resultArrayDays.length;
 
-    const dayOfWeekLastDay =
-      newDateLastDay.getDay() === 0 ? 7 : newDateLastDay.getDay();
-
-    // console.log("dayOfWeekLastDay");
-    // console.log(dayOfWeekLastDay);
-
-    for (let i = 0; i < 7 - dayOfWeekLastDay; i++) {
-      const day = {
-        value: i + 1,
+    for (let i = 1; i <= remainingDays; i++) {
+      resultArrayDays.push({
+        value: i,
         isActiveDay: false,
-        month:
-          date.getMonth() + 2 === 13
-            ? "01"
-            : changeFormatValue(date.getMonth() + 2),
+        month: changeFormatValue(
+          date.getMonth() + 2 === 13 ? 1 : date.getMonth() + 2
+        ),
         year: `${
           date.getMonth() + 1 === 12
             ? date.getFullYear() + 1
             : date.getFullYear()
         }`,
-      };
-      day["hasTrips"] = true;
-      resultArrayDays.push(day);
+        hasTrips: true,
+        isCurrentDay: false,
+      });
     }
-    // setArrayForRender(resultArrayDays);
-    // console.log("resultArrayDays");
-    // console.log(resultArrayDays);
+
     return resultArrayDays;
   }
 
+  // function changeMonth(way) {
+  //   try {
+  //     if (way === 1) {
+  //       const numberNextMonth =
+  //         (date.getMonth() + 1 + 1) % 13 === 0
+  //           ? 1
+  //           : (date.getMonth() + 1 + 1) % 13;
+  //       // console.log(numberNextMonth);
+  //       let currentYear = date.getFullYear();
+  //       // console.log(currentYear);
+  //       if (numberNextMonth === 1) {
+  //         currentYear++;
+  //       }
+
+  //       const arrayDate = `${date}`.split(" ");
+  //       arrayDate[1] = numberNextMonth;
+  //       arrayDate[3] = currentYear;
+
+  //       setDate(new Date(arrayDate.slice(1, 4)));
+  //     } else {
+  //       const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
+  //       // console.log(numberNextMonth);
+  //       let currentYear = date.getFullYear();
+  //       // console.log(currentYear);
+  //       if (numberNextMonth === 12) {
+  //         currentYear--;
+  //       }
+
+  //       const arrayDate = `${date}`.split(" ");
+  //       arrayDate[1] = numberNextMonth;
+  //       arrayDate[3] = currentYear;
+
+  //       setDate(new Date(arrayDate.slice(1, 4)));
+  //     }
+  //   } catch (error) {
+  //     setErr(error);
+  //   }
+  //   // else {
+  //   //   throw new Error("Задайте значение изменения месяца календаря!");
+  //   // }
+  // }
+
   function changeMonth(way) {
     try {
+      console.log("Changing month, way:", way);
+      console.log("Current date:", date);
+      const newDate = new Date(date);
+
       if (way === 1) {
-        const numberNextMonth =
-          (date.getMonth() + 1 + 1) % 13 === 0
-            ? 1
-            : (date.getMonth() + 1 + 1) % 13;
-        // console.log(numberNextMonth);
-        let currentYear = date.getFullYear();
-        // console.log(currentYear);
-        if (numberNextMonth === 1) {
-          currentYear++;
-        }
-
-        const arrayDate = `${date}`.split(" ");
-        arrayDate[1] = numberNextMonth;
-        arrayDate[3] = currentYear;
-
-        setDate(new Date(arrayDate.slice(1, 4)));
+        // Следующий месяц
+        newDate.setMonth(newDate.getMonth() + 1);
+      } else if (way === -1) {
+        // Предыдущий месяц
+        newDate.setMonth(newDate.getMonth() - 1);
       } else {
-        const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
-        // console.log(numberNextMonth);
-        let currentYear = date.getFullYear();
-        // console.log(currentYear);
-        if (numberNextMonth === 12) {
-          currentYear--;
-        }
-
-        const arrayDate = `${date}`.split(" ");
-        arrayDate[1] = numberNextMonth;
-        arrayDate[3] = currentYear;
-
-        setDate(new Date(arrayDate.slice(1, 4)));
+        return;
       }
+      console.log("New date:", newDate);
+      setDate(newDate);
     } catch (error) {
+      console.error("Error in changeMonth:", error);
       setErr(error);
+      // console.error("Error changing month:", error);
     }
-    // else {
-    //   throw new Error("Задайте значение изменения месяца календаря!");
-    // }
   }
 
   return (
