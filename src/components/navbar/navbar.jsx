@@ -42,7 +42,7 @@ export default function Navbar() {
           <ul className={styles.ul}>
             <li className={styles.li}>
               <NavbarLink
-                toRoute="/profile"
+                toRoute="/"
                 activeIcon={userActiveIcon}
                 icon={userIcon}
               >
