@@ -1,17 +1,26 @@
 import Button from "../button/button";
+import Car from "../car/car";
 import styles from "./cars.module.css";
+import addCarIcon from "../../image/profile/addCarIcon.svg";
 
 export default function Cars() {
   return (
-    <article className={`global-styles ${styles.article}`}>
+    <section className={styles.containerCars}>
       <header className={`${styles.header}`}>
         <h2 className={styles.nameSection}>Мои авто</h2>
-        <Button className="black withIcon">Добавить</Button>
+        <Button className="black withIcon">
+          <img src={addCarIcon} alt="" />
+          <span className={styles.textAddCar}>Добавить</span>
+        </Button>
       </header>
 
       {/* Через map перебираем массив авто и рендерим каждое авто в отдельном компоненте */}
 
-      <div></div>
-    </article>
+      <div className={styles.cars}>
+        {[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3].map(() => {
+          return <Car />;
+        })}
+      </div>
+    </section>
   );
 }
