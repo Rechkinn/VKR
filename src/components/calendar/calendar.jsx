@@ -9,6 +9,8 @@ import { useState, useEffect, useRef } from "react";
 import Trip from "../trip/trip";
 
 export default function Calendar() {
+  const [err, setErr] = useState(null);
+
   const [currentDate, _] = useState(new Date());
   const [date, setDate] = useState(new Date());
 
@@ -185,37 +187,41 @@ export default function Calendar() {
   }
 
   function changeMonth(way) {
-    if (way === 1) {
-      const numberNextMonth =
-        (date.getMonth() + 1 + 1) % 13 === 0
-          ? 1
-          : (date.getMonth() + 1 + 1) % 13;
-      // console.log(numberNextMonth);
-      let currentYear = date.getFullYear();
-      // console.log(currentYear);
-      if (numberNextMonth === 1) {
-        currentYear++;
+    try {
+      if (way === 1) {
+        const numberNextMonth =
+          (date.getMonth() + 1 + 1) % 13 === 0
+            ? 1
+            : (date.getMonth() + 1 + 1) % 13;
+        // console.log(numberNextMonth);
+        let currentYear = date.getFullYear();
+        // console.log(currentYear);
+        if (numberNextMonth === 1) {
+          currentYear++;
+        }
+
+        const arrayDate = `${date}`.split(" ");
+        arrayDate[1] = numberNextMonth;
+        arrayDate[3] = currentYear;
+
+        setDate(new Date(arrayDate.slice(1, 4)));
+      } else {
+        const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
+        // console.log(numberNextMonth);
+        let currentYear = date.getFullYear();
+        // console.log(currentYear);
+        if (numberNextMonth === 12) {
+          currentYear--;
+        }
+
+        const arrayDate = `${date}`.split(" ");
+        arrayDate[1] = numberNextMonth;
+        arrayDate[3] = currentYear;
+
+        setDate(new Date(arrayDate.slice(1, 4)));
       }
-
-      const arrayDate = `${date}`.split(" ");
-      arrayDate[1] = numberNextMonth;
-      arrayDate[3] = currentYear;
-
-      setDate(new Date(arrayDate.slice(1, 4)));
-    } else {
-      const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
-      // console.log(numberNextMonth);
-      let currentYear = date.getFullYear();
-      // console.log(currentYear);
-      if (numberNextMonth === 12) {
-        currentYear--;
-      }
-
-      const arrayDate = `${date}`.split(" ");
-      arrayDate[1] = numberNextMonth;
-      arrayDate[3] = currentYear;
-
-      setDate(new Date(arrayDate.slice(1, 4)));
+    } catch (error) {
+      setErr(error);
     }
     // else {
     //   throw new Error("Задайте значение изменения месяца календаря!");
@@ -288,6 +294,8 @@ export default function Calendar() {
           })} */}
         </div>
       </div>
+
+      {err && <div>{err}</div>}
     </section>
   );
 }
