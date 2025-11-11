@@ -50,7 +50,7 @@ export default function ChangeProfileInfo() {
       sunVisibility: true,
     });
 
-    navigate("/profile");
+    navigate("/");
   }
 
   function saveNewData(e) {
@@ -68,31 +68,6 @@ export default function ChangeProfileInfo() {
     }
 
     dispatch(changeUserInfo(newData, closeFormToChangeProfileInfo));
-
-    // const option = {
-    //   method: "PATCH",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    //   },
-    //   body: JSON.stringify(newData),
-    // };
-
-    // fetch("https://xn--80aqak6ae.xn--p1ai/api/v1/users/me", option)
-    //   .then((response) => {
-    //     if (!response.ok) throw new Error(`Ошибка ${response.status}`);
-    //     console.log(response);
-    //     return response.json();
-    //   })
-    //   .then((user) => {
-    //     dispatch({
-    //       type: SET_USER_TELEGRAM_INFO,
-    //       infoFromTelegram: user,
-    //     });
-    //     console.log(user);
-    //     closeFormToChangeProfileInfo();
-    //   })
-    //   .catch((error) => console.log(error));
   }
 
   return (
@@ -101,7 +76,7 @@ export default function ChangeProfileInfo() {
       {!changeUserInfoRequest && changeUserInfoRequestError && (
         <>
           <div style={{ color: "white" }}>Ошибка отправки данных!</div>
-          <Link to="/profile" onClick={closeFormToChangeProfileInfo}>
+          <Link to="/" onClick={closeFormToChangeProfileInfo}>
             Вернуться в профиль
           </Link>
         </>
