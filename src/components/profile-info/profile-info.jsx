@@ -4,7 +4,9 @@ import starEmpty from "../../image/star-empty.svg";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import Balance from "../balance/balance";
 import { useSelector } from "react-redux";
-import Cars from "../cars/cars";
+import { Cars } from "../cars/cars";
+import { useEffect, useRef, useState } from "react";
+import Car from "../car/car";
 
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -30,10 +32,41 @@ export default function ProfileInfo() {
     });
   }
 
+  const sectionRef = useRef();
+  const carsRef = useRef();
+  const [styleTripsContainer, setStyleTripsContainer] = useState();
+
+  function setMaxHeightContainerTrips() {
+    console.log("запускаем установку максимальной высоты");
+    const section = sectionRef.current;
+    const cars = carsRef.current;
+
+    if (!section || !cars) return;
+
+    const sectionBorders = section.getBoundingClientRect();
+    const carsBorders = cars.getBoundingClientRect();
+
+    const maxHeight = sectionBorders.bottom - carsBorders.top - 35;
+    console.log("устанавливаем значение");
+    setStyleTripsContainer({
+      maxHeight: maxHeight,
+    });
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", setMaxHeightContainerTrips);
+    return () =>
+      window.removeEventListener("resize", setMaxHeightContainerTrips);
+  }, []);
+
+  useEffect(() => {
+    setMaxHeightContainerTrips();
+  }, [sectionRef.current, carsRef.current]);
+
   return (
     <>
       {infoFromTelegram && (
-        <section>
+        <section ref={sectionRef} className={styles.section}>
           <header className={styles.header}>
             <div className={styles.headerPart}>
               <h1 className={styles.ratingText}>Рейтинг</h1>
@@ -62,7 +95,7 @@ export default function ProfileInfo() {
             </p>
           </div>
 
-          <Cars />
+          <Cars ref={carsRef} style={styleTripsContainer} />
         </section>
       )}
     </>
