@@ -15,8 +15,6 @@ export const Cars = forwardRef((props, ref) => {
         </Button>
       </header>
 
-      {/* Через map перебираем массив авто и рендерим каждое авто в отдельном компоненте */}
-
       <div ref={ref} style={props.style} className={styles.cars}>
         {[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3].map(() => {
           return <Car />;

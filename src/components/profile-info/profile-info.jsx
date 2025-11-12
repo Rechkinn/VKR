@@ -98,16 +98,6 @@ export default function ProfileInfo() {
             </p>
           </div>
 
-          {/* <div
-            ref={carsRef}
-            style={styleTripsContainer}
-            className={styles.cars}
-          >
-            {[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3].map(() => {
-              return <Car />;
-            })}
-          </div> */}
-
           <Cars ref={carsRef} style={styleTripsContainer} />
         </section>
       )}

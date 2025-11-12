@@ -15,12 +15,6 @@ import { getTrips } from "../../services/actions/trips";
 export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(getTrips());
-  // }, []);
-
   return (
     <>
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
