@@ -47,6 +47,14 @@ export default function Trips() {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
 
+    console.log(
+      "перед проверкой !section || !tripsContainer:",
+      !section || !tripsContainer
+    );
+    console.log("sectionRef.current");
+    console.log(sectionRef.current);
+    console.log("tripsContainerRef.current");
+    console.log(tripsContainerRef.current);
     if (!section || !tripsContainer) return;
 
     const sectionBorders = section.getBoundingClientRect();
@@ -67,6 +75,10 @@ export default function Trips() {
 
   useEffect(() => {
     console.log("Видимо ref-ы в trips изменились");
+    console.log("sectionRef.current");
+    console.log(sectionRef.current);
+    console.log("tripsContainerRef.current");
+    console.log(tripsContainerRef.current);
     setMaxHeightContainerTrips();
   }, [sectionRef.current, tripsContainerRef.current]);
 
