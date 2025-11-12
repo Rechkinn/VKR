@@ -34,9 +34,9 @@ export default function Trips() {
 
   const { visibilityModal, openModal, closeModal } = useModal();
 
-  // useEffect(() => {
-  //   dispatch(getTrips());
-  // }, []);
+  useEffect(() => {
+    dispatch(getTrips());
+  }, []);
 
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
@@ -47,14 +47,6 @@ export default function Trips() {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
 
-    console.log(
-      "перед проверкой !section || !tripsContainer:",
-      !section || !tripsContainer
-    );
-    console.log("sectionRef.current");
-    console.log(sectionRef.current);
-    console.log("tripsContainerRef.current");
-    console.log(tripsContainerRef.current);
     if (!section || !tripsContainer) return;
 
     const sectionBorders = section.getBoundingClientRect();
@@ -73,15 +65,15 @@ export default function Trips() {
       window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
-  useEffect(() => {
-    console.log("Видимо ref-ы в trips изменились");
-    console.log("sectionRef.current");
-    console.log(sectionRef.current);
-    console.log("tripsContainerRef.current");
-    console.log(tripsContainerRef.current);
-    setMaxHeightContainerTrips();
-    // setTimeout(() => setMaxHeightContainerTrips(), 100);
-  }, [sectionRef.current, tripsContainerRef.current]);
+  // useEffect(() => {
+  //   console.log("Видимо ref-ы в trips изменились");
+  //   console.log("sectionRef.current");
+  //   console.log(sectionRef.current);
+  //   console.log("tripsContainerRef.current");
+  //   console.log(tripsContainerRef.current);
+  //   setMaxHeightContainerTrips();
+  //   // setTimeout(() => setMaxHeightContainerTrips(), 100);
+  // }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
@@ -132,7 +124,9 @@ export default function Trips() {
               <div
                 ref={tripsContainerRef}
                 className={styles.trips}
-                style={styleTripsContainer}
+                style={{
+                  maxHeight: `${window.innerHeight - 139 - 99.5 - 50}px`,
+                }}
               >
                 {trips.map((trip) => {
                   return (
