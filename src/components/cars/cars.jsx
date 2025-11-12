@@ -2,8 +2,9 @@ import Button from "../button/button";
 import Car from "../car/car";
 import styles from "./cars.module.css";
 import addCarIcon from "../../image/profile/addCarIcon.svg";
+import { forwardRef } from "react";
 
-export default function Cars() {
+export const Cars = forwardRef((props, ref) => {
   return (
     <section className={styles.containerCars}>
       <header className={`${styles.header}`}>
@@ -16,11 +17,11 @@ export default function Cars() {
 
       {/* Через map перебираем массив авто и рендерим каждое авто в отдельном компоненте */}
 
-      <div className={styles.cars}>
+      <div ref={ref} style={props.style} className={styles.cars}>
         {[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3].map(() => {
           return <Car />;
         })}
       </div>
     </section>
   );
-}
+});
