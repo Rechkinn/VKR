@@ -14,12 +14,12 @@ import SettingsTrip from "../settings-trip/settings-trip";
 import { useModal } from "../../hooks/useModal";
 
 export default function Trips() {
-  const sectionRef = useRef(null);
+  const sectionRef = useRef();
   console.log("sectionRef");
   console.log(sectionRef);
   console.log("sectionRef.current");
   console.log(sectionRef.current);
-  const tripsContainerRef = useRef(null);
+  const tripsContainerRef = useRef();
   console.log("tripsContainerRef");
   console.log(tripsContainerRef);
   console.log("tripsContainerRef.current");
