@@ -35,7 +35,7 @@ export default function Trips() {
   const { visibilityModal, openModal, closeModal } = useModal();
 
   useEffect(() => {
-    if (!trips) dispatch(getTrips());
+    dispatch(getTrips());
   }, []);
 
   const sectionRef = useRef();
@@ -102,11 +102,9 @@ export default function Trips() {
   return (
     <>
       {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
-      {getTripsRequestError && (
+      {getTripsRequestError ? (
         <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
-      )}
-
-      {trips && (
+      ) : (
         <>
           {visibilityModal && <SettingsTrip closeSettings={closeModal} />}
           <section ref={sectionRef} className={styles.section}>
