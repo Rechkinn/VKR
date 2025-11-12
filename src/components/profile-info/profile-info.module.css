@@ -3,6 +3,10 @@ h1 {
   padding: 0;
 }
 
+.section {
+  height: 100%;
+}
+
 .header {
   margin-bottom: 22px;
   display: flex;
@@ -82,3 +86,8 @@ h1 {
   font-size: 12px;
   font-weight: normal;
 }
+
+/* .cars {
+  overflow-y: auto;
+  max-height: 300px;
+} */
