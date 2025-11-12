@@ -89,6 +89,7 @@
 
 .trips {
   overflow-y: auto;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  max-height: 300px;
   /* max-height: 35vh; */
 }
