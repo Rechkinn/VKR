@@ -43,21 +43,16 @@ export default function Trips() {
   const [styleTripsContainer, setStyleTripsContainer] = useState();
 
   function setMaxHeightContainerTrips() {
-    const section = sectionRef.current;
-    const tripsContainer = tripsContainerRef.current;
-    if (!section || !tripsContainer) return;
-    const sectionBorders = section.getBoundingClientRect();
-    const tripsContainerBorders = tripsContainer.getBoundingClientRect();
-    const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
     setStyleTripsContainer({
-      maxHeight: maxHeight,
+      maxHeight: `${window.innerHeight - 139 - 99.5 - 89.5}px`,
     });
   }
 
   useEffect(() => {
-    // window.addEventListener("resize", setMaxHeightContainerTrips);
-    // return () =>
-    //   window.removeEventListener("resize", setMaxHeightContainerTrips);
+    setMaxHeightContainerTrips();
+    window.addEventListener("resize", setMaxHeightContainerTrips);
+    return () =>
+      window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
   function openFormToCreateTrip() {
@@ -111,9 +106,7 @@ export default function Trips() {
               <div
                 ref={tripsContainerRef}
                 className={styles.trips}
-                style={{
-                  maxHeight: `${window.innerHeight - 139 - 99.5 - 89.5}px`,
-                }}
+                style={styleTripsContainer}
               >
                 {trips.map((trip) => {
                   return (
