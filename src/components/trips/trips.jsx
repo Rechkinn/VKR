@@ -68,7 +68,7 @@ export default function Trips() {
   }
 
   useEffect(() => {
-    setTimeout(() => setMaxHeightContainerTrips(), 1000);
+    setTimeout(() => setMaxHeightContainerTrips(), 100);
     window.addEventListener("resize", setMaxHeightContainerTrips);
     return () =>
       window.removeEventListener("resize", setMaxHeightContainerTrips);
