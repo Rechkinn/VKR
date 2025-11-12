@@ -68,19 +68,20 @@ export default function Trips() {
   }
 
   useEffect(() => {
+    setTimeout(() => setMaxHeightContainerTrips(), 1000);
     window.addEventListener("resize", setMaxHeightContainerTrips);
     return () =>
       window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
-  useEffect(() => {
-    console.log("Видимо ref-ы в trips изменились");
-    console.log("sectionRef.current");
-    console.log(sectionRef.current);
-    console.log("tripsContainerRef.current");
-    console.log(tripsContainerRef.current);
-    setMaxHeightContainerTrips();
-  }, [sectionRef.current, tripsContainerRef.current]);
+  // useEffect(() => {
+  //   console.log("Видимо ref-ы в trips изменились");
+  //   console.log("sectionRef.current");
+  //   console.log(sectionRef.current);
+  //   console.log("tripsContainerRef.current");
+  //   console.log(tripsContainerRef.current);
+  //   setMaxHeightContainerTrips();
+  // }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
