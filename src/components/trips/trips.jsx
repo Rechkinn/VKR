@@ -43,37 +43,22 @@ export default function Trips() {
   const [styleTripsContainer, setStyleTripsContainer] = useState();
 
   function setMaxHeightContainerTrips() {
-    console.log("запускаем установку максимальной высоты");
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
-
     if (!section || !tripsContainer) return;
-
     const sectionBorders = section.getBoundingClientRect();
     const tripsContainerBorders = tripsContainer.getBoundingClientRect();
-
     const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
-    console.log("устанавливаем значение");
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
   }
 
   useEffect(() => {
-    window.addEventListener("resize", setMaxHeightContainerTrips);
-    return () =>
-      window.removeEventListener("resize", setMaxHeightContainerTrips);
+    // window.addEventListener("resize", setMaxHeightContainerTrips);
+    // return () =>
+    //   window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
-
-  // useEffect(() => {
-  //   console.log("Видимо ref-ы в trips изменились");
-  //   console.log("sectionRef.current");
-  //   console.log(sectionRef.current);
-  //   console.log("tripsContainerRef.current");
-  //   console.log(tripsContainerRef.current);
-  //   setMaxHeightContainerTrips();
-  //   // setTimeout(() => setMaxHeightContainerTrips(), 100);
-  // }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
     navigate("/create-new-trip", {
