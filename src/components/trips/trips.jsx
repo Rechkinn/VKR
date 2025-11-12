@@ -34,7 +34,7 @@ export default function Trips() {
 
   const { visibilityModal, openModal, closeModal } = useModal();
 
-  const [styleTripsContainer, setStyleTripsContainer] = useState(null);
+  const [styleTripsContainer, setStyleTripsContainer] = useState();
   console.log("styleTripsContainer");
   console.log(styleTripsContainer);
 
@@ -67,7 +67,6 @@ export default function Trips() {
 
   useEffect(() => {
     setMaxHeightContainerTrips();
-    // },[])
   }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
