@@ -125,7 +125,7 @@ export default function Trips() {
                 ref={tripsContainerRef}
                 className={styles.trips}
                 style={{
-                  maxHeight: `${window.innerHeight - 139 - 99.5 - 86.5}px`,
+                  maxHeight: `${window.innerHeight - 139 - 99.5 - 89.5}px`,
                 }}
               >
                 {trips.map((trip) => {
