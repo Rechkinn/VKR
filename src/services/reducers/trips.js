@@ -16,7 +16,7 @@ import {
 
 const initialState = {
   currentTab: ACTIVE_TAB,
-  trips: null,
+  trips: [],
   getTripsRequest: false,
   getTripsRequestError: false,
 
@@ -85,9 +85,9 @@ export const tripsReducer = (state = initialState, action) => {
     case GET_TRIPS_REQUEST_SUCCESS:
       return {
         ...state,
+        trips: action.trips,
         getTripsRequest: false,
         getTripsRequestError: false,
-        trips: action.trips,
       };
 
     case ADD_TRIP:
