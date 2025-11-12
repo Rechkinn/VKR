@@ -16,7 +16,7 @@ import {
 
 const initialState = {
   currentTab: ACTIVE_TAB,
-  trips: [],
+  trips: null,
   getTripsRequest: false,
   getTripsRequestError: false,
 
