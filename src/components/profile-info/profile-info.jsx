@@ -60,6 +60,9 @@ export default function ProfileInfo() {
   }, []);
 
   useEffect(() => {
+    console.log(
+      "Видимо изменились sectionRef.current и carsRef.current, поэтому сейчас запустим функцию setMaxHeightContainerTrips"
+    );
     setMaxHeightContainerTrips();
   }, [sectionRef.current, carsRef.current]);
 
@@ -94,6 +97,16 @@ export default function ProfileInfo() {
               В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]}
             </p>
           </div>
+
+          {/* <div
+            ref={carsRef}
+            style={styleTripsContainer}
+            className={styles.cars}
+          >
+            {[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3].map(() => {
+              return <Car />;
+            })}
+          </div> */}
 
           <Cars ref={carsRef} style={styleTripsContainer} />
         </section>
