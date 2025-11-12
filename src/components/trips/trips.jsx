@@ -14,16 +14,16 @@ import SettingsTrip from "../settings-trip/settings-trip";
 import { useModal } from "../../hooks/useModal";
 
 export default function Trips() {
-  const sectionRef = useRef();
-  console.log("sectionRef");
-  console.log(sectionRef);
-  console.log("sectionRef.current");
-  console.log(sectionRef.current);
-  const tripsContainerRef = useRef();
-  console.log("tripsContainerRef");
-  console.log(tripsContainerRef);
-  console.log("tripsContainerRef.current");
-  console.log(tripsContainerRef.current);
+  // const sectionRef = useRef();
+  // console.log("sectionRef");
+  // console.log(sectionRef);
+  // console.log("sectionRef.current");
+  // console.log(sectionRef.current);
+  // const tripsContainerRef = useRef();
+  // console.log("tripsContainerRef");
+  // console.log(tripsContainerRef);
+  // console.log("tripsContainerRef.current");
+  // console.log(tripsContainerRef.current);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -34,13 +34,13 @@ export default function Trips() {
 
   const { visibilityModal, openModal, closeModal } = useModal();
 
-  const [styleTripsContainer, setStyleTripsContainer] = useState();
-  console.log("styleTripsContainer");
-  console.log(styleTripsContainer);
-
   useEffect(() => {
     if (!trips) dispatch(getTrips());
   }, []);
+
+  const sectionRef = useRef();
+  const tripsContainerRef = useRef();
+  const [styleTripsContainer, setStyleTripsContainer] = useState();
 
   function setMaxHeightContainerTrips() {
     console.log("запускаем установку максимальной высоты");
@@ -66,6 +66,7 @@ export default function Trips() {
   }, []);
 
   useEffect(() => {
+    console.log("Видимо ref-ы в trips изменились");
     setMaxHeightContainerTrips();
   }, [sectionRef.current, tripsContainerRef.current]);
 
