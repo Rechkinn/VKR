@@ -34,9 +34,9 @@ export default function Trips() {
 
   const { visibilityModal, openModal, closeModal } = useModal();
 
-  useEffect(() => {
-    dispatch(getTrips());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getTrips());
+  // }, []);
 
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
@@ -79,8 +79,8 @@ export default function Trips() {
     console.log(sectionRef.current);
     console.log("tripsContainerRef.current");
     console.log(tripsContainerRef.current);
-    // setMaxHeightContainerTrips();
-    setTimeout(() => setMaxHeightContainerTrips(), 100);
+    setMaxHeightContainerTrips();
+    // setTimeout(() => setMaxHeightContainerTrips(), 100);
   }, [sectionRef.current, tripsContainerRef.current]);
 
   function openFormToCreateTrip() {
