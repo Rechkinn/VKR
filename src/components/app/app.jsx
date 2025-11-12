@@ -17,9 +17,9 @@ export default function App() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getTrips());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getTrips());
+  // }, []);
 
   return (
     <>
