@@ -15,9 +15,9 @@ export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
 
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   navigate("/profile");
-  // }, []);
+  useEffect(() => {
+    dispatch(getTrips());
+  }, []);
 
   return (
     <>
