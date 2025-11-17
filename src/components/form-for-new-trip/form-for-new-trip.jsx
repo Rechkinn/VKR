@@ -177,7 +177,7 @@ export default function FormForNewTrip() {
               action=""
               ref={formRef}
               className={styles.form}
-              onSubmit={(e) => createNewTrip(e)}
+              // onSubmit={(e) => createNewTrip(e)}
             >
               <Button
                 onClick={(e) => {
@@ -324,6 +324,7 @@ export default function FormForNewTrip() {
               <Button
                 type="submit"
                 className={`yellow ${styles.buttonPushForm}`}
+                onSubmit={(e) => createNewTrip(e)}
               >
                 Отправить в канал
               </Button>
