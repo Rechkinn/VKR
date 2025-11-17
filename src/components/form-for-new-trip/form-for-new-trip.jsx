@@ -94,6 +94,7 @@ export default function FormForNewTrip() {
         date = `${inputs[i].value}`;
 
         if (!validateDate(date)) {
+          inputs[i].focus();
           stop = true;
           setDateError(true);
           break;
