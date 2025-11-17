@@ -73,8 +73,8 @@ export default function FormForNewTrip() {
     return year.length === 4 && Number(year) >= currentDate.getFullYear();
   }
 
-  function createNewTrip(e) {
-    e.preventDefault();
+  function createNewTrip() {
+    // e.preventDefault();
 
     if (!formRef.current) return;
     const inputs = formRef.current.elements;
@@ -325,7 +325,10 @@ export default function FormForNewTrip() {
               <Button
                 type="submit"
                 className={`yellow ${styles.buttonPushForm}`}
-                onSubmit={(e) => createNewTrip(e)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  createNewTrip();
+                }}
               >
                 Отправить в канал
               </Button>
