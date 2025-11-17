@@ -9,7 +9,7 @@ import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import Button from "../button/button";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import Input from "../input/input";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import {
   ADD_TRIP_REQUEST_SUCCESS,
@@ -18,13 +18,22 @@ import {
 import Loader from "../loader/loader";
 
 export default function FormForNewTrip() {
+  // const
+
+  const [totalSeatsError, setTotalSeatsError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
+  const [delegationCommissionError, setDelegationCommissionError] =
+    useState(false);
+
+  const [dateError, setDateError] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formRef = useRef();
 
   const location = useLocation();
-  console.log("location в форме");
-  console.log(location);
+  // console.log("location в форме");
+  // console.log(location);
 
   const { addTripRequest, addTripRequestError } = useSelector(
     (store) => store.trips
@@ -38,25 +47,60 @@ export default function FormForNewTrip() {
     navigate(location?.state?.toRoute ?? "/profile");
   }
 
+  function validationNumber(inputValue) {
+    const regex = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
+    if (!regex.test(inputValue)) {
+      console.log("какие-то посторонние символы");
+      return false;
+    }
+
+    console.log(
+      "результат значения Number(inputValue) > -1:",
+      Number(inputValue) > -1
+    );
+    return Number(inputValue) > -1;
+  }
+
+  function validateDate(inputValue) {
+    // "121221-12-12"
+
+    const year = inputValue.split("-")[0];
+    const currentDate = new Date();
+    console.log(
+      "year.length === 4 && Number(year) >= currentDate.getFullYear()",
+      year.length === 4 && Number(year) >= currentDate.getFullYear()
+    );
+    return year.length === 4 && Number(year) >= currentDate.getFullYear();
+  }
+
   function createNewTrip(e) {
     e.preventDefault();
 
     if (!formRef.current) return;
+    const inputs = formRef.current.elements;
 
     const newTrip = {
       trip_type: "delegated",
       is_delegation_active: true,
     };
 
-    const inputs = formRef.current.elements;
-
     let date = "";
     let time = "";
+    let stop = false;
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "" || inputs[i].value === "") continue;
 
       if (inputs[i].name === "date") {
         date = `${inputs[i].value}`;
+
+        if (!validateDate(date)) {
+          stop = true;
+          setDateError(true);
+          break;
+        } else {
+          setDateError(false);
+        }
+
         if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
           newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
         }
@@ -75,12 +119,35 @@ export default function FormForNewTrip() {
         inputs[i].name === "price" ||
         inputs[i].name === "total_seats"
       ) {
+        if (!validationNumber(inputs[i].value)) {
+          console.log("проверка прошла безуспешно");
+
+          inputs[i].focus();
+          stop = true;
+          if (inputs[i].name === "total_seats") setTotalSeatsError(true);
+          else setTotalSeatsError(false);
+
+          if (inputs[i].name === "price") setPriceError(true);
+          else setPriceError(false);
+
+          if (inputs[i].name === "delegation_commission")
+            setDelegationCommissionError(true);
+          else setDelegationCommissionError(false);
+
+          break;
+        }
+
         newTrip[inputs[i].name] = Number(inputs[i].value);
         continue;
       }
 
       newTrip[inputs[i].name] = inputs[i].value;
     }
+
+    console.log("newTrip");
+    console.log(newTrip);
+
+    if (stop) return;
 
     dispatch(addTrip(newTrip, closeForm));
   }
@@ -122,7 +189,7 @@ export default function FormForNewTrip() {
                 <img src={closeIcon} alt="Иконка закрытия формы" />
               </Button>
 
-              <div className={styles.containerForTwoInputs}>
+              {/* <div className={styles.containerForTwoInputs}>
                 <div className={styles.container40}>
                   <Input
                     label="Дата"
@@ -141,7 +208,28 @@ export default function FormForNewTrip() {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
+
+              {/* <div className={styles.inputDate}> */}
+              <Input
+                label="Дата"
+                iconForLabel={dateIcon}
+                type="date"
+                name="date"
+                className={styles.inputDate}
+                errorText={dateError ? "Введите корректную дату" : ""}
+                required
+              />
+
+              <Input
+                label="Время"
+                iconForLabel={watchIcon}
+                type="time"
+                name="time"
+                className={styles.inputTime}
+                required
+              />
+              {/* </div> */}
 
               <Input
                 label="Откуда"
@@ -166,6 +254,11 @@ export default function FormForNewTrip() {
                     iconForLabel={dateIcon}
                     type="number"
                     name="total_seats"
+                    errorText={
+                      totalSeatsError
+                        ? "Введите число большее 0 без лишних символов"
+                        : ""
+                    }
                     required
                   />
                 </div>
@@ -194,13 +287,27 @@ export default function FormForNewTrip() {
                 required
               />
 
-              <Input label="Стоимость" type="number" name="price" />
+              <Input
+                label="Стоимость"
+                type="number"
+                name="price"
+                errorText={
+                  priceError
+                    ? "Введите число большее 0 без лишних символов"
+                    : ""
+                }
+              />
 
               <Input
                 label="Комссия"
                 type="number"
                 name="delegation_commission"
                 required
+                errorText={
+                  delegationCommissionError
+                    ? "Введите число большее 0 без лишних символов"
+                    : ""
+                }
               />
 
               <div>

@@ -66,10 +66,12 @@
 }
 
 .select {
+  border: 0;
   composes: globalStyles;
   height: 32.7px;
 }
 .textarea {
+  border: 0;
   composes: globalStyles;
   min-height: 78px;
   resize: none;
@@ -79,4 +81,10 @@
   display: block;
   margin-top: 33px;
   margin-left: auto;
+}
+
+.inputDate,
+.inputTime {
+  width: 281px;
+  height: 32.7px;
 }
