@@ -44,7 +44,7 @@ export default function FormForNewTrip() {
       type: SET_VISIBILITY_NAVBAR,
       visibility: true,
     });
-    navigate(location?.state?.toRoute ?? "/profile");
+    navigate(location?.state?.toRoute ?? "/");
   }
 
   function validationNumber(inputValue) {
