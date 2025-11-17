@@ -8,6 +8,7 @@ export default function Input({
   initialValue = "",
   className = "",
   iconForLabel = null,
+  errorText = "",
   ...props
 }) {
   const [valueInput, setValueInput] = useState(initialValue);
@@ -29,9 +30,12 @@ export default function Input({
         id={name}
         name={name}
         value={valueInput}
-        onChange={(event) => setValueInput(event.target.value)}
+        onChange={(event) => {
+          setValueInput(event.target.value);
+        }}
         className={`${styles.input} ${className}`}
       />
+      {errorText && <p className={styles.errorText}>{errorText}</p>}
     </div>
   );
 }
