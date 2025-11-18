@@ -27,3 +27,33 @@ input {
   color: red;
   font-size: 12px;
 }
+
+.containerContentSelect {
+  /* position: fixed; */
+  width: 281px;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 5px;
+  /* padding: 5px 23px; */
+  /* background-color: #fdcd03; */
+  background-color: #ffffff;
+  color: black;
+  /* border: 2px solid #fdcd03; */
+  border-radius: 5px;
+  /* z-index: 100; */
+}
+
+.li,
+.notFound {
+  font-size: 14px;
+  padding: 5px 23px;
+}
+
+.li:not(:last-child) {
+  border-bottom: 1px solid black;
+}
+
+.li:active {
+  /* background-color: white; */
+  background-color: #fdcd03;
+}
