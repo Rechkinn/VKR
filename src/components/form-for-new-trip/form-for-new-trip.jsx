@@ -50,14 +50,14 @@ export default function FormForNewTrip() {
   function validationNumber(inputValue) {
     const regex = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
     if (!regex.test(inputValue)) {
-      console.log("какие-то посторонние символы");
+      // console.log("какие-то посторонние символы");
       return false;
     }
 
-    console.log(
-      "результат значения Number(inputValue) > -1:",
-      Number(inputValue) > -1
-    );
+    // console.log(
+    //   "результат значения Number(inputValue) > -1:",
+    //   Number(inputValue) > -1
+    // );
     return Number(inputValue) > -1;
   }
 
@@ -66,10 +66,10 @@ export default function FormForNewTrip() {
 
     const year = inputValue.split("-")[0];
     const currentDate = new Date();
-    console.log(
-      "year.length === 4 && Number(year) >= currentDate.getFullYear()",
-      year.length === 4 && Number(year) >= currentDate.getFullYear()
-    );
+    // console.log(
+    //   "year.length === 4 && Number(year) >= currentDate.getFullYear()",
+    //   year.length === 4 && Number(year) >= currentDate.getFullYear()
+    // );
     return year.length === 4 && Number(year) >= currentDate.getFullYear();
   }
 
@@ -121,7 +121,7 @@ export default function FormForNewTrip() {
         inputs[i].name === "total_seats"
       ) {
         if (!validationNumber(inputs[i].value)) {
-          console.log("проверка прошла безуспешно");
+          // console.log("проверка прошла безуспешно");
 
           inputs[i].focus();
           stop = true;
@@ -145,8 +145,8 @@ export default function FormForNewTrip() {
       newTrip[inputs[i].name] = inputs[i].value;
     }
 
-    console.log("newTrip");
-    console.log(newTrip);
+    // console.log("newTrip");
+    // console.log(newTrip);
 
     if (stop) return;
 
@@ -163,7 +163,7 @@ export default function FormForNewTrip() {
       {addTripRequestError ? (
         <>
           <div>Ошибка создания новой поездки!</div>
-          <Link to="/profile" onClick={resetError}>
+          <Link to="/" onClick={resetError}>
             Вернуться в профиль
           </Link>
         </>
@@ -181,6 +181,7 @@ export default function FormForNewTrip() {
               // onSubmit={(e) => createNewTrip(e)}
             >
               <Button
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   closeForm();
