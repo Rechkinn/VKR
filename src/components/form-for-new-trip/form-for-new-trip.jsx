@@ -9,7 +9,7 @@ import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import Button from "../button/button";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import Input from "../input/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import {
   ADD_TRIP_REQUEST_SUCCESS,
@@ -26,6 +26,10 @@ export default function FormForNewTrip() {
     useState(false);
 
   const [dateError, setDateError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+
+  const [fromAdressError, setFromAdressError] = useState(false);
+  const [toAdressError, setToAdressError] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,7 +48,7 @@ export default function FormForNewTrip() {
       type: SET_VISIBILITY_NAVBAR,
       visibility: true,
     });
-    navigate(location?.state?.toRoute ?? "/");
+    navigate(location?.state?.toRoute ?? "/", { replace: true });
   }
 
   function validationNumber(inputValue) {
@@ -71,6 +75,13 @@ export default function FormForNewTrip() {
     //   year.length === 4 && Number(year) >= currentDate.getFullYear()
     // );
     return year.length === 4 && Number(year) >= currentDate.getFullYear();
+  }
+
+  function validatePhoneNumber(phone) {
+    const phoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
+
+    if (!phoneRegex.test(phone)) return false;
+    return true;
   }
 
   function createNewTrip(e) {
@@ -142,6 +153,32 @@ export default function FormForNewTrip() {
         continue;
       }
 
+      if (inputs[i].name === "passenger_phone_number") {
+        if (!validatePhoneNumber(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setPhoneNumberError(true);
+          break;
+        } else {
+          setPhoneNumberError(false);
+        }
+      }
+
+      if (inputs[i].name === "from_address") {
+        if (fromAdressError) {
+          inputs[i].focus();
+          stop = true;
+          break;
+        }
+      }
+      if (inputs[i].name === "to_address") {
+        if (toAdressError) {
+          inputs[i].focus();
+          stop = true;
+          break;
+        }
+      }
+
       newTrip[inputs[i].name] = inputs[i].value;
     }
 
@@ -156,6 +193,27 @@ export default function FormForNewTrip() {
   function resetError() {
     dispatch({ type: ADD_TRIP_REQUEST_SUCCESS });
   }
+
+  useEffect(() => {
+    // const url =
+    //   "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
+    // const token = "b537cba152892a63e9e083bcd4ccf47b1b5e3fc9";
+    // let query = "томск улица богдана хмельницкого д 39";
+    // const options = {
+    //   method: "POST",
+    //   mode: "cors",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Accept: "application/json",
+    //     Authorization: "Token " + token,
+    //   },
+    //   body: JSON.stringify({ query: query }),
+    // };
+    // fetch(url, options)
+    //   .then((response) => response.json())
+    //   .then((result) => console.log(result?.suggestions))
+    //   .catch((error) => console.log("error", error));
+  }, []);
 
   return (
     <>
@@ -178,7 +236,7 @@ export default function FormForNewTrip() {
               action=""
               ref={formRef}
               className={styles.form}
-              // onSubmit={(e) => createNewTrip(e)}
+              onSubmit={(e) => createNewTrip(e)}
             >
               <Button
                 type="button"
@@ -238,6 +296,10 @@ export default function FormForNewTrip() {
                 iconForLabel={startPointIcon}
                 type="text"
                 name="from_address"
+                isSelect={true}
+                setAdressError={setFromAdressError}
+                errorText={fromAdressError ? "Выберите адрес из списка" : ""}
+                placeholder="Начните вводить адрес"
                 required
               />
 
@@ -246,6 +308,10 @@ export default function FormForNewTrip() {
                 iconForLabel={endPointIcon}
                 type="text"
                 name="to_address"
+                isSelect={true}
+                setAdressError={setToAdressError}
+                errorText={toAdressError ? "Выберите адрес из списка" : ""}
+                placeholder="Начните вводить адрес"
                 required
               />
 
@@ -286,6 +352,15 @@ export default function FormForNewTrip() {
                 iconForLabel={phoneIcon}
                 type="tel"
                 name="passenger_phone_number"
+                // customValue={phoneNumber}
+                // onChange={(e) => inputPhoneNumber(e)}
+                // formatPhoneNumber={(value) => formatPhoneNumber(value)}
+                placeholder="+7 (___) ___-__-__"
+                errorText={
+                  phoneNumberError
+                    ? "Номер должен быть в формате: +7 (XXX) XXX-XX-XX"
+                    : ""
+                }
                 required
               />
 
@@ -326,7 +401,7 @@ export default function FormForNewTrip() {
               <Button
                 type="submit"
                 className={`yellow ${styles.buttonPushForm}`}
-                onSubmit={(e) => createNewTrip(e)}
+                // onClick={(e) => createNewTrip(e)}
               >
                 Отправить в канал
               </Button>
