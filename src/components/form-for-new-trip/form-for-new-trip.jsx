@@ -16,6 +16,7 @@ import {
   addTrip,
 } from "../../services/actions/trips";
 import Loader from "../loader/loader";
+import SelectCustom from "../select-custom/select-custom";
 
 export default function FormForNewTrip() {
   // const
@@ -331,19 +332,7 @@ export default function FormForNewTrip() {
                   />
                 </div>
                 <div className={styles.container60}>
-                  <label htmlFor="car_class" className={styles.label}>
-                    Класс автомобиля
-                  </label>
-                  <select
-                    name="car_class"
-                    id="car_class"
-                    className={styles.select}
-                  >
-                    <option value="passenger_car">Легковой</option>
-                    <option value="minivan">Минивэн</option>
-                    <option value="microbus">Микроатобус</option>
-                    <option value="bus">Автобус</option>
-                  </select>
+                  <SelectCustom label={"Класс автомобиля"} />
                 </div>
               </div>
 
@@ -352,9 +341,6 @@ export default function FormForNewTrip() {
                 iconForLabel={phoneIcon}
                 type="tel"
                 name="passenger_phone_number"
-                // customValue={phoneNumber}
-                // onChange={(e) => inputPhoneNumber(e)}
-                // formatPhoneNumber={(value) => formatPhoneNumber(value)}
                 placeholder="+7 (___) ___-__-__"
                 errorText={
                   phoneNumberError
@@ -401,7 +387,6 @@ export default function FormForNewTrip() {
               <Button
                 type="submit"
                 className={`yellow ${styles.buttonPushForm}`}
-                // onClick={(e) => createNewTrip(e)}
               >
                 Отправить в канал
               </Button>
