@@ -11,6 +11,7 @@ import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
 import { useEffect } from "react";
 import { PROFILE } from "../../utils/consts";
 import { getTrips } from "../../services/actions/trips";
+import FormCar from "../form-car/form-car";
 
 export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
@@ -22,6 +23,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<ProfileInfo />} />
           <Route path="/profile/change" element={<ChangeProfileInfo />} />
+          <Route path="/car/form" element={<FormCar />} />
           {/* <Route path="/" element={<Profile />}>
           </Route> */}
           <Route path="/trips" element={<Trips />} />
