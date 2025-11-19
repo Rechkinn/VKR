@@ -1,0 +1,18 @@
+.img {
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.default {
+  composes: img;
+  width: 67px;
+  height: 60px;
+}
+
+.forForm {
+  composes: img;
+  width: 127px;
+  height: 114px;
+  border: 3px solid white;
+  border-radius: 7px;
+}
