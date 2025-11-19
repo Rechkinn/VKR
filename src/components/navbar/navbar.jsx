@@ -20,7 +20,8 @@ export default function Navbar() {
   useEffect(() => {
     const visibilityNavbar =
       location.pathname === "/profile/change" ||
-      location.pathname === "/create-new-trip";
+      location.pathname === "/create-new-trip" ||
+      location.pathname === "/car/form";
 
     dispatch({
       type: SET_VISIBILITY_NAVBAR,
