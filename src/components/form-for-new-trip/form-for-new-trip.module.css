@@ -58,21 +58,12 @@
   margin-bottom: 10px;
 }
 
-.globalStyles {
+.textarea {
   padding: 5px 23px;
   font-size: 13px;
   width: 100%;
+  border: 0;
   border-radius: 5px;
-}
-
-.select {
-  border: 0;
-  composes: globalStyles;
-  height: 32.7px;
-}
-.textarea {
-  border: 0;
-  composes: globalStyles;
   min-height: 78px;
   resize: none;
 }
