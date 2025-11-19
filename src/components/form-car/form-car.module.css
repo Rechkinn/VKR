@@ -1,0 +1,28 @@
+.carPhoto > :first-child {
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.input,
+.containerYearAndColor {
+  margin-bottom: 16px;
+}
+
+.containerYearAndColor {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonConfirm {
+  margin-top: 42px;
+  width: 100%;
+}
+
+.inputYear {
+  width: 133px;
+}
+
+.inputColor {
+  width: 163px;
+}
