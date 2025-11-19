@@ -38,6 +38,10 @@ export default function ChangeProfileInfo() {
     dispatch({
       type: CHANGE_USER_INFO_REQUEST_SUCCESS,
     });
+    dispatch({
+      type: SET_SUN_VISIBILITY_ON_BACKGROUND,
+      sunVisibility: false,
+    });
   }, []);
 
   function closeFormToChangeProfileInfo() {
