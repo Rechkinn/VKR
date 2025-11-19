@@ -9,15 +9,6 @@
   border-radius: 10px;
 }
 
-.img {
-  width: 67px;
-  height: 60px;
-
-  object-fit: cover;
-
-  border-radius: 7px;
-}
-
 .name,
 .registrationNumber {
   margin: 0;
