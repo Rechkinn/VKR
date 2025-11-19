@@ -68,7 +68,7 @@ export default function Input({
     fetch(url, options)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result?.suggestions);
+        // console.log(result?.suggestions);
         setContentSelect(result?.suggestions);
       })
       .catch((error) => console.log("error", error));
@@ -95,7 +95,7 @@ export default function Input({
         name={name}
         value={valueInput}
         onChange={(event) => {
-          console.dir(event.target);
+          // console.dir(event.target);
           name === "passenger_phone_number"
             ? formatPhoneNumber(event.target.value)
             : name === "from_address" || name === "to_address"
@@ -120,8 +120,8 @@ export default function Input({
                   key={i}
                   className={styles.li}
                   onClick={(e) => {
-                    console.log("onClick");
-                    console.dir(e);
+                    // console.log("onClick");
+                    // console.dir(e);
                     e.stopPropagation();
                     setValueInput(element.value);
                     setIsOpenContentSelect(false);
