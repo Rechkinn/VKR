@@ -8,6 +8,7 @@ import {
   USER_TELEGRAM_INFO_REQUEST_ERROR,
 } from "../../services/actions/user";
 import Loader from "../loader/loader";
+import { getCars } from "../../services/actions/car";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -98,6 +99,10 @@ const TelegramAuth = () => {
       }
     }
   }, [webApp, dispatch]);
+
+  useEffect(() => {
+    dispatch(getCars());
+  }, []);
 
   function defaultAuthentication(initData) {
     dispatch(authentication(initData));
