@@ -26,3 +26,21 @@
 .inputColor {
   width: 163px;
 }
+
+.label {
+  margin-top: 16px;
+  color: white;
+  display: flex;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.textarea {
+  padding: 5px 23px;
+  font-size: 13px;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  min-height: 78px;
+  resize: none;
+}

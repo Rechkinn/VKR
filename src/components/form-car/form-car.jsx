@@ -17,6 +17,7 @@ import { Link, useNavigate } from "react-router";
 import Loader from "../loader/loader";
 import CarImage from "../car-image/car-image";
 import SelectCustom from "../select-custom/select-custom";
+import { createCar } from "../../services/actions/car";
 
 const FormCar = () => {
   const formRef = useRef();
@@ -55,13 +56,18 @@ const FormCar = () => {
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "") continue;
+      if (inputs[i].name === "year") {
+        newCar[inputs[i].name] = Number(inputs[i].value);
+        continue;
+      }
+
       newCar[inputs[i].name] = inputs[i].value;
     }
 
     console.log("newCar");
     console.log(newCar);
 
-    // dispatch(changeUserInfo(newData, closeFormToChangeProfileInfo));
+    dispatch(createCar(newCar));
   }
 
   return (
@@ -90,6 +96,7 @@ const FormCar = () => {
           name="brand"
           //   initialValue={infoFromTelegram.first_name}
           className={styles.input}
+          required
         />
         <Input
           label="Модель"
@@ -97,6 +104,7 @@ const FormCar = () => {
           name="model"
           //   initialValue={infoFromTelegram.last_name}
           className={styles.input}
+          required
         />
 
         <div className={styles.containerYearAndColor}>
@@ -105,12 +113,14 @@ const FormCar = () => {
             type="number"
             name="year"
             className={styles.inputYear}
+            required
           />
           <Input
             label="Цвет автомобиля"
             type="text"
             name="color"
             className={styles.inputColor}
+            required
           />
         </div>
 
@@ -120,9 +130,21 @@ const FormCar = () => {
           name="license_plate"
           //   initialValue={infoFromTelegram.first_name}
           className={styles.input}
+          required
         />
 
         <SelectCustom label={"Класс авто"} />
+
+        <div>
+          <label htmlFor="additional_info" className={styles.label}>
+            Дополнительная информация
+          </label>
+          <textarea
+            name="additional_info"
+            id="additional_info"
+            className={styles.textarea}
+          ></textarea>
+        </div>
 
         <Button className={`yellow ${styles.buttonConfirm}`} type="submit">
           Сохранить
