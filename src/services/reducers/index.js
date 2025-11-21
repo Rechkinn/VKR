@@ -4,6 +4,7 @@ import { backgroundReducer } from "./background";
 import { userReducer } from "./user";
 import { tripsReducer } from "./trips";
 import { modalReducer } from "./modal";
+import { carReducer } from "./car";
 
 export const rootReducer = combineReducers({
   navbar: navbarReducer,
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
   user: userReducer,
   trips: tripsReducer,
   modal: modalReducer,
+  car: carReducer,
 });
