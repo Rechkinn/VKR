@@ -3,15 +3,18 @@ import styles from "./car.module.css";
 import settingsIcon from "../../image/section-trips/settings-icon.svg";
 import CarImage from "../car-image/car-image";
 
-export default function Car({ trip }) {
+export default function Car({ car }) {
   return (
     <article className={styles.car}>
       <CarImage />
 
       <div>
-        <h3 className={styles.name}>Toyota Camry</h3>
-        <p className={styles.registrationNumber}>А432МР70</p>
+        <h3 className={styles.name}>{car.brand}</h3>
+        <p className={styles.registrationNumber}>{car.model}</p>
+        <p className={styles.registrationNumber}>{car.license_plate}</p>
       </div>
+
+      {car.is_active && <div className={styles.carStatus}>Активно</div>}
 
       <Button className={styles.settingsButton}>
         <img src={settingsIcon} alt="" />
