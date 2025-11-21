@@ -67,7 +67,7 @@ const FormCar = () => {
     console.log("newCar");
     console.log(newCar);
 
-    dispatch(createCar(newCar));
+    dispatch(createCar(newCar, closeCarForm));
   }
 
   return (

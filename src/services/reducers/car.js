@@ -33,7 +33,7 @@ export const carReducer = (state = initialState, action) => {
     case CAR_CREATE_REQUEST_SUCCESS:
       return {
         ...state,
-        cars: [...cars, action.newCar],
+        cars: [...state.cars, action.newCar],
         createCarRequest: false,
         createCarRequestError: false,
       };

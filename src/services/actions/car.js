@@ -37,7 +37,7 @@ export function getCars() {
   };
 }
 
-export function createCar(car) {
+export function createCar(car, closeCarForm = () => {}) {
   return function (dispatch) {
     dispatch({
       type: CAR_CREATE_REQUEST,
@@ -54,10 +54,13 @@ export function createCar(car) {
 
     doRequest("/vehicles", option)
       .then((newCar) => {
+        console.log("newCar с сервера пришло");
+        console.log(newCar);
         dispatch({
           type: CAR_CREATE_REQUEST_SUCCESS,
           newCar: newCar,
         });
+        closeCarForm();
       })
       .catch(() => {
         dispatch({
