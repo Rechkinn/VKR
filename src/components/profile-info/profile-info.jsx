@@ -11,8 +11,8 @@ import Car from "../car/car";
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
 
-  console.log("infoFromTelegram в ProfileInfo");
-  console.log(infoFromTelegram);
+  // console.log("infoFromTelegram в ProfileInfo");
+  // console.log(infoFromTelegram);
 
   function renderStars(rating) {
     const array = [];
@@ -37,7 +37,7 @@ export default function ProfileInfo() {
   const [styleTripsContainer, setStyleTripsContainer] = useState();
 
   function setMaxHeightContainerTrips() {
-    console.log("запускаем установку максимальной высоты");
+    // console.log("запускаем установку максимальной высоты");
     const section = sectionRef.current;
     const cars = carsRef.current;
 
@@ -47,7 +47,7 @@ export default function ProfileInfo() {
     const carsBorders = cars.getBoundingClientRect();
 
     const maxHeight = sectionBorders.bottom - carsBorders.top - 35;
-    console.log("устанавливаем значение");
+    // console.log("устанавливаем значение");
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
@@ -60,9 +60,9 @@ export default function ProfileInfo() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "Видимо изменились sectionRef.current и carsRef.current, поэтому сейчас запустим функцию setMaxHeightContainerTrips"
-    );
+    // console.log(
+    //   "Видимо изменились sectionRef.current и carsRef.current, поэтому сейчас запустим функцию setMaxHeightContainerTrips"
+    // );
     setMaxHeightContainerTrips();
   }, [sectionRef.current, carsRef.current]);
 
