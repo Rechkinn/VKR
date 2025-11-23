@@ -3,10 +3,11 @@ import star from "../../image/star.svg";
 import starEmpty from "../../image/star-empty.svg";
 import ProfilePhoto from "../profile-photo/profile-photo";
 import Balance from "../balance/balance";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Cars } from "../cars/cars";
 import { useEffect, useRef, useState } from "react";
 import Car from "../car/car";
+import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -36,6 +37,8 @@ export default function ProfileInfo() {
   const carsRef = useRef();
   const [styleTripsContainer, setStyleTripsContainer] = useState();
 
+  const dispatch = useDispatch();
+
   function setMaxHeightContainerTrips() {
     // console.log("запускаем установку максимальной высоты");
     const section = sectionRef.current;
@@ -54,6 +57,11 @@ export default function ProfileInfo() {
   }
 
   useEffect(() => {
+    dispatch({
+      type: SET_SUN_VISIBILITY_ON_BACKGROUND,
+      sunVisibility: true,
+    });
+
     window.addEventListener("resize", setMaxHeightContainerTrips);
     return () =>
       window.removeEventListener("resize", setMaxHeightContainerTrips);
