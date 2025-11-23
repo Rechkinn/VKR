@@ -183,8 +183,8 @@ export default function FormForNewTrip() {
       newTrip[inputs[i].name] = inputs[i].value;
     }
 
-    // console.log("newTrip");
-    // console.log(newTrip);
+    console.log("newTrip");
+    console.log(newTrip);
 
     if (stop) return;
 
