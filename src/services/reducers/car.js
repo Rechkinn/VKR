@@ -86,7 +86,7 @@ export const carReducer = (state = initialState, action) => {
         cars: [
           ...state.cars.filter((car) => {
             if (car.id === action.updatingCar.id) {
-              return action.updatingCar;
+              return { ...action.updatingCar };
             } else {
               return car;
             }
