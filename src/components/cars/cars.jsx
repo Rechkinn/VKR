@@ -19,8 +19,8 @@ export const Cars = forwardRef((props, ref) => {
 
   const { getCarsRequest, getCarsRequestError, cars, carForSettings } =
     useSelector((store) => store.car);
-  console.lof("перед рендером cars");
-  console.lof(cars);
+  console.log("перед рендером cars");
+  console.log(cars);
 
   function hiddenNavbarAndSun() {
     dispatch({
