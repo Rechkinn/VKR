@@ -7,18 +7,20 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
+import { useModal } from "../../hooks/useModal";
+import Settings from "../settings/settings";
+import { SET_CAR_FOR_SETTINGS } from "../../services/actions/car";
 
 export const Cars = forwardRef((props, ref) => {
+  const { visibilityModal, openModal, closeModal } = useModal();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { getCarsRequest, getCarsRequestError, cars } = useSelector(
-    (store) => store.car
-  );
+  const { getCarsRequest, getCarsRequestError, cars, carForSettings } =
+    useSelector((store) => store.car);
 
-  console.log();
-
-  function openCarForm() {
+  function hiddenNavbarAndSun() {
     dispatch({
       type: SET_VISIBILITY_NAVBAR,
       visibility: false,
@@ -27,51 +29,28 @@ export const Cars = forwardRef((props, ref) => {
       type: SET_SUN_VISIBILITY_ON_BACKGROUND,
       sunVisibility: false,
     });
-
-    navigate("/car/form");
   }
 
-  // const arr = [
-  //   {
-  //     brand: "Mercedes-Benz",
-  //     model: "AMG GTS 500",
-  //     year: 0,
-  //     color: "string",
-  //     license_plate: "А123МР77",
-  //     additional_info: "string",
-  //     car_class: "passenger_car",
-  //     id: 0,
-  //     driver_id: 0,
-  //     photo_url: "string",
-  //     is_active: false,
-  //   },
-  //   {
-  //     brand: "string",
-  //     model: "string",
-  //     year: 0,
-  //     color: "string",
-  //     license_plate: "string",
-  //     additional_info: "string",
-  //     car_class: "passenger_car",
-  //     id: 0,
-  //     driver_id: 0,
-  //     photo_url: "string",
-  //     is_active: false,
-  //   },
-  //   {
-  //     brand: "string",
-  //     model: "string",
-  //     year: 0,
-  //     color: "string",
-  //     license_plate: "string",
-  //     additional_info: "string",
-  //     car_class: "passenger_car",
-  //     id: 0,
-  //     driver_id: 0,
-  //     photo_url: "string",
-  //     is_active: true,
-  //   },
-  // ];
+  function openCarForm(event, path) {
+    event.stopPropagation();
+    hiddenNavbarAndSun();
+    navigate(`${path}`);
+  }
+
+  function openSettingsCar(car) {
+    dispatch({
+      type: SET_CAR_FOR_SETTINGS,
+      carForSettings: car,
+    });
+    openModal();
+  }
+  function closeSettingsCar() {
+    dispatch({
+      type: SET_CAR_FOR_SETTINGS,
+      carForSettings: null,
+    });
+    closeModal();
+  }
 
   return (
     <>
@@ -85,22 +64,82 @@ export const Cars = forwardRef((props, ref) => {
           Ошибка получения данных об авто!
         </div>
       )}
+      {/* {true && ( */}
       {!getCarsRequest && !getCarsRequestError && (
-        <section className={styles.containerCars}>
-          <header className={`${styles.header}`}>
-            <h2 className={styles.nameSection}>Мои авто</h2>
-            <Button className="black withIcon" onClick={openCarForm}>
-              <img src={addCarIcon} alt="" />
-              <span className={styles.textAddCar}>Добавить</span>
-            </Button>
-          </header>
+        <>
+          {visibilityModal && (
+            <Settings closeSettings={closeSettingsCar}>
+              {/* {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
+              {!removeTripRequest && removeTripRequestError && (
+                <p style={{ color: "red", textAlign: "center" }}>
+                  Ошибка удаления поездки!
+                </p>
+              )} */}
+              <Button
+                className="modal modalUpper"
+                onClick={(e) =>
+                  openCarForm(e, `/car/edit/${carForSettings.id}`)
+                }
+              >
+                Изменить
+              </Button>
+              <Button
+                className="modal modalMiddle"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Удалить
+              </Button>
 
-          <div ref={ref} style={props.style} className={styles.cars}>
-            {cars.map((car) => {
-              return <Car car={car} />;
-            })}
-          </div>
-        </section>
+              <Button
+                className="modal modalMiddle"
+                onClick={(e) =>
+                  openCarForm(e, `/car/view/${carForSettings.id}`)
+                }
+              >
+                Узнать детали
+              </Button>
+
+              <Button
+                className="modal modalLower"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Сделать активной
+              </Button>
+
+              <Button className="modal modalSingle" onClick={closeSettingsCar}>
+                Отмена
+              </Button>
+            </Settings>
+          )}
+          <section className={styles.containerCars}>
+            <header className={`${styles.header}`}>
+              <h2 className={styles.nameSection}>Мои авто</h2>
+              <Button
+                className="black withIcon"
+                onClick={(e) => openCarForm(e, "/car/new")}
+              >
+                <img src={addCarIcon} alt="" />
+                <span className={styles.textAddCar}>Добавить</span>
+              </Button>
+            </header>
+
+            <div ref={ref} style={props.style} className={styles.cars}>
+              {cars.map((car) => {
+                return (
+                  <Car
+                    key={car.id}
+                    car={car}
+                    openSettings={() => openSettingsCar(car)}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        </>
       )}
     </>
   );
