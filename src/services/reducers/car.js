@@ -84,7 +84,7 @@ export const carReducer = (state = initialState, action) => {
       return {
         ...state,
         cars: [
-          ...state.cars.filter((car) => {
+          ...state.cars.map((car) => {
             console.log("car при фильтрации");
             console.log(car);
             console.log("action.updatingCar при фильтрации");
@@ -97,7 +97,7 @@ export const carReducer = (state = initialState, action) => {
               car.id === action.updatingCar.id
             );
 
-            return car.id === action.updatingCar.id ? action.updatingCar : car;
+            car.id === action.updatingCar.id ? action.updatingCar : car;
           }),
         ],
         editCarRequest: false,
