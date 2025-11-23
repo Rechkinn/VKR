@@ -1,5 +1,4 @@
 import Button from "../button/button";
-import TripStatus from "../trip-status/trip-status";
 import styles from "./trip.module.css";
 import carIcon from "../../image/section-trips/car-status.svg";
 import startPointIcon from "../../image/section-trips/start-point-icon.svg";
@@ -8,25 +7,9 @@ import watchIcon from "../../image/section-trips/watch-icon.svg";
 import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import settingsIcon from "../../image/section-trips/settings-icon.svg";
 import TripInfoLine from "../trip-info-line/trip-info-line";
-import { ACTIVE_TAB } from "../../utils/consts";
-import { useDispatch } from "react-redux";
-import { SET_VISIBILITY_MODAL } from "../../services/actions/modal";
-import SettingsTrip from "../settings-trip/settings-trip";
-import { SET_TRIP_FOR_SETTINGS } from "../../services/actions/trips";
-import { useModal } from "../../hooks/useModal";
+import Status from "../status/status";
 
 export default function Trip({ trip, openSettingsTrip }) {
-  const { visibilityModal, openModal, closeModal } = useModal();
-
-  const dispatch = useDispatch();
-  // function openModal() {
-  //   dispatch({
-  //     type: SET_VISIBILITY_MODAL,
-  //     visibilityModal: true,
-  //     currentTrip: trip,
-  //   });
-  // }
-
   function statusInRussian(status) {
     if (status === "published") {
       return "Опубликовано";
@@ -43,20 +26,12 @@ export default function Trip({ trip, openSettingsTrip }) {
     }
   }
 
-  // function openSettingsTrip() {
-  //   dispatch({
-  //     type: SET_TRIP_FOR_SETTINGS,
-  //     tripForSettings: trip,
-  //   });
-  //   openModal();
-  // }
-
   return (
     <>
       <article className={styles.trip}>
         <header className={styles.header}>
           <div className={styles.status}>
-            <TripStatus>{statusInRussian(trip.status)}</TripStatus>
+            <Status>{statusInRussian(trip.status)}</Status>
             <img
               src={carIcon}
               alt="Иконка автомобиля"
