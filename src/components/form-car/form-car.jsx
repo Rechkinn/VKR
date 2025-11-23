@@ -18,7 +18,9 @@ import Loader from "../loader/loader";
 import CarImage from "../car-image/car-image";
 import SelectCustom from "../select-custom/select-custom";
 import {
+  CAR_CREATE_REQUEST_RESET,
   createCar,
+  EDIT_CAR_REQUEST_RESET,
   editCar,
   SET_CAR_FOR_SETTINGS,
 } from "../../services/actions/car";
@@ -28,7 +30,13 @@ const FormCar = ({ isForViewing, isForEditing }) => {
   const dispatch = useDispatch();
 
   const [carForSettings, setCarForSettings] = useState();
-  const { cars } = useSelector((store) => store.car);
+  const {
+    cars,
+    createCarRequest,
+    createCarRequestError,
+    editCarRequest,
+    editCarRequestError,
+  } = useSelector((store) => store.car);
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -37,6 +45,12 @@ const FormCar = ({ isForViewing, isForEditing }) => {
     dispatch({
       type: SET_SUN_VISIBILITY_ON_BACKGROUND,
       sunVisibility: false,
+    });
+    dispatch({
+      type: EDIT_CAR_REQUEST_RESET,
+    });
+    dispatch({
+      type: CAR_CREATE_REQUEST_RESET,
     });
 
     for (let i = 0; i < cars.length; i++) {
@@ -95,8 +109,6 @@ const FormCar = ({ isForViewing, isForEditing }) => {
           closeCarForm
         )
       );
-      // console.log("{ ...carForSettings ,...newCar}");
-      // console.log({ ...newCar, is_active: carForSettings.is_active });
     } else {
       dispatch(createCar(newCar, closeCarForm));
     }
@@ -104,98 +116,108 @@ const FormCar = ({ isForViewing, isForEditing }) => {
 
   return (
     <section>
-      {/* {changeUserInfoRequest && <Loader>Отправка данных на сервер...</Loader>}
-      {!changeUserInfoRequest && changeUserInfoRequestError && (
+      {createCarRequest && <Loader>Создаём новый автомобиль...</Loader>}
+      {editCarRequest && <Loader>Изменяем данные об автомобиле...</Loader>}
+
+      {(!createCarRequest && createCarRequestError) ||
+      (!editCarRequest && editCarRequestError) ? (
         <>
-          <div style={{ color: "white" }}>Ошибка отправки данных!</div>
-          <Link to="/" onClick={closeFormToChangeProfileInfo}>
-            Вернуться в профиль
-          </Link>
+          <div style={{ color: "white" }}>
+            {`Ошибка ${
+              isForEditing ? "редактирования" : "создания"
+            } автомобиля!`}
+          </div>
+          <Link to="/">Вернуться в профиль</Link>
         </>
-      )} */}
-
-      <Button onClick={closeCarForm}>
-        <img src={arrowLeftIcon} alt="" />
-      </Button>
-
-      <div className={styles.carPhoto}>
-        <CarImage type="forForm" />
-      </div>
-      <form action="" ref={formRef} onSubmit={(e) => saveNewData(e)}>
-        <Input
-          label="Марка"
-          type="text"
-          name="brand"
-          initialValue={carForSettings?.brand ?? ""}
-          className={styles.input}
-          required
-          readOnly={isForViewing}
-        />
-        <Input
-          label="Модель"
-          type="text"
-          name="model"
-          initialValue={carForSettings?.model ?? ""}
-          className={styles.input}
-          required
-          readOnly={isForViewing}
-        />
-
-        <div className={styles.containerYearAndColor}>
-          <Input
-            label="Год"
-            type="number"
-            name="year"
-            initialValue={carForSettings?.year ?? ""}
-            className={styles.inputYear}
-            required
-            readOnly={isForViewing}
-          />
-          <Input
-            label="Цвет автомобиля"
-            type="text"
-            name="color"
-            initialValue={carForSettings?.color ?? ""}
-            className={styles.inputColor}
-            required
-            readOnly={isForViewing}
-          />
-        </div>
-
-        <Input
-          label="Регистрационный номер"
-          type="text"
-          name="license_plate"
-          initialValue={carForSettings?.license_plate ?? ""}
-          className={styles.input}
-          required
-          readOnly={isForViewing}
-        />
-
-        <SelectCustom
-          label={"Класс авто"}
-          disabled={isForViewing}
-          defaultValue={carForSettings?.car_class ?? "passenger_car"}
-        />
-
-        <div>
-          <label htmlFor="additional_info" className={styles.label}>
-            Дополнительная информация
-          </label>
-          <textarea
-            name="additional_info"
-            id="additional_info"
-            className={styles.textarea}
-            readOnly={isForViewing}
-            defaultValue={carForSettings?.additional_info ?? ""}
-          ></textarea>
-        </div>
-        {!isForViewing && (
-          <Button className={`yellow ${styles.buttonConfirm}`} type="submit">
-            {carForSettings?.id ? "Сохранить" : "Создать"}
+      ) : (
+        <>
+          <Button onClick={closeCarForm}>
+            <img src={arrowLeftIcon} alt="Вернуться в профиль" />
           </Button>
-        )}
-      </form>
+
+          <div className={styles.carPhoto}>
+            <CarImage type="forForm" />
+          </div>
+          <form action="" ref={formRef} onSubmit={(e) => saveNewData(e)}>
+            <Input
+              label="Марка"
+              type="text"
+              name="brand"
+              initialValue={carForSettings?.brand ?? ""}
+              className={styles.input}
+              required
+              readOnly={isForViewing}
+            />
+            <Input
+              label="Модель"
+              type="text"
+              name="model"
+              initialValue={carForSettings?.model ?? ""}
+              className={styles.input}
+              required
+              readOnly={isForViewing}
+            />
+
+            <div className={styles.containerYearAndColor}>
+              <Input
+                label="Год"
+                type="number"
+                name="year"
+                initialValue={carForSettings?.year ?? ""}
+                className={styles.inputYear}
+                required
+                readOnly={isForViewing}
+              />
+              <Input
+                label="Цвет автомобиля"
+                type="text"
+                name="color"
+                initialValue={carForSettings?.color ?? ""}
+                className={styles.inputColor}
+                required
+                readOnly={isForViewing}
+              />
+            </div>
+
+            <Input
+              label="Регистрационный номер"
+              type="text"
+              name="license_plate"
+              initialValue={carForSettings?.license_plate ?? ""}
+              className={styles.input}
+              required
+              readOnly={isForViewing}
+            />
+
+            <SelectCustom
+              label={"Класс авто"}
+              disabled={isForViewing}
+              defaultValue={carForSettings?.car_class ?? "passenger_car"}
+            />
+
+            <div>
+              <label htmlFor="additional_info" className={styles.label}>
+                Дополнительная информация
+              </label>
+              <textarea
+                name="additional_info"
+                id="additional_info"
+                className={styles.textarea}
+                readOnly={isForViewing}
+                defaultValue={carForSettings?.additional_info ?? ""}
+              ></textarea>
+            </div>
+            {!isForViewing && (
+              <Button
+                className={`yellow ${styles.buttonConfirm}`}
+                type="submit"
+              >
+                {carForSettings?.id ? "Сохранить" : "Создать"}
+              </Button>
+            )}
+          </form>
+        </>
+      )}
     </section>
   );
 };
