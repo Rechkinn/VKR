@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./input.module.css";
 
 export default function Input({
@@ -15,7 +15,7 @@ export default function Input({
   // formatPhoneNumber = null,
   ...props
 }) {
-  const [valueInput, setValueInput] = useState(initialValue);
+  const [valueInput, setValueInput] = useState("");
 
   function formatPhoneNumber(stringPhoneNumber) {
     // Удаляем все нецифровые символы
@@ -76,6 +76,10 @@ export default function Input({
     setValueInput(value);
     setAdressError(true);
   }
+
+  useEffect(() => {
+    setValueInput(initialValue);
+  }, [initialValue]);
 
   return (
     <div>
