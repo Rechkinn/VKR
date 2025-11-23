@@ -69,6 +69,12 @@ button:active {
   border-top-left-radius: 5px;
   border-bottom: 0.5px solid #c4c4c480;
 }
+
+.modalMiddle {
+  composes: modal;
+  border-bottom: 0.5px solid #c4c4c480;
+}
+
 .modalLower {
   composes: modal;
   border-bottom-right-radius: 5px;
