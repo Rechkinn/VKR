@@ -97,7 +97,7 @@ export const carReducer = (state = initialState, action) => {
               car.id === action.updatingCar.id
             );
 
-            car.id === action.updatingCar.id ? action.updatingCar : car;
+            return car.id === action.updatingCar.id ? action.updatingCar : car;
           }),
         ],
         editCarRequest: false,
