@@ -8,6 +8,9 @@ import {
   GET_CARS_REQUEST,
   GET_CARS_REQUEST_ERROR,
   GET_CARS_REQUEST_SUCCESS,
+  REMOVE_CAR_REQUEST,
+  REMOVE_CAR_REQUEST_ERROR,
+  REMOVE_CAR_REQUEST_SUCCESS,
   SET_CAR_FOR_SETTINGS,
 } from "../actions/car";
 
@@ -64,10 +67,33 @@ const initialState = {
 
   editCarRequest: false,
   editCarRequestError: false,
+
+  removeCarRequest: false,
+  removeCarRequestError: false,
 };
 
 export const carReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REMOVE_CAR_REQUEST:
+      return {
+        ...state,
+        removeCarRequest: true,
+        removeCarRequestError: false,
+      };
+    case REMOVE_CAR_REQUEST_ERROR:
+      return {
+        ...state,
+        removeCarRequest: false,
+        removeCarRequestError: true,
+      };
+    case REMOVE_CAR_REQUEST_SUCCESS:
+      return {
+        ...state,
+        cars: [...state.cars.filter((car) => car.id !== action.removingCarId)],
+        removeCarRequest: false,
+        removeCarRequestError: false,
+      };
+
     case EDIT_CAR_REQUEST:
       return {
         ...state,

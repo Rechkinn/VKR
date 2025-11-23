@@ -9,7 +9,7 @@ import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/backgro
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { useModal } from "../../hooks/useModal";
 import Settings from "../settings/settings";
-import { SET_CAR_FOR_SETTINGS } from "../../services/actions/car";
+import { removeCar, SET_CAR_FOR_SETTINGS } from "../../services/actions/car";
 
 export const Cars = forwardRef((props, ref) => {
   const { visibilityModal, openModal, closeModal } = useModal();
@@ -17,10 +17,14 @@ export const Cars = forwardRef((props, ref) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { getCarsRequest, getCarsRequestError, cars, carForSettings } =
-    useSelector((store) => store.car);
-  console.log("перед рендером cars");
-  console.log(cars);
+  const {
+    getCarsRequest,
+    getCarsRequestError,
+    cars,
+    carForSettings,
+    removeCarRequest,
+    removeCarRequestError,
+  } = useSelector((store) => store.car);
 
   function hiddenNavbarAndSun() {
     dispatch({
@@ -54,6 +58,12 @@ export const Cars = forwardRef((props, ref) => {
     closeModal();
   }
 
+  function deleteCar(event, carId) {
+    event.stopPropagation();
+    dispatch(removeCar(carId));
+    closeSettingsCar();
+  }
+
   return (
     <>
       {getCarsRequest && (
@@ -71,12 +81,14 @@ export const Cars = forwardRef((props, ref) => {
         <>
           {visibilityModal && (
             <Settings closeSettings={closeSettingsCar}>
-              {/* {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
-              {!removeTripRequest && removeTripRequestError && (
+              {removeCarRequest && (
+                <Loader>Пробуем удалить автомобиль...</Loader>
+              )}
+              {!removeCarRequest && removeCarRequestError && (
                 <p style={{ color: "red", textAlign: "center" }}>
-                  Ошибка удаления поездки!
+                  Ошибка удаления авто!
                 </p>
-              )} */}
+              )}
               <Button
                 className="modal modalUpper"
                 onClick={(e) =>
@@ -87,9 +99,7 @@ export const Cars = forwardRef((props, ref) => {
               </Button>
               <Button
                 className="modal modalMiddle"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+                onClick={(e) => deleteCar(e, carForSettings.id)}
               >
                 Удалить
               </Button>

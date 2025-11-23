@@ -14,6 +14,10 @@ export const EDIT_CAR_REQUEST = "EDIT_CAR_REQUEST";
 export const EDIT_CAR_REQUEST_ERROR = "EDIT_CAR_REQUEST_ERROR";
 export const EDIT_CAR_REQUEST_SUCCESS = "EDIT_CAR_REQUEST_SUCCESS";
 
+export const REMOVE_CAR_REQUEST = "REMOVE_CAR_REQUEST";
+export const REMOVE_CAR_REQUEST_ERROR = "REMOVE_CAR_REQUEST_ERROR";
+export const REMOVE_CAR_REQUEST_SUCCESS = "REMOVE_CAR_REQUEST_SUCCESS";
+
 export function getCars() {
   return function (dispatch) {
     dispatch({
@@ -104,6 +108,35 @@ export function editCar(carId, car, closeCarForm = () => {}) {
       .catch(() => {
         dispatch({
           type: EDIT_CAR_REQUEST_ERROR,
+        });
+      });
+  };
+}
+
+export function removeCar(carId) {
+  return function (dispatch) {
+    dispatch({
+      type: REMOVE_CAR_REQUEST,
+    });
+
+    const option = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    };
+
+    doRequest(`/vehicles/${carId}`, option)
+      .then(() => {
+        dispatch({
+          type: REMOVE_CAR_REQUEST_SUCCESS,
+          removingCarId: carId,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: REMOVE_CAR_REQUEST_ERROR,
         });
       });
   };
