@@ -21,7 +21,7 @@ export default function Navbar() {
     const visibilityNavbar =
       location.pathname === "/profile/change" ||
       location.pathname === "/create-new-trip" ||
-      location.pathname === "/car/form";
+      location.pathname.includes("/car");
 
     dispatch({
       type: SET_VISIBILITY_NAVBAR,
