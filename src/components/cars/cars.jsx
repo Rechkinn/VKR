@@ -10,6 +10,7 @@ import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { useModal } from "../../hooks/useModal";
 import Settings from "../settings/settings";
 import { removeCar, SET_CAR_FOR_SETTINGS } from "../../services/actions/car";
+import Loader from "../loader/loader";
 
 export const Cars = forwardRef((props, ref) => {
   const { visibilityModal, openModal, closeModal } = useModal();
