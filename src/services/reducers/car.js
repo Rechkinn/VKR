@@ -89,7 +89,6 @@ export const carReducer = (state = initialState, action) => {
             console.log(car);
             console.log("action.updatingCar при фильтрации");
             console.log(action.updatingCar);
-            console.log("action.updatingCar при фильтрации");
             console.log("car.id", car.id);
             console.log("action.updatingCar.id", action.updatingCar.id);
 
@@ -98,11 +97,7 @@ export const carReducer = (state = initialState, action) => {
               car.id === action.updatingCar.id
             );
 
-            if (car.id === action.updatingCar.id) {
-              return action.updatingCar;
-            } else {
-              return car;
-            }
+            return car.id === action.updatingCar.id ? action.updatingCar : car;
           }),
         ],
         editCarRequest: false,
