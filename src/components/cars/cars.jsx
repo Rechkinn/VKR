@@ -2,14 +2,18 @@ import Button from "../button/button";
 import Car from "../car/car";
 import styles from "./cars.module.css";
 import addCarIcon from "../../image/profile/addCarIcon.svg";
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { useModal } from "../../hooks/useModal";
 import Settings from "../settings/settings";
-import { removeCar, SET_CAR_FOR_SETTINGS } from "../../services/actions/car";
+import {
+  REMOVE_CAR_REQUEST_RESET,
+  removeCar,
+  SET_CAR_FOR_SETTINGS,
+} from "../../services/actions/car";
 import Loader from "../loader/loader";
 
 export const Cars = forwardRef((props, ref) => {
@@ -45,6 +49,9 @@ export const Cars = forwardRef((props, ref) => {
   }
 
   function openSettingsCar(car) {
+    dispatch({
+      type: REMOVE_CAR_REQUEST_RESET,
+    });
     dispatch({
       type: SET_CAR_FOR_SETTINGS,
       carForSettings: car,
@@ -85,9 +92,7 @@ export const Cars = forwardRef((props, ref) => {
                 <Loader>Пробуем удалить автомобиль...</Loader>
               )}
               {!removeCarRequest && removeCarRequestError && (
-                <p style={{ color: "red", textAlign: "center" }}>
-                  Ошибка удаления авто!
-                </p>
+                <p className={styles.errorSettings}>Ошибка удаления авто!</p>
               )}
               <Button
                 className="modal modalUpper"
@@ -140,15 +145,19 @@ export const Cars = forwardRef((props, ref) => {
             </header>
 
             <div ref={ref} style={props.style} className={styles.cars}>
-              {cars.map((car) => {
-                return (
-                  <Car
-                    key={car.id}
-                    car={car}
-                    openSettings={() => openSettingsCar(car)}
-                  />
-                );
-              })}
+              {cars.length > 0 ? (
+                cars.map((car) => {
+                  return (
+                    <Car
+                      key={car.id}
+                      car={car}
+                      openSettings={() => openSettingsCar(car)}
+                    />
+                  );
+                })
+              ) : (
+                <div className={styles.messageWillBeCars}>Пусто</div>
+              )}
             </div>
           </section>
         </>

@@ -32,3 +32,24 @@
 .cars > :nth-child(n):not(:last-child) {
   margin-bottom: 15px;
 }
+
+.messageWillBeCars {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  border: 2px dashed #fdcd03;
+  border-radius: 10px;
+  color: #fdcb034c;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.errorSettings {
+  margin-bottom: 10px;
+  color: red;
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+}
