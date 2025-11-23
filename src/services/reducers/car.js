@@ -1,15 +1,18 @@
 import {
   CAR_CREATE_REQUEST,
   CAR_CREATE_REQUEST_ERROR,
+  CAR_CREATE_REQUEST_RESET,
   CAR_CREATE_REQUEST_SUCCESS,
   EDIT_CAR_REQUEST,
   EDIT_CAR_REQUEST_ERROR,
+  EDIT_CAR_REQUEST_RESET,
   EDIT_CAR_REQUEST_SUCCESS,
   GET_CARS_REQUEST,
   GET_CARS_REQUEST_ERROR,
   GET_CARS_REQUEST_SUCCESS,
   REMOVE_CAR_REQUEST,
   REMOVE_CAR_REQUEST_ERROR,
+  REMOVE_CAR_REQUEST_RESET,
   REMOVE_CAR_REQUEST_SUCCESS,
   SET_CAR_FOR_SETTINGS,
 } from "../actions/car";
@@ -74,6 +77,12 @@ const initialState = {
 
 export const carReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REMOVE_CAR_REQUEST_RESET:
+      return {
+        ...state,
+        removeCarRequest: false,
+        removeCarRequestError: false,
+      };
     case REMOVE_CAR_REQUEST:
       return {
         ...state,
@@ -93,7 +102,12 @@ export const carReducer = (state = initialState, action) => {
         removeCarRequest: false,
         removeCarRequestError: false,
       };
-
+    case EDIT_CAR_REQUEST_RESET:
+      return {
+        ...state,
+        editCarRequest: false,
+        editCarRequestError: false,
+      };
     case EDIT_CAR_REQUEST:
       return {
         ...state,
@@ -117,11 +131,16 @@ export const carReducer = (state = initialState, action) => {
         editCarRequest: false,
         editCarRequestError: false,
       };
-
     case SET_CAR_FOR_SETTINGS:
       return {
         ...state,
         carForSettings: action.carForSettings,
+      };
+    case CAR_CREATE_REQUEST_RESET:
+      return {
+        ...state,
+        createCarRequest: false,
+        createCarRequestError: false,
       };
     case CAR_CREATE_REQUEST:
       return {
