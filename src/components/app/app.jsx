@@ -23,12 +23,22 @@ export default function App() {
         <Routes>
           <Route path="/" element={<ProfileInfo />} />
           <Route path="/profile/change" element={<ChangeProfileInfo />} />
-          <Route path="/car/form" element={<FormCar />} />
-          {/* <Route path="/" element={<Profile />}>
-          </Route> */}
+
+          <Route path="/car/new" element={<FormCar />} />
+          <Route path="/car/view/:id" element={<FormCar isForViewing />} />
+          <Route path="/car/edit/:id" element={<FormCar isForEditing />} />
+
           <Route path="/trips" element={<Trips />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/create-new-trip" element={<FormForNewTrip />} />
+          <Route
+            path="*"
+            element={
+              <div>
+                <a href="/">На главную</a>
+              </div>
+            }
+          />
         </Routes>
         <Navbar />
       </main>
