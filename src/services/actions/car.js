@@ -113,7 +113,7 @@ export function editCar(carId, car, closeCarForm = () => {}) {
   };
 }
 
-export function removeCar(carId) {
+export function removeCar(carId, closeSettingsCar = () => {}) {
   return function (dispatch) {
     dispatch({
       type: REMOVE_CAR_REQUEST,
@@ -133,6 +133,7 @@ export function removeCar(carId) {
           type: REMOVE_CAR_REQUEST_SUCCESS,
           removingCarId: carId,
         });
+        closeSettingsCar();
       })
       .catch(() => {
         dispatch({

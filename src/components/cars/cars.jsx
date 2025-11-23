@@ -60,8 +60,7 @@ export const Cars = forwardRef((props, ref) => {
 
   function deleteCar(event, carId) {
     event.stopPropagation();
-    dispatch(removeCar(carId));
-    closeSettingsCar();
+    dispatch(removeCar(carId, closeSettingsCar));
   }
 
   return (
