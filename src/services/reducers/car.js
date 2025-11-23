@@ -85,18 +85,6 @@ export const carReducer = (state = initialState, action) => {
         ...state,
         cars: [
           ...state.cars.map((car) => {
-            console.log("car при фильтрации");
-            console.log(car);
-            console.log("action.updatingCar при фильтрации");
-            console.log(action.updatingCar);
-            console.log("car.id", car.id);
-            console.log("action.updatingCar.id", action.updatingCar.id);
-
-            console.log(
-              "car.id === action.updatingCar.id",
-              car.id === action.updatingCar.id
-            );
-
             return car.id === action.updatingCar.id ? action.updatingCar : car;
           }),
         ],
