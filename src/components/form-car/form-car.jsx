@@ -13,15 +13,23 @@ import {
   changeUserInfo,
   SET_USER_TELEGRAM_INFO,
 } from "../../services/actions/user";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import Loader from "../loader/loader";
 import CarImage from "../car-image/car-image";
 import SelectCustom from "../select-custom/select-custom";
-import { createCar } from "../../services/actions/car";
+import {
+  createCar,
+  editCar,
+  SET_CAR_FOR_SETTINGS,
+} from "../../services/actions/car";
 
-const FormCar = () => {
+const FormCar = ({ isForViewing, isForEditing }) => {
   const formRef = useRef();
   const dispatch = useDispatch();
+
+  const [carForSettings, setCarForSettings] = useState();
+  const { cars } = useSelector((store) => store.car);
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -30,6 +38,13 @@ const FormCar = () => {
       type: SET_SUN_VISIBILITY_ON_BACKGROUND,
       sunVisibility: false,
     });
+
+    for (let i = 0; i < cars.length; i++) {
+      if (cars[i].id === Number(id)) {
+        setCarForSettings({ ...cars[i] });
+        break;
+      }
+    }
   }, []);
 
   function closeCarForm() {
@@ -41,12 +56,17 @@ const FormCar = () => {
       type: SET_SUN_VISIBILITY_ON_BACKGROUND,
       sunVisibility: true,
     });
-
+    dispatch({
+      type: SET_CAR_FOR_SETTINGS,
+      carForSettings: null,
+    });
     navigate("/");
   }
 
   function saveNewData(e) {
     e.preventDefault();
+
+    if (isForViewing) return;
 
     if (!formRef.current) return;
 
@@ -67,7 +87,19 @@ const FormCar = () => {
     console.log("newCar");
     console.log(newCar);
 
-    dispatch(createCar(newCar, closeCarForm));
+    if (isForEditing) {
+      dispatch(
+        editCar(
+          carForSettings.id,
+          { ...newCar, is_active: carForSettings.is_active },
+          closeCarForm
+        )
+      );
+      // console.log("{ ...carForSettings ,...newCar}");
+      // console.log({ ...newCar, is_active: carForSettings.is_active });
+    } else {
+      dispatch(createCar(newCar, closeCarForm));
+    }
   }
 
   return (
@@ -94,17 +126,19 @@ const FormCar = () => {
           label="Марка"
           type="text"
           name="brand"
-          //   initialValue={infoFromTelegram.first_name}
+          initialValue={carForSettings?.brand ?? ""}
           className={styles.input}
           required
+          readOnly={isForViewing}
         />
         <Input
           label="Модель"
           type="text"
           name="model"
-          //   initialValue={infoFromTelegram.last_name}
+          initialValue={carForSettings?.model ?? ""}
           className={styles.input}
           required
+          readOnly={isForViewing}
         />
 
         <div className={styles.containerYearAndColor}>
@@ -112,15 +146,19 @@ const FormCar = () => {
             label="Год"
             type="number"
             name="year"
+            initialValue={carForSettings?.year ?? ""}
             className={styles.inputYear}
             required
+            readOnly={isForViewing}
           />
           <Input
             label="Цвет автомобиля"
             type="text"
             name="color"
+            initialValue={carForSettings?.color ?? ""}
             className={styles.inputColor}
             required
+            readOnly={isForViewing}
           />
         </div>
 
@@ -128,12 +166,17 @@ const FormCar = () => {
           label="Регистрационный номер"
           type="text"
           name="license_plate"
-          //   initialValue={infoFromTelegram.first_name}
+          initialValue={carForSettings?.license_plate ?? ""}
           className={styles.input}
           required
+          readOnly={isForViewing}
         />
 
-        <SelectCustom label={"Класс авто"} />
+        <SelectCustom
+          label={"Класс авто"}
+          disabled={isForViewing}
+          defaultValue={carForSettings?.car_class ?? "passenger_car"}
+        />
 
         <div>
           <label htmlFor="additional_info" className={styles.label}>
@@ -143,12 +186,15 @@ const FormCar = () => {
             name="additional_info"
             id="additional_info"
             className={styles.textarea}
+            readOnly={isForViewing}
+            defaultValue={carForSettings?.additional_info ?? ""}
           ></textarea>
         </div>
-
-        <Button className={`yellow ${styles.buttonConfirm}`} type="submit">
-          Сохранить
-        </Button>
+        {!isForViewing && (
+          <Button className={`yellow ${styles.buttonConfirm}`} type="submit">
+            {carForSettings?.id ? "Сохранить" : "Создать"}
+          </Button>
+        )}
       </form>
     </section>
   );
