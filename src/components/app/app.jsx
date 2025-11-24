@@ -25,7 +25,7 @@ export default function App() {
           <Route path="/profile/change" element={<ChangeProfileInfo />} />
 
           <Route path="/car/new" element={<FormCar />} />
-          <Route path="/car/view/:id" element={<FormCar isForViewing />} />
+          {/* <Route path="/car/view/:id" element={<FormCar isForViewing />} /> */}
           <Route path="/car/edit/:id" element={<FormCar isForEditing />} />
 
           <Route path="/trips" element={<Trips />} />
