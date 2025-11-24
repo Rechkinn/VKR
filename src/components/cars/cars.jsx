@@ -103,29 +103,29 @@ export const Cars = forwardRef((props, ref) => {
                 Изменить
               </Button>
               <Button
-                className="modal modalMiddle"
+                className="modal modalLower"
                 onClick={(e) => deleteCar(e, carForSettings.id)}
               >
                 Удалить
               </Button>
 
-              <Button
-                className="modal modalMiddle"
+              {/* <Button
+                className="modal modalLower"
                 onClick={(e) =>
                   openCarForm(e, `/car/view/${carForSettings.id}`)
                 }
               >
                 Узнать детали
-              </Button>
+              </Button> */}
 
-              <Button
+              {/* <Button
                 className="modal modalLower"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
               >
                 Сделать активной
-              </Button>
+              </Button> */}
 
               <Button className="modal modalSingle" onClick={closeSettingsCar}>
                 Отмена
@@ -145,8 +145,8 @@ export const Cars = forwardRef((props, ref) => {
             </header>
 
             <div ref={ref} style={props.style} className={styles.cars}>
-              {cars.length > 0 ? (
-                cars.map((car) => {
+              {cars.map((car) => {
+                if (car.is_active) {
                   return (
                     <Car
                       key={car.id}
@@ -154,10 +154,8 @@ export const Cars = forwardRef((props, ref) => {
                       openSettings={() => openSettingsCar(car)}
                     />
                   );
-                })
-              ) : (
-                <div className={styles.messageWillBeCars}>Пусто</div>
-              )}
+                }
+              })}
             </div>
           </section>
         </>
