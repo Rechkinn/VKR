@@ -1,6 +1,8 @@
 import { BASE_URL } from "./consts";
 
 function checkResponse(response) {
+  console.log("response");
+  console.log(response);
   if (response.ok) {
     if (response.status === 204) {
       return;
