@@ -11,7 +11,7 @@ const SelectCustom = ({ label, disabled, defaultValue }) => {
         id="car_class"
         className={styles.select}
         disabled={disabled}
-        defaultValue={defaultValue}
+        value={defaultValue}
       >
         <option value="passenger_car">Легковой</option>
         <option value="minivan">Минивэн</option>
