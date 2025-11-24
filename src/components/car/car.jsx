@@ -15,7 +15,7 @@ export default function Car({ car, openSettings }) {
         <p className={styles.registrationNumber}>{car.license_plate}</p>
       </div>
 
-      {car.is_active && <Status extraClass={styles.carStatus}>Активно</Status>}
+      {/* {car.is_active && <Status extraClass={styles.carStatus}>Активно</Status>} */}
 
       <Button onClick={openSettings} className={styles.settingsButton}>
         <img src={settingsIcon} alt="" />
