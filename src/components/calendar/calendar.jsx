@@ -7,6 +7,9 @@ import DayOfWeek from "../day-of-week/day-of-week";
 import CalendarDay from "../calendar-day/calendar-day";
 import { useState, useEffect, useRef } from "react";
 import Trip from "../trip/trip";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../loader/loader";
+import { getTripsForCalendar } from "../../services/actions/trips";
 
 export default function Calendar() {
   const [err, setErr] = useState(null);
@@ -23,6 +26,18 @@ export default function Calendar() {
   const [styleTripsContainer, setStyleTripsContainer] = useState(null);
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
+
+  const {
+    tripsForCalendar,
+    getTripsForCalendarRequest,
+    getTripsForCalendarRequestError,
+  } = useSelector((store) => store.trips);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getTripsForCalendar());
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
@@ -72,123 +87,35 @@ export default function Calendar() {
     }
   }
 
-  function getDaysInMonth(dateForYear, numberMonth) {
-    // console.log("numberMonth", numberMonth);
-    const arrayMonth31 = [1, 3, 5, 7, 8, 10, 12];
-    // const arrayMonth30 = [4, 6, 9, 11];
-
-    if (numberMonth === 2) {
-      // февраль
-      if (dateForYear.getFullYear() % 4 === 0) {
-        // високосный
-        return 29;
-      } else {
-        // не високосный
-        return 28;
-      }
-    } else if (arrayMonth31.indexOf(numberMonth) !== -1) {
-      return 31;
-    } else {
-      return 30;
-    }
-  }
-
-  function getDaysInMonth(year, month) {
-    return new Date(year, month, 0).getDate();
-  }
-
   function changeFormatValue(value) {
     return `${value}`.length === 1 ? `0${value}` : `${value}`;
   }
 
-  // function getArrayForRender(date) {
-  //   const resultArrayDays = [];
-  //   // const date = new Date();
-  //   let daysInPreviousMonth = getDaysInMonth(
-  //     date,
-  //     date.getMonth() === 0 ? 12 : date.getMonth()
-  //   );
-  //   let daysInCurrentMonth = getDaysInMonth(date, date.getMonth() + 1);
+  function getDetailsDate(initialDay, initialMonth, initialYear) {
+    const day = initialDay.length === 1 ? `0${day}` : initialDay;
+    const month = initialMonth;
+    const year = initialYear;
 
-  //   const arr = `${date}`.split(" ");
-  //   arr[2] = "01";
-  //   const newDateFirstDay = new Date(arr.join(" "));
-  //   const dayOfWeekFirstDay =
-  //     newDateFirstDay.getDay() === 0 ? 7 : newDateFirstDay.getDay();
-  //   daysInPreviousMonth -= dayOfWeekFirstDay - 1 - 1;
-  //   for (let i = 0; i < dayOfWeekFirstDay - 1; i++) {
-  //     const day = {
-  //       value: daysInPreviousMonth,
-  //       isActiveDay: false,
-  //       month:
-  //         date.getMonth() === 0 ? "12" : changeFormatValue(date.getMonth()),
-  //       year: `${
-  //         date.getMonth() + 1 === 1
-  //           ? date.getFullYear() - 1
-  //           : date.getFullYear()
-  //       }`,
-  //     };
-  //     day["hasTrips"] = true;
-
-  //     resultArrayDays.push(day);
-  //     daysInPreviousMonth++;
-  //   }
-
-  //   for (let i = 1; i < daysInCurrentMonth + 1; i++) {
-  //     const day = {
-  //       value: i,
-  //       isActiveDay: true,
-  //       month: changeFormatValue(date.getMonth() + 1),
-  //       year: `${date.getFullYear()}`,
-  //     };
-  //     day["hasTrips"] = true;
-  //     // console.log("day");
-  //     // console.log(day);
-  //     // console.log("currentDate");
-  //     // console.log(currentDate);
-  //     if (
-  //       currentDate.getDate() == day.value &&
-  //       currentDate.getMonth() + 1 == day.month &&
-  //       currentDate.getFullYear() == day.year
-  //     ) {
-  //       day["isCurrentDay"] = true;
-  //     } else {
-  //       day["isCurrentDay"] = false;
-  //     }
-  //     resultArrayDays.push(day);
-  //   }
-
-  //   arr[2] = `${daysInCurrentMonth}`;
-  //   const newDateLastDay = new Date(arr.join(" "));
-
-  //   const dayOfWeekLastDay =
-  //     newDateLastDay.getDay() === 0 ? 7 : newDateLastDay.getDay();
-
-  //   // console.log("dayOfWeekLastDay");
-  //   // console.log(dayOfWeekLastDay);
-
-  //   for (let i = 0; i < 7 - dayOfWeekLastDay; i++) {
-  //     const day = {
-  //       value: i + 1,
-  //       isActiveDay: false,
-  //       month:
-  //         date.getMonth() + 2 === 13
-  //           ? "01"
-  //           : changeFormatValue(date.getMonth() + 2),
-  //       year: `${
-  //         date.getMonth() + 1 === 12
-  //           ? date.getFullYear() + 1
-  //           : date.getFullYear()
-  //       }`,
-  //     };
-  //     day["hasTrips"] = true;
-  //     resultArrayDays.push(day);
-  //   }
-  //   // setArrayForRender(resultArrayDays);
-  //   // console.log("resultArrayDays");
-  //   // console.log(resultArrayDays);
-  //   return resultArrayDays;
-  // }
+    let hasTrips = false;
+    if (tripsForCalendar) {
+      console.log("`${year}-${month}-${day}`");
+      console.log(`${year}-${month}-${day}`);
+      hasTrips = tripsForCalendar.find((trip) => {
+        return (
+          trip.departure_datetime.split("T")[0] ===
+          `${year}-${changeFormatValue(month)}-${changeFormatValue(day)}`
+        );
+      })
+        ? true
+        : false;
+    }
+    return {
+      day,
+      month,
+      year,
+      hasTrips,
+    };
+  }
 
   function getArrayForRender(date) {
     const resultArrayDays = [];
@@ -213,14 +140,19 @@ export default function Calendar() {
     // Заполняем дни предыдущего месяца
     for (let i = startDay - 1; i >= 0; i--) {
       const dayValue = daysInPrevMonth - i;
+
+      const { day, month, year, hasTrips } = getDetailsDate(
+        dayValue,
+        changeFormatValue(date.getMonth() === 0 ? 12 : date.getMonth()),
+        `${date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()}`
+      );
+
       resultArrayDays.push({
-        value: dayValue,
+        value: day,
         isActiveDay: false,
-        month: changeFormatValue(date.getMonth() === 0 ? 12 : date.getMonth()),
-        year: `${
-          date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()
-        }`,
-        hasTrips: true,
+        month: month,
+        year: year,
+        hasTrips: hasTrips,
         isCurrentDay: false,
       });
     }
@@ -233,12 +165,18 @@ export default function Calendar() {
         currentDate.getMonth() === date.getMonth() &&
         currentDate.getFullYear() === date.getFullYear();
 
+      const { day, month, year, hasTrips } = getDetailsDate(
+        i,
+        changeFormatValue(date.getMonth() + 1),
+        `${date.getFullYear()}`
+      );
+
       resultArrayDays.push({
-        value: i,
+        value: day,
         isActiveDay: true,
-        month: changeFormatValue(date.getMonth() + 1),
-        year: `${date.getFullYear()}`,
-        hasTrips: true,
+        month: month,
+        year: year,
+        hasTrips: hasTrips,
         isCurrentDay: isCurrentDay,
       });
     }
@@ -248,18 +186,22 @@ export default function Calendar() {
     const remainingDays = totalCells - resultArrayDays.length;
 
     for (let i = 1; i <= remainingDays; i++) {
-      resultArrayDays.push({
-        value: i,
-        isActiveDay: false,
-        month: changeFormatValue(
-          date.getMonth() + 2 === 13 ? 1 : date.getMonth() + 2
-        ),
-        year: `${
+      const { day, month, year, hasTrips } = getDetailsDate(
+        i,
+        changeFormatValue(date.getMonth() + 2 === 13 ? 1 : date.getMonth() + 2),
+        `${
           date.getMonth() + 1 === 12
             ? date.getFullYear() + 1
             : date.getFullYear()
-        }`,
-        hasTrips: true,
+        }`
+      );
+
+      resultArrayDays.push({
+        value: day,
+        isActiveDay: false,
+        month: month,
+        year: year,
+        hasTrips: hasTrips,
         isCurrentDay: false,
       });
     }
@@ -267,140 +209,103 @@ export default function Calendar() {
     return resultArrayDays;
   }
 
-  // function changeMonth(way) {
-  //   try {
-  //     if (way === 1) {
-  //       const numberNextMonth =
-  //         (date.getMonth() + 1 + 1) % 13 === 0
-  //           ? 1
-  //           : (date.getMonth() + 1 + 1) % 13;
-  //       // console.log(numberNextMonth);
-  //       let currentYear = date.getFullYear();
-  //       // console.log(currentYear);
-  //       if (numberNextMonth === 1) {
-  //         currentYear++;
-  //       }
-
-  //       const arrayDate = `${date}`.split(" ");
-  //       arrayDate[1] = numberNextMonth;
-  //       arrayDate[3] = currentYear;
-
-  //       setDate(new Date(arrayDate.slice(1, 4)));
-  //     } else {
-  //       const numberNextMonth = date.getMonth() === 0 ? 12 : date.getMonth();
-  //       // console.log(numberNextMonth);
-  //       let currentYear = date.getFullYear();
-  //       // console.log(currentYear);
-  //       if (numberNextMonth === 12) {
-  //         currentYear--;
-  //       }
-
-  //       const arrayDate = `${date}`.split(" ");
-  //       arrayDate[1] = numberNextMonth;
-  //       arrayDate[3] = currentYear;
-
-  //       setDate(new Date(arrayDate.slice(1, 4)));
-  //     }
-  //   } catch (error) {
-  //     setErr(error);
-  //   }
-  //   // else {
-  //   //   throw new Error("Задайте значение изменения месяца календаря!");
-  //   // }
-  // }
-
   function changeMonth(way) {
     try {
-      console.log("Changing month, way:", way);
-      console.log("Current date:", date);
       const newDate = new Date(date);
-
       if (way === 1) {
-        // Следующий месяц
         newDate.setMonth(newDate.getMonth() + 1);
       } else if (way === -1) {
-        // Предыдущий месяц
         newDate.setMonth(newDate.getMonth() - 1);
       } else {
         return;
       }
-      console.log("New date:", newDate);
       setDate(newDate);
     } catch (error) {
-      console.error("Error in changeMonth:", error);
       setErr(error);
-      // console.error("Error changing month:", error);
     }
   }
 
   return (
-    <section ref={sectionRef} className={styles.section}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Календарь</h1>
-      </header>
-      <article className={styles.calendar}>
-        <header className={styles.calendarHeader}>
-          <Button onClick={() => changeMonth(-1)}>
-            {/* <Button> */}
-            <img src={arrowLeftIcon} alt="" />
-          </Button>
-          <h2 className={styles.calendarTitle}>
-            {getNameMonth()} {date.getFullYear()}
-          </h2>
-          <Button onClick={() => changeMonth(1)}>
-            {/* <Button> */}
-            <img src={arrowRightIcon} alt="" />
-          </Button>
-        </header>
-        <div className={styles.daysOfWeek}>
-          {daysOfWeek.map((dayOfWeek) => {
-            return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
-          })}
-        </div>
-        <div className={styles.days}>
-          {[0, 1, 2, 3, 4, 5].map((line) => {
-            return (
-              <div key={line} className={styles.daysLine}>
-                {getArrayForRender(date)
-                  .slice(line * 7, (line + 1) * 7)
-                  .map((day) => {
-                    return (
-                      <CalendarDay
-                        key={`${day.value}.${day.month}.${day.year}`}
-                        onClick={() =>
-                          setClickedDay(`${day.value}.${day.month}.${day.year}`)
-                        }
-                        clickedDay={clickedDay}
-                        day={day}
-                      />
-                    );
-                  })}
+    <>
+      {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
+      {!getTripsForCalendarRequest && getTripsForCalendarRequestError && (
+        <div>Ошибка загрузки поездок в календаре!</div>
+      )}
+      {/* {true && ( */}
+      {!getTripsForCalendarRequest &&
+        !getTripsForCalendarRequestError &&
+        tripsForCalendar && (
+          <section ref={sectionRef} className={styles.section}>
+            <header className={styles.header}>
+              <h1 className={styles.title}>Календарь</h1>
+            </header>
+            <article className={styles.calendar}>
+              <header className={styles.calendarHeader}>
+                <Button onClick={() => changeMonth(-1)}>
+                  {/* <Button> */}
+                  <img src={arrowLeftIcon} alt="" />
+                </Button>
+                <h2 className={styles.calendarTitle}>
+                  {getNameMonth()} {date.getFullYear()}
+                </h2>
+                <Button onClick={() => changeMonth(1)}>
+                  {/* <Button> */}
+                  <img src={arrowRightIcon} alt="" />
+                </Button>
+              </header>
+              <div className={styles.daysOfWeek}>
+                {daysOfWeek.map((dayOfWeek) => {
+                  return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
+                })}
               </div>
-            );
-          })}
-        </div>
-      </article>
+              <div className={styles.days}>
+                {[0, 1, 2, 3, 4, 5].map((line) => {
+                  return (
+                    <div key={line} className={styles.daysLine}>
+                      {getArrayForRender(date)
+                        .slice(line * 7, (line + 1) * 7)
+                        .map((day) => {
+                          return (
+                            <CalendarDay
+                              key={`${day.value}.${day.month}.${day.year}`}
+                              onClick={() =>
+                                setClickedDay(
+                                  `${day.value}.${day.month}.${day.year}`
+                                )
+                              }
+                              clickedDay={clickedDay}
+                              day={day}
+                            />
+                          );
+                        })}
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
 
-      <div
-        ref={tripsContainerRef}
-        className={styles.containerTrips}
-        style={styleTripsContainer}
-      >
-        <header className={styles.containerTripsHeader}>
-          <data value={clickedDay}>{clickedDay}</data>
-          <Button className={styles.containerTripsButton}>
-            <img src={addTripIcon} alt="" />
-            <p>Добавить</p>
-          </Button>
-        </header>
-        <div className={styles.trips}>
-          {/* {[1, 2, 3, 4, 5].map((element) => {
+            <div
+              ref={tripsContainerRef}
+              className={styles.containerTrips}
+              style={styleTripsContainer}
+            >
+              <header className={styles.containerTripsHeader}>
+                <data value={clickedDay}>{clickedDay}</data>
+                <Button className={styles.containerTripsButton}>
+                  <img src={addTripIcon} alt="" />
+                  <p>Добавить</p>
+                </Button>
+              </header>
+              <div className={styles.trips}>
+                {/* {[1, 2, 3, 4, 5].map((element) => {
             return <Trip key={element} status="Запланировано" />;
           })} */}
-        </div>
-      </div>
+              </div>
+            </div>
 
-      {err && <div>{err}</div>}
-    </section>
+            {err && <div>{err}</div>}
+          </section>
+        )}
+    </>
   );
 }
