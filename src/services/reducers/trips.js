@@ -4,6 +4,9 @@ import {
   ADD_TRIP_REQUEST,
   ADD_TRIP_REQUEST_ERROR,
   ADD_TRIP_REQUEST_SUCCESS,
+  GET_TRIPS_FOR_CALENDAR_REQUEST,
+  GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR,
+  GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS,
   GET_TRIPS_REQUEST,
   GET_TRIPS_REQUEST_ERROR,
   GET_TRIPS_REQUEST_SUCCESS,
@@ -27,10 +30,33 @@ const initialState = {
 
   removeTripRequest: false,
   removeTripRequestError: false,
+
+  tripsForCalendar: null,
+  getTripsForCalendarRequest: false,
+  getTripsForCalendarRequestError: false,
 };
 
 export const tripsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case GET_TRIPS_FOR_CALENDAR_REQUEST:
+      return {
+        ...state,
+        getTripsForCalendarRequest: true,
+        getTripsForCalendarRequestError: false,
+      };
+    case GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR:
+      return {
+        ...state,
+        getTripsForCalendarRequest: false,
+        getTripsForCalendarRequestError: true,
+      };
+    case GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS:
+      return {
+        ...state,
+        tripsForCalendar: action.trips,
+        getTripsForCalendarRequest: false,
+        getTripsForCalendarRequestError: false,
+      };
     case REMOVE_TRIP_REQUEST:
       return {
         ...state,
