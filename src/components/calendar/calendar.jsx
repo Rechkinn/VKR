@@ -223,20 +223,7 @@ export default function Calendar() {
     }
   }
 
-  const [trips, setTrips] = useState([
-    ...tripsForCalendar.filter((trip) => {
-      const date1 = new Date(clickedDay);
-      const date2 = new Date(trip.departure_datetime.split("T"[0]));
-
-      if (
-        date1.getFullYear() === date2.getFullYear() &&
-        date1.getMonth() === date2.getMonth() &&
-        date1.getDate() === date2.getDate()
-      ) {
-        return trip;
-      }
-    }),
-  ]);
+  const [trips, setTrips] = useState([]);
 
   useEffect(() => {
     if (!tripsForCalendar) return;
