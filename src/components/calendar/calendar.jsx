@@ -33,11 +33,6 @@ export default function Calendar() {
     getTripsForCalendarRequestError,
   } = useSelector((store) => store.trips);
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getTripsForCalendar());
-  }, []);
-
   useEffect(() => {
     const section = sectionRef.current;
     const tripsContainer = tripsContainerRef.current;
@@ -53,6 +48,11 @@ export default function Calendar() {
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
+  }, []);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getTripsForCalendar());
   }, []);
 
   function getNameMonth() {

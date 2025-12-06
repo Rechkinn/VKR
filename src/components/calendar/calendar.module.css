@@ -57,6 +57,7 @@
   border: 1px solid #fdcd03;
   border-radius: 5px;
   overflow-y: auto;
+  max-height: 300px;
 }
 
 .containerTripsHeader {
