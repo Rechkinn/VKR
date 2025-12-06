@@ -239,6 +239,7 @@ export default function Calendar() {
   ]);
 
   useEffect(() => {
+    if (!tripsForCalendar) return;
     setTrips([
       ...tripsForCalendar.filter((trip) => {
         const date1 = new Date(clickedDay.split(".").reverse().join("-"));
@@ -253,7 +254,7 @@ export default function Calendar() {
         }
       }),
     ]);
-  }, [clickedDay]);
+  }, [clickedDay, tripsForCalendar]);
 
   return (
     <>
