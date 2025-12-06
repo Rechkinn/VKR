@@ -98,8 +98,6 @@ export default function Calendar() {
 
     let hasTrips = false;
     if (tripsForCalendar) {
-      console.log("`${year}-${month}-${day}`");
-      console.log(`${year}-${month}-${day}`);
       hasTrips = tripsForCalendar.find((trip) => {
         return (
           trip.departure_datetime.split("T")[0] ===
@@ -225,6 +223,38 @@ export default function Calendar() {
     }
   }
 
+  const [trips, setTrips] = useState([
+    ...tripsForCalendar.filter((trip) => {
+      const date1 = new Date(clickedDay);
+      const date2 = new Date(trip.departure_datetime.split("T"[0]));
+
+      if (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+      ) {
+        return trip;
+      }
+    }),
+  ]);
+
+  useEffect(() => {
+    setTrips([
+      ...tripsForCalendar.filter((trip) => {
+        const date1 = new Date(clickedDay.split(".").reverse().join("-"));
+        const date2 = new Date(trip.departure_datetime.split("T"[0]));
+
+        if (
+          date1.getFullYear() === date2.getFullYear() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getDate() === date2.getDate()
+        ) {
+          return trip;
+        }
+      }),
+    ]);
+  }, [clickedDay]);
+
   return (
     <>
       {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
@@ -297,9 +327,9 @@ export default function Calendar() {
                 </Button>
               </header>
               <div className={styles.trips}>
-                {/* {[1, 2, 3, 4, 5].map((element) => {
-            return <Trip key={element} status="Запланировано" />;
-          })} */}
+                {trips.map((trip) => {
+                  return <Trip key={trip.id} trip={trip} />;
+                })}
               </div>
             </div>
 
