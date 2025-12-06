@@ -17,6 +17,12 @@ export const REMOVE_TRIP_REQUEST = "REMOVE_TRIP_REQUEST";
 export const REMOVE_TRIP_REQUEST_ERROR = "REMOVE_TRIP_REQUEST_ERROR";
 export const REMOVE_TRIP_REQUEST_SUCCESS = "REMOVE_TRIP_REQUEST_SUCCESS";
 
+export const GET_TRIPS_FOR_CALENDAR_REQUEST = "GET_TRIPS_FOR_CALENDAR_REQUEST";
+export const GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR =
+  "GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR";
+export const GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS =
+  "GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS";
+
 export function getTrips() {
   return function (dispatch) {
     dispatch({
@@ -111,5 +117,33 @@ export function removeTrip(tripId, closeSettings = () => {}) {
           type: REMOVE_TRIP_REQUEST_ERROR,
         });
       });
+  };
+}
+
+export function getTripsForCalendar() {
+  return function (dispatch) {
+    dispatch({
+      type: GET_TRIPS_FOR_CALENDAR_REQUEST,
+    });
+    const option = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    };
+
+    doRequest("/trips/search?trip_type=own&skip=0&limit=50", option)
+      .then((trips) => {
+        dispatch({
+          type: GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS,
+          trips: trips,
+        });
+      })
+      .catch(
+        dispatch({
+          type: GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR,
+        })
+      );
   };
 }
