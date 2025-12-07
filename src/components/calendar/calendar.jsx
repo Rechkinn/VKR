@@ -302,6 +302,8 @@ export default function Calendar() {
               </div>
             </article>
 
+            <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div>
+
             <div
               ref={tripsContainerRef}
               className={styles.containerTrips}
