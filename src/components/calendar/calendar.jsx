@@ -306,6 +306,7 @@ export default function Calendar() {
               tripsForCalendar
             )}`}</div> */}
             {/* <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div> */}
+            <div style={{ color: "red" }}>{`${clickedDay}`}</div>
 
             <div
               ref={tripsContainerRef}
@@ -334,6 +335,7 @@ export default function Calendar() {
                     return <Trip key={trip.id} trip={trip} />;
                   }
                 })} */}
+
                 {tripsForCalendar.map((trip) => {
                   return <Trip key={trip.id} trip={trip} />;
                 })}
