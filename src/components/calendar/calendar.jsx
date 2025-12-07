@@ -320,7 +320,7 @@ export default function Calendar() {
                 </Button>
               </header>
               <div className={styles.trips}>
-                {tripsForCalendar.map((trip) => {
+                {/* {tripsForCalendar.map((trip) => {
                   const date1 = new Date(
                     clickedDay.split(".").reverse().join("-")
                   );
@@ -333,11 +333,14 @@ export default function Calendar() {
                   ) {
                     return <Trip key={trip.id} trip={trip} />;
                   }
+                })} */}
+                {tripsForCalendar.map((trip) => {
+                  return <Trip key={trip.id} trip={trip} />;
                 })}
               </div>
             </div>
 
-            {err && <div>{err}</div>}
+            {/* {err && <div>{err}</div>} */}
           </section>
         )}
     </>
