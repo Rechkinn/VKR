@@ -321,11 +321,11 @@ export default function Calendar() {
                 </Button>
               </header>
               <div className={styles.trips}>
-                {/* {tripsForCalendar.map((trip) => {
+                {tripsForCalendar.map((trip) => {
                   const date1 = new Date(
                     clickedDay.split(".").reverse().join("-")
                   );
-                  const date2 = new Date(trip.departure_datetime.split("T"[0]));
+                  const date2 = new Date(trip.departure_datetime.split("T")[0]);
 
                   if (
                     date1.getFullYear() === date2.getFullYear() &&
@@ -334,11 +334,11 @@ export default function Calendar() {
                   ) {
                     return <Trip key={trip.id} trip={trip} />;
                   }
-                })} */}
-
-                {tripsForCalendar.map((trip) => {
-                  return <Trip key={trip.id} trip={trip} />;
                 })}
+
+                {/* {tripsForCalendar.map((trip) => {
+                  return <Trip key={trip.id} trip={trip} />;
+                })} */}
               </div>
             </div>
 
