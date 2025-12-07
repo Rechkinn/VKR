@@ -306,7 +306,7 @@ export default function Calendar() {
               tripsForCalendar
             )}`}</div> */}
             {/* <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div> */}
-            <div style={{ color: "red" }}>{`${clickedDay}`}</div>
+            {/* <div style={{ color: "red" }}>{`${clickedDay}`}</div> */}
 
             <div
               ref={tripsContainerRef}
