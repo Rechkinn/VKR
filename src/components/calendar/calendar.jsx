@@ -223,25 +223,25 @@ export default function Calendar() {
     }
   }
 
-  const [trips, setTrips] = useState([]);
+  // const [trips, setTrips] = useState([]);
 
-  useEffect(() => {
-    if (!tripsForCalendar) return;
-    setTrips([
-      ...tripsForCalendar.filter((trip) => {
-        const date1 = new Date(clickedDay.split(".").reverse().join("-"));
-        const date2 = new Date(trip.departure_datetime.split("T"[0]));
+  // useEffect(() => {
+  //   if (!tripsForCalendar) return;
+  //   setTrips([
+  //     ...tripsForCalendar.filter((trip) => {
+  //       const date1 = new Date(clickedDay.split(".").reverse().join("-"));
+  //       const date2 = new Date(trip.departure_datetime.split("T"[0]));
 
-        if (
-          date1.getFullYear() === date2.getFullYear() &&
-          date1.getMonth() === date2.getMonth() &&
-          date1.getDate() === date2.getDate()
-        ) {
-          return trip;
-        }
-      }),
-    ]);
-  }, [clickedDay, tripsForCalendar]);
+  //       if (
+  //         date1.getFullYear() === date2.getFullYear() &&
+  //         date1.getMonth() === date2.getMonth() &&
+  //         date1.getDate() === date2.getDate()
+  //       ) {
+  //         return trip;
+  //       }
+  //     }),
+  //   ]);
+  // }, [clickedDay, tripsForCalendar]);
 
   return (
     <>
@@ -302,10 +302,10 @@ export default function Calendar() {
               </div>
             </article>
 
-            <div style={{ color: "green" }}>{`${JSON.stringify(
+            {/* <div style={{ color: "green" }}>{`${JSON.stringify(
               tripsForCalendar
-            )}`}</div>
-            <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div>
+            )}`}</div> */}
+            {/* <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div> */}
 
             <div
               ref={tripsContainerRef}
@@ -320,8 +320,19 @@ export default function Calendar() {
                 </Button>
               </header>
               <div className={styles.trips}>
-                {trips.map((trip) => {
-                  return <Trip key={trip.id} trip={trip} />;
+                {tripsForCalendar.map((trip) => {
+                  const date1 = new Date(
+                    clickedDay.split(".").reverse().join("-")
+                  );
+                  const date2 = new Date(trip.departure_datetime.split("T"[0]));
+
+                  if (
+                    date1.getFullYear() === date2.getFullYear() &&
+                    date1.getMonth() === date2.getMonth() &&
+                    date1.getDate() === date2.getDate()
+                  ) {
+                    return <Trip key={trip.id} trip={trip} />;
+                  }
                 })}
               </div>
             </div>
