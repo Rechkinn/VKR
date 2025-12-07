@@ -302,6 +302,9 @@ export default function Calendar() {
               </div>
             </article>
 
+            <div style={{ color: "green" }}>{`${JSON.stringify(
+              tripsForCalendar
+            )}`}</div>
             <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div>
 
             <div
