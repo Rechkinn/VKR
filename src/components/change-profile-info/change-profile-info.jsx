@@ -15,6 +15,7 @@ import {
 } from "../../services/actions/user";
 import { Link, useNavigate } from "react-router";
 import Loader from "../loader/loader";
+import SelectCustom from "../select-custom/select-custom";
 
 export default function ChangeProfileInfo() {
   // если чекбокс будет активным, то будет показываться поле для вода числового кода
@@ -68,9 +69,15 @@ export default function ChangeProfileInfo() {
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "username") continue;
+      if (inputs[i].name === "sbp_bank" && inputs[i].value === "nothing") {
+        newData[inputs[i].name] = null;
+        continue;
+      }
+
       newData[inputs[i].name] = inputs[i].value;
     }
-
+    console.log("newData");
+    console.log(newData);
     dispatch(changeUserInfo(newData, closeFormToChangeProfileInfo));
   }
 
@@ -131,6 +138,22 @@ export default function ChangeProfileInfo() {
               }
               className={styles.mb18}
             />
+            <SelectCustom
+              defaultValue={infoFromTelegram.sbp_bank ?? undefined}
+              label="Банк СБП"
+              id="sbp_bank"
+              name="sbp_bank"
+            >
+              {/* <option value={"nothing"}>Не выбрано</option> */}
+              <option value="nothing">Не выбрано</option>
+              <option value="Сбербанк">Сбербанк</option>
+              <option value="Газпромбанк">Газпромбанк</option>
+              <option value="ВТБ">ВТБ</option>
+              <option value="Райффайзенбанк">Райффайзенбанк</option>
+              <option value="Совкомбанк">Совкомбанк</option>
+              <option value="Альфа-банк">Альфа-банк</option>
+              <option value="Т-Банк">Т-Банк</option>
+            </SelectCustom>
 
             {/* <div className={styles.customCheckboxContainer}>
           <label
