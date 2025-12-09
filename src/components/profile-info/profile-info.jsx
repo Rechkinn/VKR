@@ -121,7 +121,7 @@ export default function ProfileInfo() {
     } else {
       // "2025-12-09T13:07:58.856Z"
 
-      let difference = (finishDayMs - currentDayMs) / 1000 / 60 / 60 / 24; // минуты
+      let difference = (finishDayMs - currentDayMs) / 1000 / 60 / 60 / 24;
       resultString =
         difference > 1
           ? `До конца подписки осталось дней: ${Math.floor(difference)}`
@@ -138,9 +138,6 @@ export default function ProfileInfo() {
   }, [infoFromTelegram.subscription_exp]);
 
   function subscribe() {
-    // window.Telegram.WebApp.openTelegramLink(
-    //   "tg://resolve?domain=test_alss_bot&start"
-    // );
     window.Telegram.WebApp.openLink("https://t.me/test_alss_bot?start=123");
   }
 
