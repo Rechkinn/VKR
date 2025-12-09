@@ -93,3 +93,7 @@
   max-height: 300px;
   /* max-height: 35vh; */
 }
+
+.buttonRemoveTrip {
+  margin-bottom: 5px;
+}
