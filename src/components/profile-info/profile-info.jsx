@@ -138,9 +138,10 @@ export default function ProfileInfo() {
   }, [infoFromTelegram.subscription_exp]);
 
   function subscribe() {
-    window.Telegram.WebApp.openTelegramLink(
-      "tg://resolve?domain=test_alss_bot&start"
-    );
+    // window.Telegram.WebApp.openTelegramLink(
+    //   "tg://resolve?domain=test_alss_bot&start"
+    // );
+    window.Telegram.WebApp.openLink("https://t.me/test_alss_bot?start=123");
   }
 
   return (
