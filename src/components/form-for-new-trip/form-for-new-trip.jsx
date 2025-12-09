@@ -335,8 +335,8 @@ export default function FormForNewTrip() {
                   <SelectCustom
                     name="car_class"
                     id="car_class"
-                    label={"Класс автомобиля"}
-                    defaultValue={"passenger_car"}
+                    label="Класс автомобиля"
+                    defaultValue="passenger_car"
                   >
                     <option value="passenger_car">Легковой</option>
                     <option value="minivan">Минивэн</option>
