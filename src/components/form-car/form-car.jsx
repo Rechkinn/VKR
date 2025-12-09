@@ -191,7 +191,6 @@ const FormCar = ({ isForViewing, isForEditing }) => {
 
             <SelectCustom
               label={"Класс авто"}
-              disabled={isForViewing}
               defaultValue={carForSettings?.car_class ?? "passenger_car"}
             />
 
