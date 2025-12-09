@@ -81,3 +81,9 @@ button:active {
   border-bottom-left-radius: 5px;
   margin-bottom: 4px;
 }
+.modal:disabled:active {
+  opacity: 0.5;
+}
+.modal:disabled {
+  opacity: 0.5;
+}
