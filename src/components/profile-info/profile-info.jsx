@@ -8,9 +8,13 @@ import { Cars } from "../cars/cars";
 import { useEffect, useRef, useState } from "react";
 import Car from "../car/car";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
+import Button from "../button/button";
 
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
+
+  const [activeSubscription, setActiveSubscription] = useState(false);
+  const [activeSubscriptionText, setActiveSubscriptionText] = useState("");
 
   console.log("infoFromTelegram в ProfileInfo");
   console.log(infoFromTelegram);
@@ -101,12 +105,65 @@ export default function ProfileInfo() {
       : "Декабря";
   }
 
+  useEffect(() => {
+    const currentDay = new Date();
+    const finishDay = new Date(infoFromTelegram.subscription_exp);
+
+    const currentDayMs = currentDay.getTime();
+    const finishDayMs = finishDay.getTime();
+
+    let resultString = "";
+    let statusActiveSubscription = false;
+
+    if (finishDayMs < currentDayMs) {
+      resultString = "Подписка не активна";
+      statusActiveSubscription = false;
+    } else {
+      // "2025-12-09T13:07:58.856Z"
+
+      let difference = (finishDayMs - currentDayMs) / 1000 / 60 / 60 / 24; // минуты
+      resultString =
+        difference > 1
+          ? `До конца подписки осталось дней: ${Math.floor(difference)}`
+          : `Подписка заканчивается ${infoFromTelegram.subscription_exp
+              .split("T")[0]
+              .split("-")
+              .reverse()
+              .join(".")}`;
+      statusActiveSubscription = true;
+    }
+
+    setActiveSubscription(statusActiveSubscription);
+    setActiveSubscriptionText(resultString);
+  }, [infoFromTelegram.subscription_exp]);
+
+  function subscribe() {
+    window.Telegram.WebApp.openTelegramLink(
+      "tg://resolve?domain=test_alss_bot&start"
+    );
+  }
+
   return (
     <>
       {infoFromTelegram && (
         <section ref={sectionRef} className={styles.section}>
           <header className={styles.header}>
-            <div className={styles.headerPart}>
+            <div
+              style={{
+                justifyContent: activeSubscription ? "center" : "space-between",
+              }}
+              className={styles.subscription}
+            >
+              <span className={styles.statusSubscription}>
+                {activeSubscriptionText}
+              </span>
+              {!activeSubscription && (
+                <Button className="black" onClick={subscribe}>
+                  Купить подписку
+                </Button>
+              )}
+            </div>
+            {/* <div className={styles.headerPart}>
               <h1 className={styles.ratingText}>Рейтинг</h1>
               <div className={styles.rating}>
                 <div className={styles.stars}>
@@ -119,7 +176,7 @@ export default function ProfileInfo() {
             </div>
             <div className={styles.headerPart}>
               <Balance balanceValue={infoFromTelegram.balance} />
-            </div>
+            </div> */}
           </header>
 
           <div className={styles.content}>

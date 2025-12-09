@@ -9,9 +9,9 @@ h1 {
 
 .header {
   margin-bottom: 22px;
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
 }
 
 .headerPart {
@@ -85,4 +85,14 @@ h1 {
 .userDescription {
   font-size: 12px;
   font-weight: normal;
+}
+
+.subscription {
+  margin-top: 75px;
+  display: flex;
+  align-items: center;
+}
+
+.statusSubscription {
+  font-weight: bold;
 }
