@@ -12,8 +12,8 @@ import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/backgro
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
 
-  // console.log("infoFromTelegram в ProfileInfo");
-  // console.log(infoFromTelegram);
+  console.log("infoFromTelegram в ProfileInfo");
+  console.log(infoFromTelegram);
 
   function renderStars(rating) {
     const array = [];
@@ -74,6 +74,33 @@ export default function ProfileInfo() {
     setMaxHeightContainerTrips();
   }, [sectionRef.current, carsRef.current]);
 
+  function getMonthText(numberMonth) {
+    const number = Number(numberMonth);
+    return number === 1
+      ? "Января"
+      : number === 2
+      ? "Февраля"
+      : number === 3
+      ? "Марта"
+      : number === 4
+      ? "Апреля"
+      : number === 5
+      ? "Мая"
+      : number === 6
+      ? "Июня"
+      : number === 7
+      ? "Июля"
+      : number === 8
+      ? "Августа"
+      : number === 9
+      ? "Сентября"
+      : number === 10
+      ? "Октября"
+      : number === 11
+      ? "Ноября"
+      : "Декабря";
+  }
+
   return (
     <>
       {infoFromTelegram && (
@@ -102,7 +129,8 @@ export default function ProfileInfo() {
               {`${infoFromTelegram.first_name} ${infoFromTelegram.last_name}`.trim()}
             </h2>
             <p className={styles.userDescription}>
-              В Alltransfer с Января {infoFromTelegram.created_at.split("-")[0]}
+              В OkGo с {getMonthText(infoFromTelegram.created_at.split("-")[1])}{" "}
+              {infoFromTelegram.created_at.split("-")[0]}
             </p>
           </div>
 
