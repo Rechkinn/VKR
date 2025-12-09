@@ -190,9 +190,16 @@ const FormCar = ({ isForViewing, isForEditing }) => {
             />
 
             <SelectCustom
+              name="car_class"
+              id="car_class"
               label={"Класс авто"}
               defaultValue={carForSettings?.car_class ?? "passenger_car"}
-            />
+            >
+              <option value="passenger_car">Легковой</option>
+              <option value="minivan">Минивэн</option>
+              <option value="microbus">Микроавтобус</option>
+              <option value="bus">Автобус</option>
+            </SelectCustom>
 
             <div>
               <label htmlFor="additional_info" className={styles.label}>
@@ -209,6 +216,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
             {!isForViewing && (
               <Button
                 className={`yellow ${styles.buttonConfirm}`}
+                style={{ marginBottom: "20px" }}
                 type="submit"
               >
                 {carForSettings?.id ? "Сохранить" : "Создать"}
