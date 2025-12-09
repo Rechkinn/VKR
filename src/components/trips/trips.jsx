@@ -111,11 +111,10 @@ export default function Trips() {
           <section ref={sectionRef} className={styles.section}>
             <header className={styles.header}>
               <h1 className={styles.title}>Мои поездки</h1>
-
-              <div className={styles.balance}>
+              {/* <div className={styles.balance}>
                 <Balance balanceValue={infoFromTelegram.balance} />
                 <Button className="black">Пополнить</Button>
-              </div>
+              </div> */}
             </header>
             <div className={styles.containerCreateTrip}>
               <Button
