@@ -98,11 +98,12 @@ const TelegramAuth = () => {
         defaultAuthentication(initData);
       }
     }
+    dispatch(getCars());
   }, [webApp, dispatch]);
 
-  useEffect(() => {
-    dispatch(getCars());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getCars());
+  // }, [webApp, dispatch]);
 
   function defaultAuthentication(initData) {
     dispatch(authentication(initData));
