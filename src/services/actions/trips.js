@@ -136,7 +136,7 @@ export function getTripsForCalendar() {
       },
     };
 
-    doRequest("/trips/search?trip_type=own&skip=0&limit=50", option)
+    doRequest("/trips/search?role=all", option)
       .then((trips) => {
         dispatch({
           type: GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS,
