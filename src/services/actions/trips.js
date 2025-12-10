@@ -37,7 +37,10 @@ export function getTrips() {
       },
     };
 
-    doRequest("/trips/search?role=creator&trip_type=delegated", option)
+    doRequest(
+      "/trips/search?role=creator&trip_type=delegated&skip=0&limit=50",
+      option
+    )
       .then((trips) => {
         dispatch({
           type: GET_TRIPS_REQUEST_SUCCESS,
