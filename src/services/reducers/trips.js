@@ -237,7 +237,6 @@ const initialState = {
   removeTripRequest: false,
   removeTripRequestError: false,
 
-  tripsForCalendar: null,
   // tripsForCalendar: [
   //   {
   //     id: 1,
@@ -716,6 +715,7 @@ const initialState = {
   //     },
   //   },
   // ],
+  tripsForCalendar: null,
   getTripsForCalendarRequest: false,
   getTripsForCalendarRequestError: false,
 };
