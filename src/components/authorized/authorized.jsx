@@ -88,7 +88,7 @@ const TelegramAuth = () => {
       } catch (e) {
         // console.warn("Telegram WebApp initialization warning:", e);
         console.log(e);
-        setCustomLog(e);
+        setCustomLog(e.message);
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
