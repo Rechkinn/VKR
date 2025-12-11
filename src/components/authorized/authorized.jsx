@@ -74,14 +74,11 @@ const TelegramAuth = () => {
 
         // Отключаем вертикальные свайпы (если нужно)
         if (webApp.disableVerticalSwipes) webApp.disableVerticalSwipes();
+        if (webApp.expand) webApp.expand();
 
         // Пытаемся явно запросить полноэкранный режим (новые версии API)
-        if (webApp.requestFullscreen) {
-          webApp.requestFullscreen().catch(() => webApp.expand());
-        } else {
-          // fallback
-          webApp.expand();
-        }
+
+        if (webApp.requestFullscreen) webApp.requestFullscreen();
 
         // expand может не сработать в некоторых контекстах, но попытка безопасна
         // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
