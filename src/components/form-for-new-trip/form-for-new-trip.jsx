@@ -408,7 +408,9 @@ export default function FormForNewTrip() {
                 type="submit"
                 className={`yellow ${styles.buttonPushForm}`}
               >
-                Отправить в канал
+                {location?.state?.isTripDelegated
+                  ? "Отправить в канал"
+                  : "Создать"}
               </Button>
             </form>
           </div>
