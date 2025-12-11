@@ -53,7 +53,7 @@ export default function ProfileInfo() {
     const sectionBorders = section.getBoundingClientRect();
     const carsBorders = cars.getBoundingClientRect();
 
-    const maxHeight = sectionBorders.bottom - carsBorders.top - 35;
+    const maxHeight = sectionBorders.bottom - carsBorders.top - 45;
     // console.log("устанавливаем значение");
     setStyleTripsContainer({
       maxHeight: maxHeight,
