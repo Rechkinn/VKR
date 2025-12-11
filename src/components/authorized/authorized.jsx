@@ -53,44 +53,22 @@ const TelegramAuth = () => {
   // Инициализация Telegram WebApp (делаем один раз)
   useEffect(() => {
     if (window.Telegram?.WebApp) {
-      // const tgWebApp = window.Telegram.WebApp;
-      // setWebApp(tgWebApp);
-      let log = "";
       try {
-        // window.Telegram.WebApp.ready();
-        // console.log("прошло window.Telegram.WebApp.ready();");
-        // log += "ready() ";
-        // window.Telegram.WebApp.expand();
-        // console.log("прошло window.Telegram.WebApp.expand();");
-        // log += "expand() ";
-        // window.Telegram.WebApp.isVerticalSwipesEnabled = false;
-        // console.log(
-        //   "прошло window.Telegram.WebApp.isVerticalSwipesEnabled = false;"
-        // );
-        // log += "isVerticalSwipesEnabled ";
-        // setCustomLog(log);
         const webApp = window.Telegram?.WebApp;
         webApp.ready();
 
-        // Отключаем вертикальные свайпы (если нужно)
         if (webApp.disableVerticalSwipes) webApp.disableVerticalSwipes();
         if (webApp.expand) webApp.expand();
-
-        // Пытаемся явно запросить полноэкранный режим (новые версии API)
-
         if (webApp.requestFullscreen) webApp.requestFullscreen();
+
         setWebApp(webApp);
-        // expand может не сработать в некоторых контекстах, но попытка безопасна
-        // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
       } catch (e) {
-        // console.warn("Telegram WebApp initialization warning:", e);
         console.log(e);
         setCustomLog(e.message);
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
       }
-      // const tgWebApp = window.Telegram.WebApp;
     } else {
       dispatch({
         type: USER_TELEGRAM_INFO_REQUEST_ERROR,
