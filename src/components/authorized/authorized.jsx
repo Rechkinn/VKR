@@ -156,11 +156,16 @@ const TelegramAuth = () => {
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         !infoFromTelegram?.telegram_id && (
-          <div style={{ color: "#666", marginTop: 12 }}>
-            Откройте мини-приложение внутри Telegram (в мобильной версии/на
-            десктопе). Если вы в браузере — убедитесь, что приложение запущено
-            через кнопку открытия приложения.
-          </div>
+          <>
+            <div style={{ color: "#666", marginTop: 12 }}>
+              Откройте мини-приложение внутри Telegram (в мобильной версии/на
+              десктопе). Если вы в браузере — убедитесь, что приложение запущено
+              через кнопку открытия приложения.
+            </div>
+            <div style={{ color: "red", marginTop: 12 }}>
+              infoFromTelegram: {JSON.parse(infoFromTelegram)}
+            </div>
+          </>
         )}
     </>
   );
