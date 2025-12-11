@@ -87,6 +87,8 @@ const TelegramAuth = () => {
         // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
       } catch (e) {
         // console.warn("Telegram WebApp initialization warning:", e);
+        console.log(e);
+        setCustomLog(e);
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
@@ -142,14 +144,14 @@ const TelegramAuth = () => {
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
-      {!userTelegramInfoRequest &&
-        !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App />}
       {/* {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        infoFromTelegram?.telegram_id && <App />} */}
+      {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && (
           <div style={{ color: "red" }}>Логи: {customLog}</div>
-        )} */}
+        )}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
