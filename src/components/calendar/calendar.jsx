@@ -23,28 +23,11 @@ export default function Calendar() {
     `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
   );
 
-  const [styleSection, setStyleSection] = useState(null);
-  const sectionRef = useRef();
-  const tripsContainerRef = useRef();
-
   const {
     tripsForCalendar,
     getTripsForCalendarRequest,
     getTripsForCalendarRequestError,
   } = useSelector((store) => store.trips);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const tripsContainer = tripsContainerRef.current;
-
-    if (!section) return;
-    if (!tripsContainer) return;
-
-    let padding = 0;
-    if (tripsContainer.scrollHeight > 300) padding = 800;
-    else if (tripsContainer.scrollHeight > 150) padding = 690;
-    setStyleSection({ paddingBottom: `${padding}px` });
-  }, [clickedDay]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -229,11 +212,7 @@ export default function Calendar() {
       {!getTripsForCalendarRequest &&
         !getTripsForCalendarRequestError &&
         tripsForCalendar && (
-          <section
-            ref={sectionRef}
-            style={styleSection}
-            className={styles.section}
-          >
+          <section className={styles.section}>
             <header className={styles.header}>
               <h1 className={styles.title}>Календарь</h1>
             </header>
@@ -280,7 +259,7 @@ export default function Calendar() {
               </div>
             </article>
 
-            <div ref={tripsContainerRef} className={styles.containerTrips}>
+            <div className={styles.containerTrips}>
               <header className={styles.containerTripsHeader}>
                 <data value={clickedDay}>{clickedDay}</data>
                 <Button className={styles.containerTripsButton}>
@@ -305,6 +284,7 @@ export default function Calendar() {
                 })}
               </div>
             </div>
+            <p style={{ color: "black" }}>-</p>
           </section>
         )}
     </>
