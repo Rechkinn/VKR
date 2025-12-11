@@ -20,6 +20,8 @@ const TelegramAuth = () => {
     userTelegramInfoRequestError,
   } = useSelector((store) => store.user);
 
+  const [customLog, setCustomLog] = useState("");
+
   // Вспомогательная функция парсинга initData (оставляем выше эффектов для удобства)
   const parseInitData = (initDataString) => {
     if (!initDataString) return null;
@@ -53,16 +55,20 @@ const TelegramAuth = () => {
     if (window.Telegram?.WebApp) {
       // const tgWebApp = window.Telegram.WebApp;
       // setWebApp(tgWebApp);
-
+      const log = "";
       try {
         window.Telegram.WebApp.ready();
         console.log("прошло window.Telegram.WebApp.ready();");
+        log += "ready() ";
         window.Telegram.WebApp.expand();
         console.log("прошло window.Telegram.WebApp.expand();");
+        log += "expand() ";
         window.Telegram.WebApp.isVerticalSwipesEnabled = false;
         console.log(
           "прошло window.Telegram.WebApp.isVerticalSwipesEnabled = false;"
         );
+        log += "isVerticalSwipesEnabled ";
+        setCustomLog(log);
         // expand может не сработать в некоторых контекстах, но попытка безопасна
         // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
       } catch (e) {
@@ -124,7 +130,7 @@ const TelegramAuth = () => {
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App />}
+        infoFromTelegram?.telegram_id && <App customLog={customLog} />}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
