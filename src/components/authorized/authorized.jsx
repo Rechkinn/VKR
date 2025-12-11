@@ -57,18 +57,32 @@ const TelegramAuth = () => {
       // setWebApp(tgWebApp);
       let log = "";
       try {
-        window.Telegram.WebApp.ready();
-        console.log("прошло window.Telegram.WebApp.ready();");
-        log += "ready() ";
-        window.Telegram.WebApp.expand();
-        console.log("прошло window.Telegram.WebApp.expand();");
-        log += "expand() ";
-        window.Telegram.WebApp.isVerticalSwipesEnabled = false;
-        console.log(
-          "прошло window.Telegram.WebApp.isVerticalSwipesEnabled = false;"
-        );
-        log += "isVerticalSwipesEnabled ";
-        setCustomLog(log);
+        // window.Telegram.WebApp.ready();
+        // console.log("прошло window.Telegram.WebApp.ready();");
+        // log += "ready() ";
+        // window.Telegram.WebApp.expand();
+        // console.log("прошло window.Telegram.WebApp.expand();");
+        // log += "expand() ";
+        // window.Telegram.WebApp.isVerticalSwipesEnabled = false;
+        // console.log(
+        //   "прошло window.Telegram.WebApp.isVerticalSwipesEnabled = false;"
+        // );
+        // log += "isVerticalSwipesEnabled ";
+        // setCustomLog(log);
+        const webApp = window.Telegram?.WebApp;
+        webApp.ready();
+
+        // Отключаем вертикальные свайпы (если нужно)
+        if (webApp.disableVerticalSwipes) webApp.disableVerticalSwipes();
+
+        // Пытаемся явно запросить полноэкранный режим (новые версии API)
+        if (webApp.requestFullscreen) {
+          webApp.requestFullscreen().catch(() => webApp.expand());
+        } else {
+          // fallback
+          webApp.expand();
+        }
+
         // expand может не сработать в некоторых контекстах, но попытка безопасна
         // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
       } catch (e) {
@@ -77,8 +91,8 @@ const TelegramAuth = () => {
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
         });
       }
-      const tgWebApp = window.Telegram.WebApp;
-      setWebApp(tgWebApp);
+      // const tgWebApp = window.Telegram.WebApp;
+      setWebApp(webApp);
     } else {
       dispatch({
         type: USER_TELEGRAM_INFO_REQUEST_ERROR,
@@ -128,14 +142,14 @@ const TelegramAuth = () => {
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
-      {/* {!userTelegramInfoRequest &&
-        !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App />} */}
       {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        infoFromTelegram?.telegram_id && <App />}
+      {/* {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && (
           <div style={{ color: "red" }}>Логи: {customLog}</div>
-        )}
+        )} */}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
