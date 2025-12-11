@@ -163,7 +163,7 @@ const TelegramAuth = () => {
               через кнопку открытия приложения.
             </div>
             <div style={{ color: "red", marginTop: 12 }}>
-              infoFromTelegram: {JSON.parse(infoFromTelegram)}
+              infoFromTelegram: {JSON.stringify(infoFromTelegram)}
             </div>
           </>
         )}
