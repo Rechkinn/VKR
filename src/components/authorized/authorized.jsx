@@ -100,7 +100,9 @@ const TelegramAuth = () => {
   }, []);
 
   useEffect(() => {
+    console.log("перед получением данных о ЮЗЕРЕ");
     if (!webApp) return;
+    console.log("webApp СУЩЕСТВУЕТ");
 
     const unsafe = webApp.initDataUnsafe;
     const initData = webApp.initData;
