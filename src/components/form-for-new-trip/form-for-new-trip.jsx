@@ -12,8 +12,10 @@ import Input from "../input/input";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import {
+  ADD_TRIP_OWN_REQUEST_SUCCESS,
   ADD_TRIP_REQUEST_SUCCESS,
   addTrip,
+  addTripOwn,
 } from "../../services/actions/trips";
 import Loader from "../loader/loader";
 import SelectCustom from "../select-custom/select-custom";
@@ -40,9 +42,12 @@ export default function FormForNewTrip() {
   // console.log("location в форме");
   // console.log(location);
 
-  const { addTripRequest, addTripRequestError } = useSelector(
-    (store) => store.trips
-  );
+  const {
+    addTripRequest,
+    addTripRequestError,
+    addTripOwnRequest,
+    addTripOwnRequestError,
+  } = useSelector((store) => store.trips);
 
   function closeForm() {
     dispatch({
@@ -92,8 +97,8 @@ export default function FormForNewTrip() {
     const inputs = formRef.current.elements;
 
     const newTrip = {
-      trip_type: "delegated",
-      is_delegation_active: true,
+      trip_type: location?.state?.isTripDelegated ? "delegated" : "own",
+      is_delegation_active: location?.state?.isTripDelegated,
     };
 
     let date = "";
@@ -188,11 +193,14 @@ export default function FormForNewTrip() {
 
     if (stop) return;
 
-    dispatch(addTrip(newTrip, closeForm));
+    location?.state?.isTripDelegated
+      ? dispatch(addTripDelegated(newTrip, closeForm))
+      : dispatch(addTripOwn(newTrip, closeForm));
   }
 
   function resetError() {
     dispatch({ type: ADD_TRIP_REQUEST_SUCCESS });
+    dispatch({ type: ADD_TRIP_OWN_REQUEST_SUCCESS });
   }
 
   useEffect(() => {
@@ -218,8 +226,10 @@ export default function FormForNewTrip() {
 
   return (
     <>
-      {addTripRequest && <Loader>Создаём новую поездку...</Loader>}
-      {addTripRequestError ? (
+      {(addTripRequest || addTripOwnRequest) && (
+        <Loader>Создаём новую поездку...</Loader>
+      )}
+      {addTripRequestError || addTripOwnRequestError ? (
         <>
           <div>Ошибка создания новой поездки!</div>
           <Link to="/" onClick={resetError}>

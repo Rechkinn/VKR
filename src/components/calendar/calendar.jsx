@@ -10,6 +10,7 @@ import Trip from "../trip/trip";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../loader/loader";
 import { getTripsForCalendar } from "../../services/actions/trips";
+import { useNavigate } from "react-router";
 
 export default function Calendar() {
   const [err, setErr] = useState(null);
@@ -202,6 +203,16 @@ export default function Calendar() {
     }
   }
 
+  const navigate = useNavigate();
+  function addOwnTrip() {
+    navigate("/create-new-trip", {
+      state: {
+        toRoute: "/calendar",
+        isTripDelegated: false,
+      },
+    });
+  }
+
   return (
     <>
       {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
@@ -262,7 +273,10 @@ export default function Calendar() {
             <div className={styles.containerTrips}>
               <header className={styles.containerTripsHeader}>
                 <data value={clickedDay}>{clickedDay}</data>
-                <Button className={styles.containerTripsButton}>
+                <Button
+                  className={styles.containerTripsButton}
+                  onClick={addOwnTrip}
+                >
                   <img src={addTripIcon} alt="" />
                   <p>Добавить</p>
                 </Button>

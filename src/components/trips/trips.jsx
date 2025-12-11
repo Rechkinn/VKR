@@ -55,6 +55,7 @@ export default function Trips() {
     navigate("/create-new-trip", {
       state: {
         toRoute: "/trips",
+        isTripDelegated: true,
       },
     });
   }

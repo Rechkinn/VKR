@@ -23,6 +23,11 @@ export const GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR =
 export const GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS =
   "GET_TRIPS_FOR_CALENDAR_REQUEST_SUCCESS";
 
+export const ADD_TRIP_OWN = "ADD_TRIP_OWN";
+export const ADD_TRIP_OWN_REQUEST = "ADD_TRIP_OWN_REQUEST";
+export const ADD_TRIP_OWN_REQUEST_ERROR = "ADD_TRIP_OWN_REQUEST_ERROR";
+export const ADD_TRIP_OWN_REQUEST_SUCCESS = "ADD_TRIP_OWN_REQUEST_SUCCESS";
+
 export function getTrips() {
   return function (dispatch) {
     dispatch({
@@ -52,7 +57,7 @@ export function getTrips() {
   };
 }
 
-export function addTrip(newTrip, closeForm = () => {}) {
+export function addTripDelegated(newTrip, closeForm = () => {}) {
   return function (dispatch) {
     dispatch({
       type: ADD_TRIP_REQUEST,
@@ -81,6 +86,40 @@ export function addTrip(newTrip, closeForm = () => {}) {
       .catch(() => {
         dispatch({
           type: ADD_TRIP_REQUEST_ERROR,
+        });
+      });
+  };
+}
+
+export function addTripOwn(newTrip, closeForm = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: ADD_TRIP_OWN_REQUEST,
+    });
+
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify(newTrip),
+    };
+
+    doRequest("/trips", option)
+      .then((trip) => {
+        dispatch({
+          type: ADD_TRIP_OWN,
+          newTrip: trip,
+        });
+        dispatch({
+          type: ADD_TRIP_OWN_REQUEST_SUCCESS,
+        });
+        closeForm();
+      })
+      .catch(() => {
+        dispatch({
+          type: ADD_TRIP_OWN_REQUEST_ERROR,
         });
       });
   };

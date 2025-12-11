@@ -1,6 +1,10 @@
 import { ACTIVE_TAB } from "../../utils/consts";
 import {
   ADD_TRIP,
+  ADD_TRIP_OWN,
+  ADD_TRIP_OWN_REQUEST,
+  ADD_TRIP_OWN_REQUEST_ERROR,
+  ADD_TRIP_OWN_REQUEST_SUCCESS,
   ADD_TRIP_REQUEST,
   ADD_TRIP_REQUEST_ERROR,
   ADD_TRIP_REQUEST_SUCCESS,
@@ -922,10 +926,37 @@ const initialState = {
   tripsForCalendar: null,
   getTripsForCalendarRequest: false,
   getTripsForCalendarRequestError: false,
+
+  addTripOwnRequest: false,
+  addTripOwnRequestError: false,
 };
 
 export const tripsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ADD_TRIP_OWN_REQUEST:
+      return {
+        ...state,
+        addTripOwnRequest: true,
+        addTripOwnRequestError: false,
+      };
+    case ADD_TRIP_OWN_REQUEST_ERROR:
+      return {
+        ...state,
+        addTripOwnRequest: false,
+        addTripOwnRequestError: true,
+      };
+    case ADD_TRIP_OWN_REQUEST_SUCCESS:
+      return {
+        ...state,
+        addTripOwnRequest: false,
+        addTripOwnRequestError: false,
+      };
+    case ADD_TRIP_OWN:
+      return {
+        ...state,
+        tripsForCalendar: [...state.tripsForCalendar, action.newTrip],
+      };
+
     case GET_TRIPS_FOR_CALENDAR_REQUEST:
       return {
         ...state,
