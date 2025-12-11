@@ -146,14 +146,14 @@ const TelegramAuth = () => {
         </>
       )}
 
-      {/* {!userTelegramInfoRequest &&
-        !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App />} */}
       {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        infoFromTelegram?.telegram_id && <App />}
+      {/* {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && (
           <div style={{ color: "red" }}>Логи: {customLog}</div>
-        )}
+        )} */}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
