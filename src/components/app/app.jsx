@@ -13,7 +13,7 @@ import { PROFILE } from "../../utils/consts";
 import { getTrips } from "../../services/actions/trips";
 import FormCar from "../form-car/form-car";
 
-export default function App({ customLog }) {
+export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
 
   return (
@@ -21,7 +21,7 @@ export default function App({ customLog }) {
       {sunVisibility && <div className={styles.backgroundYellowCircle}></div>}
       <main>
         <Routes>
-          <Route path="/" element={<ProfileInfo customLog={customLog} />} />
+          <Route path="/" element={<ProfileInfo />} />
           <Route path="/profile/change" element={<ChangeProfileInfo />} />
 
           <Route path="/car/new" element={<FormCar />} />

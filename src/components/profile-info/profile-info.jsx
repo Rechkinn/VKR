@@ -10,7 +10,7 @@ import Car from "../car/car";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import Button from "../button/button";
 
-export default function ProfileInfo({ customLog }) {
+export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
 
   const [activeSubscription, setActiveSubscription] = useState(false);
@@ -176,7 +176,7 @@ export default function ProfileInfo({ customLog }) {
               <Balance balanceValue={infoFromTelegram.balance} />
             </div> */}
           </header>
-          <h1>Логи: {customLog}</h1>
+
           <div className={styles.content}>
             <ProfilePhoto needButtonToEdit={true} size={166} />
 
