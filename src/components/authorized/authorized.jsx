@@ -79,7 +79,7 @@ const TelegramAuth = () => {
         // Пытаемся явно запросить полноэкранный режим (новые версии API)
 
         if (webApp.requestFullscreen) webApp.requestFullscreen();
-
+        setWebApp(webApp);
         // expand может не сработать в некоторых контекстах, но попытка безопасна
         // if (typeof tgWebApp.expand === "function") tgWebApp.expand();
       } catch (e) {
@@ -91,7 +91,6 @@ const TelegramAuth = () => {
         });
       }
       // const tgWebApp = window.Telegram.WebApp;
-      setWebApp(webApp);
     } else {
       dispatch({
         type: USER_TELEGRAM_INFO_REQUEST_ERROR,
