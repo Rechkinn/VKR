@@ -221,92 +221,92 @@ export default function Calendar() {
 
   return (
     <>
-      {/* {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
+      {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
       {!getTripsForCalendarRequest && getTripsForCalendarRequestError && (
         <div>Ошибка загрузки поездок в календаре!</div>
-      )} */}
-      {/* {!getTripsForCalendarRequest &&
-        !getTripsForCalendarRequestError &&
-        tripsForCalendar && ( */}
-      {true && (
-        <section
-          ref={sectionRef}
-          style={styleSection}
-          className={styles.section}
-        >
-          <header className={styles.header}>
-            <h1 className={styles.title}>Календарь</h1>
-          </header>
-          <article className={styles.calendar}>
-            <header className={styles.calendarHeader}>
-              <Button onClick={() => changeMonth(-1)}>
-                <img src={arrowLeftIcon} alt="" />
-              </Button>
-              <h2 className={styles.calendarTitle}>
-                {getNameMonth()} {date.getFullYear()}
-              </h2>
-              <Button onClick={() => changeMonth(1)}>
-                <img src={arrowRightIcon} alt="" />
-              </Button>
-            </header>
-            <div className={styles.daysOfWeek}>
-              {daysOfWeek.map((dayOfWeek) => {
-                return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
-              })}
-            </div>
-            <div className={styles.days}>
-              {[0, 1, 2, 3, 4, 5].map((line) => {
-                return (
-                  <div key={line} className={styles.daysLine}>
-                    {getArrayForRender(date)
-                      .slice(line * 7, (line + 1) * 7)
-                      .map((day) => {
-                        return (
-                          <CalendarDay
-                            key={`${day.value}.${day.month}.${day.year}`}
-                            onClick={() =>
-                              setClickedDay(
-                                `${day.value}.${day.month}.${day.year}`
-                              )
-                            }
-                            clickedDay={clickedDay}
-                            day={day}
-                          />
-                        );
-                      })}
-                  </div>
-                );
-              })}
-            </div>
-          </article>
-
-          <div ref={tripsContainerRef} className={styles.containerTrips}>
-            <header className={styles.containerTripsHeader}>
-              <data value={clickedDay}>{clickedDay}</data>
-              <Button className={styles.containerTripsButton}>
-                <img src={addTripIcon} alt="" />
-                <p>Добавить</p>
-              </Button>
-            </header>
-            <div className={styles.trips}>
-              {tripsForCalendar.map((trip) => {
-                const date1 = new Date(
-                  clickedDay.split(".").reverse().join("-")
-                );
-                const date2 = new Date(trip.departure_datetime.split("T")[0]);
-
-                if (
-                  date1.getFullYear() === date2.getFullYear() &&
-                  date1.getMonth() === date2.getMonth() &&
-                  date1.getDate() === date2.getDate()
-                ) {
-                  return <Trip key={trip.id} trip={trip} />;
-                }
-              })}
-            </div>
-          </div>
-        </section>
       )}
+      {/* {true && ( */}
+      {!getTripsForCalendarRequest &&
+        !getTripsForCalendarRequestError &&
+        tripsForCalendar && (
+          <section
+            ref={sectionRef}
+            style={styleSection}
+            className={styles.section}
+          >
+            <header className={styles.header}>
+              <h1 className={styles.title}>Календарь</h1>
+            </header>
+            <article className={styles.calendar}>
+              <header className={styles.calendarHeader}>
+                <Button onClick={() => changeMonth(-1)}>
+                  <img src={arrowLeftIcon} alt="" />
+                </Button>
+                <h2 className={styles.calendarTitle}>
+                  {getNameMonth()} {date.getFullYear()}
+                </h2>
+                <Button onClick={() => changeMonth(1)}>
+                  <img src={arrowRightIcon} alt="" />
+                </Button>
+              </header>
+              <div className={styles.daysOfWeek}>
+                {daysOfWeek.map((dayOfWeek) => {
+                  return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
+                })}
+              </div>
+              <div className={styles.days}>
+                {[0, 1, 2, 3, 4, 5].map((line) => {
+                  return (
+                    <div key={line} className={styles.daysLine}>
+                      {getArrayForRender(date)
+                        .slice(line * 7, (line + 1) * 7)
+                        .map((day) => {
+                          return (
+                            <CalendarDay
+                              key={`${day.value}.${day.month}.${day.year}`}
+                              onClick={() =>
+                                setClickedDay(
+                                  `${day.value}.${day.month}.${day.year}`
+                                )
+                              }
+                              clickedDay={clickedDay}
+                              day={day}
+                            />
+                          );
+                        })}
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
+
+            <div ref={tripsContainerRef} className={styles.containerTrips}>
+              <header className={styles.containerTripsHeader}>
+                <data value={clickedDay}>{clickedDay}</data>
+                <Button className={styles.containerTripsButton}>
+                  <img src={addTripIcon} alt="" />
+                  <p>Добавить</p>
+                </Button>
+              </header>
+              <div className={styles.trips}>
+                {tripsForCalendar.map((trip) => {
+                  const date1 = new Date(
+                    clickedDay.split(".").reverse().join("-")
+                  );
+                  const date2 = new Date(trip.departure_datetime.split("T")[0]);
+
+                  if (
+                    date1.getFullYear() === date2.getFullYear() &&
+                    date1.getMonth() === date2.getMonth() &&
+                    date1.getDate() === date2.getDate()
+                  ) {
+                    return <Trip key={trip.id} trip={trip} />;
+                  }
+                })}
+              </div>
+            </div>
+          </section>
+        )}
     </>
   );
 }
