@@ -23,7 +23,7 @@ export default function Calendar() {
     `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
   );
 
-  const [styleTripsContainer, setStyleTripsContainer] = useState(null);
+  const [styleSection, setStyleSection] = useState(null);
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
 
@@ -40,15 +40,11 @@ export default function Calendar() {
     if (!section) return;
     if (!tripsContainer) return;
 
-    const sectionBorders = section.getBoundingClientRect();
-    const tripsContainerBorders = tripsContainer.getBoundingClientRect();
-
-    const maxHeight = sectionBorders.bottom - tripsContainerBorders.top - 35;
-
-    setStyleTripsContainer({
-      maxHeight: maxHeight,
-    });
-  }, []);
+    let padding = 0;
+    if (tripsContainer.scrollHeight > 300) padding = 800;
+    else if (tripsContainer.scrollHeight > 150) padding = 690;
+    setStyleSection({ paddingBottom: `${padding}px` });
+  }, [clickedDay]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -223,128 +219,94 @@ export default function Calendar() {
     }
   }
 
-  // const [trips, setTrips] = useState([]);
-
-  // useEffect(() => {
-  //   if (!tripsForCalendar) return;
-  //   setTrips([
-  //     ...tripsForCalendar.filter((trip) => {
-  //       const date1 = new Date(clickedDay.split(".").reverse().join("-"));
-  //       const date2 = new Date(trip.departure_datetime.split("T"[0]));
-
-  //       if (
-  //         date1.getFullYear() === date2.getFullYear() &&
-  //         date1.getMonth() === date2.getMonth() &&
-  //         date1.getDate() === date2.getDate()
-  //       ) {
-  //         return trip;
-  //       }
-  //     }),
-  //   ]);
-  // }, [clickedDay, tripsForCalendar]);
-
   return (
     <>
-      {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
+      {/* {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
       {!getTripsForCalendarRequest && getTripsForCalendarRequestError && (
         <div>Ошибка загрузки поездок в календаре!</div>
-      )}
-      {/* {true && ( */}
-      {!getTripsForCalendarRequest &&
+      )} */}
+      {/* {!getTripsForCalendarRequest &&
         !getTripsForCalendarRequestError &&
-        tripsForCalendar && (
-          <section ref={sectionRef} className={styles.section}>
-            <header className={styles.header}>
-              <h1 className={styles.title}>Календарь</h1>
+        tripsForCalendar && ( */}
+      {true && (
+        <section
+          ref={sectionRef}
+          style={styleSection}
+          className={styles.section}
+        >
+          <header className={styles.header}>
+            <h1 className={styles.title}>Календарь</h1>
+          </header>
+          <article className={styles.calendar}>
+            <header className={styles.calendarHeader}>
+              <Button onClick={() => changeMonth(-1)}>
+                <img src={arrowLeftIcon} alt="" />
+              </Button>
+              <h2 className={styles.calendarTitle}>
+                {getNameMonth()} {date.getFullYear()}
+              </h2>
+              <Button onClick={() => changeMonth(1)}>
+                <img src={arrowRightIcon} alt="" />
+              </Button>
             </header>
-            <article className={styles.calendar}>
-              <header className={styles.calendarHeader}>
-                <Button onClick={() => changeMonth(-1)}>
-                  {/* <Button> */}
-                  <img src={arrowLeftIcon} alt="" />
-                </Button>
-                <h2 className={styles.calendarTitle}>
-                  {getNameMonth()} {date.getFullYear()}
-                </h2>
-                <Button onClick={() => changeMonth(1)}>
-                  {/* <Button> */}
-                  <img src={arrowRightIcon} alt="" />
-                </Button>
-              </header>
-              <div className={styles.daysOfWeek}>
-                {daysOfWeek.map((dayOfWeek) => {
-                  return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
-                })}
-              </div>
-              <div className={styles.days}>
-                {[0, 1, 2, 3, 4, 5].map((line) => {
-                  return (
-                    <div key={line} className={styles.daysLine}>
-                      {getArrayForRender(date)
-                        .slice(line * 7, (line + 1) * 7)
-                        .map((day) => {
-                          return (
-                            <CalendarDay
-                              key={`${day.value}.${day.month}.${day.year}`}
-                              onClick={() =>
-                                setClickedDay(
-                                  `${day.value}.${day.month}.${day.year}`
-                                )
-                              }
-                              clickedDay={clickedDay}
-                              day={day}
-                            />
-                          );
-                        })}
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-
-            {/* <div style={{ color: "green" }}>{`${JSON.stringify(
-              tripsForCalendar
-            )}`}</div> */}
-            {/* <div style={{ color: "red" }}>{`${JSON.stringify(trips)}`}</div> */}
-            {/* <div style={{ color: "red" }}>{`${clickedDay}`}</div> */}
-
-            <div
-              ref={tripsContainerRef}
-              className={styles.containerTrips}
-              style={styleTripsContainer}
-            >
-              <header className={styles.containerTripsHeader}>
-                <data value={clickedDay}>{clickedDay}</data>
-                <Button className={styles.containerTripsButton}>
-                  <img src={addTripIcon} alt="" />
-                  <p>Добавить</p>
-                </Button>
-              </header>
-              <div className={styles.trips}>
-                {tripsForCalendar.map((trip) => {
-                  const date1 = new Date(
-                    clickedDay.split(".").reverse().join("-")
-                  );
-                  const date2 = new Date(trip.departure_datetime.split("T")[0]);
-
-                  if (
-                    date1.getFullYear() === date2.getFullYear() &&
-                    date1.getMonth() === date2.getMonth() &&
-                    date1.getDate() === date2.getDate()
-                  ) {
-                    return <Trip key={trip.id} trip={trip} />;
-                  }
-                })}
-
-                {/* {tripsForCalendar.map((trip) => {
-                  return <Trip key={trip.id} trip={trip} />;
-                })} */}
-              </div>
+            <div className={styles.daysOfWeek}>
+              {daysOfWeek.map((dayOfWeek) => {
+                return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
+              })}
             </div>
+            <div className={styles.days}>
+              {[0, 1, 2, 3, 4, 5].map((line) => {
+                return (
+                  <div key={line} className={styles.daysLine}>
+                    {getArrayForRender(date)
+                      .slice(line * 7, (line + 1) * 7)
+                      .map((day) => {
+                        return (
+                          <CalendarDay
+                            key={`${day.value}.${day.month}.${day.year}`}
+                            onClick={() =>
+                              setClickedDay(
+                                `${day.value}.${day.month}.${day.year}`
+                              )
+                            }
+                            clickedDay={clickedDay}
+                            day={day}
+                          />
+                        );
+                      })}
+                  </div>
+                );
+              })}
+            </div>
+          </article>
 
-            {/* {err && <div>{err}</div>} */}
-          </section>
-        )}
+          <div ref={tripsContainerRef} className={styles.containerTrips}>
+            <header className={styles.containerTripsHeader}>
+              <data value={clickedDay}>{clickedDay}</data>
+              <Button className={styles.containerTripsButton}>
+                <img src={addTripIcon} alt="" />
+                <p>Добавить</p>
+              </Button>
+            </header>
+            <div className={styles.trips}>
+              {tripsForCalendar.map((trip) => {
+                const date1 = new Date(
+                  clickedDay.split(".").reverse().join("-")
+                );
+                const date2 = new Date(trip.departure_datetime.split("T")[0]);
+
+                if (
+                  date1.getFullYear() === date2.getFullYear() &&
+                  date1.getMonth() === date2.getMonth() &&
+                  date1.getDate() === date2.getDate()
+                ) {
+                  return <Trip key={trip.id} trip={trip} />;
+                }
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }
