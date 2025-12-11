@@ -55,7 +55,7 @@ const TelegramAuth = () => {
     if (window.Telegram?.WebApp) {
       // const tgWebApp = window.Telegram.WebApp;
       // setWebApp(tgWebApp);
-      const log = "";
+      let log = "";
       try {
         window.Telegram.WebApp.ready();
         console.log("прошло window.Telegram.WebApp.ready();");
@@ -128,9 +128,14 @@ const TelegramAuth = () => {
         <p style={{ color: "red" }}>Ошибка аутентификации!</p>
       )}
 
+      {/* {!userTelegramInfoRequest &&
+        !userTelegramInfoRequestError &&
+        infoFromTelegram?.telegram_id && <App />} */}
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App customLog={customLog} />}
+        infoFromTelegram?.telegram_id && (
+          <div style={{ color: "red" }}>Логи: {customLog}</div>
+        )}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
