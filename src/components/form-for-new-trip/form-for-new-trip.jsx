@@ -14,7 +14,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import {
   ADD_TRIP_OWN_REQUEST_SUCCESS,
   ADD_TRIP_REQUEST_SUCCESS,
-  addTrip,
+  addTripDelegated,
   addTripOwn,
 } from "../../services/actions/trips";
 import Loader from "../loader/loader";
