@@ -16,6 +16,7 @@ import {
   ADD_TRIP_REQUEST_SUCCESS,
   addTripDelegated,
   addTripOwn,
+  UPDATE_TRIP_REQUEST_RESET,
   updateTrip,
 } from "../../services/actions/trips";
 import Loader from "../loader/loader";
@@ -209,24 +210,7 @@ export default function FormForNewTrip() {
   }
 
   useEffect(() => {
-    // const url =
-    //   "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
-    // const token = "b537cba152892a63e9e083bcd4ccf47b1b5e3fc9";
-    // let query = "томск улица богдана хмельницкого д 39";
-    // const options = {
-    //   method: "POST",
-    //   mode: "cors",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Accept: "application/json",
-    //     Authorization: "Token " + token,
-    //   },
-    //   body: JSON.stringify({ query: query }),
-    // };
-    // fetch(url, options)
-    //   .then((response) => response.json())
-    //   .then((result) => console.log(result?.suggestions))
-    //   .catch((error) => console.log("error", error));
+    dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
   }, []);
 
   return (

@@ -23,6 +23,7 @@ import {
   UPDATE_TRIP_REQUEST,
   UPDATE_TRIP_REQUEST_ERROR,
   UPDATE_TRIP_REQUEST_SUCCESS,
+  UPDATE_TRIP_REQUEST_RESET,
   CHANGE_TRIP_TYPE_REQUEST_ERROR,
   CHANGE_TRIP_TYPE_REQUEST,
   CHANGE_TRIP_TYPE_REQUEST_SUCCESS,
@@ -991,6 +992,12 @@ export const tripsReducer = (state = initialState, action) => {
             else return trip;
           }),
         ],
+        updateTripRequest: false,
+        updateTripRequestError: false,
+      };
+    case UPDATE_TRIP_REQUEST_RESET:
+      return {
+        ...state,
         updateTripRequest: false,
         updateTripRequestError: false,
       };
