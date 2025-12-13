@@ -17,6 +17,7 @@ import {
   REMOVE_TRIP_REQUEST,
   REMOVE_TRIP_REQUEST_ERROR,
   REMOVE_TRIP_REQUEST_SUCCESS,
+  REMOVE_TRIP_REQUEST_RESET,
   SET_CURRENT_TAB,
   SET_TRIP_FOR_SETTINGS,
 } from "../actions/trips";
@@ -856,8 +857,8 @@ const initialState = {
   //   },
   //   {
   //     id: 6,
-  //     creator_id: 0,
-  //     driver_id: 0,
+  //     creator_id: 7,
+  //     driver_id: 6,
   //     vehicle_id: 0,
   //     from_address: "string",
   //     to_address: "string",
@@ -1000,6 +1001,12 @@ export const tripsReducer = (state = initialState, action) => {
             }
           }),
         ],
+        removeTripRequest: false,
+        removeTripRequestError: false,
+      };
+    case REMOVE_TRIP_REQUEST_RESET:
+      return {
+        ...state,
         removeTripRequest: false,
         removeTripRequestError: false,
       };
