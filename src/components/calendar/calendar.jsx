@@ -235,7 +235,7 @@ export default function Calendar() {
 
   function tryRemoveTrip(e) {
     e.stopPropagation();
-    dispatch(removeTrip(tripForSettings.id, closeSettingsTrip));
+    dispatch(removeTrip(tripForSettings.id, () => closeSettingsTrip()));
   }
 
   function addOwnTrip() {
@@ -270,7 +270,7 @@ export default function Calendar() {
   }
 
   function publishToChannel(trip) {
-    dispatch(changeTripType(trip.id, closeSettingsTrip));
+    dispatch(changeTripType(trip.id, () => closeSettingsTrip()));
   }
 
   return (
