@@ -964,12 +964,18 @@ export const tripsReducer = (state = initialState, action) => {
         ...state,
         changeTripTypeRequest: false,
         changeTripTypeRequestError: false,
-        tripsForCalendar: state.tripsForCalendar.filter(
-          (trip) => trip.id !== action.updatingTrip.id
-        ),
-        trips: state.trips.map((trip) =>
-          trip.id === action.updatingTrip.id ? action.updatingTrip : trip
-        ),
+        tripsForCalendar: [
+          ...state.tripsForCalendar.map((trip) => {
+            if (trip.id !== action.updatingTrip.id) return trip;
+          }),
+        ],
+        trips: [
+          ...state.trips.map((trip) => {
+            return trip.id === action.updatingTrip.id
+              ? action.updatingTrip
+              : trip;
+          }),
+        ],
       };
     case UPDATE_TRIP_REQUEST:
       return {
