@@ -22,7 +22,7 @@ import {
 //     is_verified: true,
 //     language_code: "ru",
 //     last_name: "Редькин",
-//     phone_number: "89138178218",
+//     phone_number: "+7 (222) 222-22-22",
 //     photo_url:
 //       "https://t.me/i/userpic/320/JtGPbJBctx4LLq_nm2R9calFGN2KxnnIKkyKLZQyodE.svg",
 //     rating_avg: 4.9,
