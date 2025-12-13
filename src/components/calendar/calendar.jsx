@@ -264,7 +264,9 @@ export default function Calendar() {
   }
 
   function openDetailsTrip(trip) {
-    navigate("/create-new-trip", { state: { detailsTrip: trip } });
+    navigate("/create-new-trip", {
+      state: { detailsTrip: trip, toRoute: "/calendar" },
+    });
   }
 
   function publishToChannel(trip) {
