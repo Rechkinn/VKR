@@ -986,14 +986,14 @@ export const tripsReducer = (state = initialState, action) => {
     case UPDATE_TRIP_REQUEST_SUCCESS:
       return {
         ...state,
+        updateTripRequest: false,
+        updateTripRequestError: false,
         tripsForCalendar: [
           ...state.tripsForCalendar.filter((trip) => {
             if (trip.id === action.updatingTrip.id) return action.updatingTrip;
             else return trip;
           }),
         ],
-        updateTripRequest: false,
-        updateTripRequestError: false,
       };
     case UPDATE_TRIP_REQUEST_RESET:
       return {
