@@ -10,6 +10,7 @@ import Trip from "../trip/trip";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../loader/loader";
 import {
+  changeTripType,
   getTripsForCalendar,
   REMOVE_TRIP_REQUEST_RESET,
   removeTrip,
@@ -41,6 +42,8 @@ export default function Calendar() {
     tripForSettings,
     removeTripRequest,
     removeTripRequestError,
+    changeTripTypeRequest,
+    changeTripTypeRequestError,
   } = useSelector((store) => store.trips);
 
   useEffect(() => {
@@ -244,11 +247,28 @@ export default function Calendar() {
     });
   }
 
-  function setDisabledButton() {
-    const result =
-      tripForSettings.creator_id === tripForSettings.driver_id &&
-      tripForSettings.trip_type.toLowerCase() === "own";
-    return !result;
+  function setDisabledButton(trip, checkDate = false) {
+    let result =
+      trip.creator_id === trip.driver_id &&
+      trip.trip_type.toLowerCase() === "own";
+    result = !result;
+    if (checkDate) {
+      const currentDate = new Date();
+      const tripDate = new Date(trip.departure_datetime);
+
+      if (tripDate.getTime() < currentDate.getTime()) {
+        result = !result;
+      }
+    }
+    return result;
+  }
+
+  function openDetailsTrip(trip) {
+    navigate("/create-new-trip", { state: { detailsTrip: trip } });
+  }
+
+  function publishToChannel(trip) {
+    dispatch(changeTripType(trip.id), closeSettingsTrip);
   }
 
   return (
@@ -272,11 +292,20 @@ export default function Calendar() {
                     Ошибка удаления поездки!
                   </p>
                 )}
+                {changeTripTypeRequest && (
+                  <Loader>Пробуем опубликовать поездку...</Loader>
+                )}
+                {!changeTripTypeRequest && changeTripTypeRequestError && (
+                  <p style={{ color: "red", textAlign: "center" }}>
+                    Ошибка публикации поездки!
+                  </p>
+                )}
 
                 <Button
                   className={`modal modalUpper ${styles.buttonRemoveTrip}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    openDetailsTrip(tripForSettings);
                   }}
                 >
                   Подробнее
@@ -285,8 +314,9 @@ export default function Calendar() {
                   className={`modal modalMiddle ${styles.buttonRemoveTrip}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    publishToChannel(tripForSettings);
                   }}
-                  disabled={setDisabledButton()}
+                  disabled={setDisabledButton(tripForSettings, true)}
                 >
                   Опубликовать в канал
                 </Button>
@@ -295,7 +325,7 @@ export default function Calendar() {
                   onClick={(e) => {
                     tryRemoveTrip(e);
                   }}
-                  disabled={setDisabledButton()}
+                  disabled={setDisabledButton(tripForSettings)}
                 >
                   Удалить
                 </Button>
