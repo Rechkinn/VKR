@@ -260,28 +260,6 @@ export default function FormForNewTrip() {
                 <img src={closeIcon} alt="Иконка закрытия формы" />
               </Button>
 
-              {/* <div className={styles.containerForTwoInputs}>
-                <div className={styles.container40}>
-                  <Input
-                    label="Дата"
-                    iconForLabel={dateIcon}
-                    type="date"
-                    name="date"
-                    required
-                  />
-                </div>
-                <div className={styles.container60}>
-                  <Input
-                    label="Время"
-                    iconForLabel={watchIcon}
-                    type="time"
-                    name="time"
-                    required
-                  />
-                </div>
-              </div> */}
-
-              {/* <div className={styles.inputDate}> */}
               <Input
                 label="Дата"
                 iconForLabel={dateIcon}
@@ -300,7 +278,6 @@ export default function FormForNewTrip() {
                 className={styles.inputTime}
                 required
               />
-              {/* </div> */}
 
               <Input
                 label="Откуда"
