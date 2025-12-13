@@ -270,7 +270,7 @@ export default function Calendar() {
   }
 
   function publishToChannel(trip) {
-    dispatch(changeTripType(trip.id), closeSettingsTrip);
+    dispatch(changeTripType(trip.id, closeSettingsTrip));
   }
 
   return (
