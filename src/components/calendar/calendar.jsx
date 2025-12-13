@@ -247,7 +247,7 @@ export default function Calendar() {
   function setDisabledButton() {
     return (
       tripForSettings.creator_id === tripForSettings.driver_id &&
-      tripForSettings.trip_type === "own"
+      tripForSettings.trip_type.toLowerCase() === "own"
     );
   }
 
