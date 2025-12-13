@@ -253,141 +253,148 @@ export default function Calendar() {
 
   return (
     <>
-      {/* {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
+      {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
       {!getTripsForCalendarRequest && getTripsForCalendarRequestError && (
         <div>Ошибка загрузки поездок в календаре!</div>
-      )} */}
-      {/* {!getTripsForCalendarRequest &&
-        !getTripsForCalendarRequestError &&
-        tripsForCalendar && ( */}
-      {true && (
-        <>
-          {visibilityModal && (
-            <Settings closeSettings={closeSettingsTrip}>
-              {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
-              {!removeTripRequest && removeTripRequestError && (
-                <p style={{ color: "red", textAlign: "center" }}>
-                  Ошибка удаления поездки!
-                </p>
-              )}
-
-              <Button
-                className={`modal modalUpper ${styles.buttonRemoveTrip}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                Подробнее
-              </Button>
-              <Button
-                className={`modal modalMiddle ${styles.buttonRemoveTrip}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                disabled={setDisabledButton()}
-              >
-                Опубликовать в канал
-              </Button>
-              <Button
-                className={`modal modalLower ${styles.buttonRemoveTrip}`}
-                onClick={(e) => {
-                  tryRemoveTrip(e);
-                }}
-                disabled={setDisabledButton()}
-              >
-                Удалить
-              </Button>
-              <Button className="modal modalSingle" onClick={closeSettingsTrip}>
-                Отмена
-              </Button>
-            </Settings>
-          )}
-
-          <section className={styles.section}>
-            <header className={styles.header}>
-              <h1 className={styles.title}>Календарь</h1>
-            </header>
-            <article className={styles.calendar}>
-              <header className={styles.calendarHeader}>
-                <Button onClick={() => changeMonth(-1)}>
-                  <img src={arrowLeftIcon} alt="" />
-                </Button>
-                <h2 className={styles.calendarTitle}>
-                  {getNameMonth()} {date.getFullYear()}
-                </h2>
-                <Button onClick={() => changeMonth(1)}>
-                  <img src={arrowRightIcon} alt="" />
-                </Button>
-              </header>
-              <div className={styles.daysOfWeek}>
-                {daysOfWeek.map((dayOfWeek) => {
-                  return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
-                })}
-              </div>
-              <div className={styles.days}>
-                {[0, 1, 2, 3, 4, 5].map((line) => {
-                  return (
-                    <div key={line} className={styles.daysLine}>
-                      {getArrayForRender(date)
-                        .slice(line * 7, (line + 1) * 7)
-                        .map((day) => {
-                          return (
-                            <CalendarDay
-                              key={`${day.value}.${day.month}.${day.year}`}
-                              onClick={() =>
-                                setClickedDay(
-                                  `${day.value}.${day.month}.${day.year}`
-                                )
-                              }
-                              clickedDay={clickedDay}
-                              day={day}
-                            />
-                          );
-                        })}
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-
-            <div className={styles.containerTrips}>
-              <header className={styles.containerTripsHeader}>
-                <data value={clickedDay}>{clickedDay}</data>
-                <Button
-                  className={styles.containerTripsButton}
-                  onClick={addOwnTrip}
-                >
-                  <img src={addTripIcon} alt="" />
-                  <p>Добавить</p>
-                </Button>
-              </header>
-              <div className={styles.trips}>
-                {tripsForCalendar.map((trip) => {
-                  const date1 = new Date(
-                    clickedDay.split(".").reverse().join("-")
-                  );
-                  const date2 = new Date(trip.departure_datetime.split("T")[0]);
-
-                  if (
-                    date1.getFullYear() === date2.getFullYear() &&
-                    date1.getMonth() === date2.getMonth() &&
-                    date1.getDate() === date2.getDate()
-                  ) {
-                    return (
-                      <Trip
-                        key={trip.id}
-                        trip={trip}
-                        openSettingsTrip={() => openSettingsTrip(trip)}
-                      />
-                    );
-                  }
-                })}
-              </div>
-            </div>
-            <p style={{ color: "black" }}>-</p>
-          </section>
-        </>
       )}
+      {/* {true && ( */}
+      {!getTripsForCalendarRequest &&
+        !getTripsForCalendarRequestError &&
+        tripsForCalendar && (
+          <>
+            {visibilityModal && (
+              <Settings closeSettings={closeSettingsTrip}>
+                {removeTripRequest && (
+                  <Loader>Пробуем удалить поездку...</Loader>
+                )}
+                {!removeTripRequest && removeTripRequestError && (
+                  <p style={{ color: "red", textAlign: "center" }}>
+                    Ошибка удаления поездки!
+                  </p>
+                )}
+
+                <Button
+                  className={`modal modalUpper ${styles.buttonRemoveTrip}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  Подробнее
+                </Button>
+                <Button
+                  className={`modal modalMiddle ${styles.buttonRemoveTrip}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  disabled={setDisabledButton()}
+                >
+                  Опубликовать в канал
+                </Button>
+                <Button
+                  className={`modal modalLower ${styles.buttonRemoveTrip}`}
+                  onClick={(e) => {
+                    tryRemoveTrip(e);
+                  }}
+                  disabled={setDisabledButton()}
+                >
+                  Удалить
+                </Button>
+                <Button
+                  className="modal modalSingle"
+                  onClick={closeSettingsTrip}
+                >
+                  Отмена
+                </Button>
+              </Settings>
+            )}
+
+            <section className={styles.section}>
+              <header className={styles.header}>
+                <h1 className={styles.title}>Календарь</h1>
+              </header>
+              <article className={styles.calendar}>
+                <header className={styles.calendarHeader}>
+                  <Button onClick={() => changeMonth(-1)}>
+                    <img src={arrowLeftIcon} alt="" />
+                  </Button>
+                  <h2 className={styles.calendarTitle}>
+                    {getNameMonth()} {date.getFullYear()}
+                  </h2>
+                  <Button onClick={() => changeMonth(1)}>
+                    <img src={arrowRightIcon} alt="" />
+                  </Button>
+                </header>
+                <div className={styles.daysOfWeek}>
+                  {daysOfWeek.map((dayOfWeek) => {
+                    return <DayOfWeek key={dayOfWeek}>{dayOfWeek}</DayOfWeek>;
+                  })}
+                </div>
+                <div className={styles.days}>
+                  {[0, 1, 2, 3, 4, 5].map((line) => {
+                    return (
+                      <div key={line} className={styles.daysLine}>
+                        {getArrayForRender(date)
+                          .slice(line * 7, (line + 1) * 7)
+                          .map((day) => {
+                            return (
+                              <CalendarDay
+                                key={`${day.value}.${day.month}.${day.year}`}
+                                onClick={() =>
+                                  setClickedDay(
+                                    `${day.value}.${day.month}.${day.year}`
+                                  )
+                                }
+                                clickedDay={clickedDay}
+                                day={day}
+                              />
+                            );
+                          })}
+                      </div>
+                    );
+                  })}
+                </div>
+              </article>
+
+              <div className={styles.containerTrips}>
+                <header className={styles.containerTripsHeader}>
+                  <data value={clickedDay}>{clickedDay}</data>
+                  <Button
+                    className={styles.containerTripsButton}
+                    onClick={addOwnTrip}
+                  >
+                    <img src={addTripIcon} alt="" />
+                    <p>Добавить</p>
+                  </Button>
+                </header>
+                <div className={styles.trips}>
+                  {tripsForCalendar.map((trip) => {
+                    const date1 = new Date(
+                      clickedDay.split(".").reverse().join("-")
+                    );
+                    const date2 = new Date(
+                      trip.departure_datetime.split("T")[0]
+                    );
+
+                    if (
+                      date1.getFullYear() === date2.getFullYear() &&
+                      date1.getMonth() === date2.getMonth() &&
+                      date1.getDate() === date2.getDate()
+                    ) {
+                      return (
+                        <Trip
+                          key={trip.id}
+                          trip={trip}
+                          openSettingsTrip={() => openSettingsTrip(trip)}
+                        />
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+              <p style={{ color: "black" }}>-</p>
+            </section>
+          </>
+        )}
     </>
   );
 }
