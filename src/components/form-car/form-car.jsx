@@ -38,8 +38,14 @@ const FormCar = ({ isForViewing, isForEditing }) => {
     editCarRequestError,
   } = useSelector((store) => store.car);
   const { id } = useParams();
-
   const navigate = useNavigate();
+
+  const [brandError, setBrandError] = useState(false);
+  const [modelError, setModelError] = useState(false);
+  const [yearError, setYearError] = useState(false);
+  const [colorError, setColorError] = useState(false);
+  const [licensePlateError, setLicensePlateError] = useState(false);
+  const [countCharsTextarea, setCountCharsTextarea] = useState();
 
   useEffect(() => {
     dispatch({
@@ -77,6 +83,28 @@ const FormCar = ({ isForViewing, isForEditing }) => {
     navigate("/");
   }
 
+  function validateBrandOrModel(inputValue) {
+    const regex = /^[A-Za-zА-Яа-яЁё0-9]{2,100}$/;
+    return regex.test(inputValue);
+  }
+  function validateYear(inputValue) {
+    const regex = /^[0-9]{4}$/;
+    if (regex.test(inputValue))
+      return Number(inputValue) > 1930 && Number(inputValue) < 2030;
+    else return false;
+  }
+  function validateColor(inputValue) {
+    const regex = /^[А-Яа-яЁё]{2,50}$/;
+    return regex.test(inputValue);
+  }
+  function validateLicensePlate(inputValue) {
+    const regex = /^[УКЕНХВАРОСМТ]{1}[0-9]{3}[УКЕНХВАРОСМТ]{2}[0-9]{2,3}$/;
+    return regex.test(inputValue);
+  }
+  function validateAdditionalInfo(inputValue) {
+    return inputValue.length <= 500;
+  }
+
   function saveNewData(e) {
     e.preventDefault();
 
@@ -85,14 +113,64 @@ const FormCar = ({ isForViewing, isForEditing }) => {
     if (!formRef.current) return;
 
     const newCar = {};
-
     const inputs = formRef.current.elements;
+    let stop = false;
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "") continue;
       if (inputs[i].name === "year") {
-        newCar[inputs[i].name] = Number(inputs[i].value);
-        continue;
+        if (!validateYear(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setYearError(true);
+        } else {
+          setYearError(false);
+          newCar[inputs[i].name] = Number(inputs[i].value);
+          continue;
+        }
+      }
+      if (inputs[i].name === "model") {
+        if (!validateBrandOrModel(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setModelError(true);
+        } else {
+          setModelError(false);
+        }
+      }
+      if (inputs[i].name === "brand") {
+        if (!validateBrandOrModel(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setBrandError(true);
+        } else {
+          setBrandError(false);
+        }
+      }
+      if (inputs[i].name === "license_plate") {
+        if (!validateLicensePlate(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setLicensePlateError(true);
+        } else {
+          setLicensePlateError(false);
+        }
+      }
+      if (inputs[i].name === "color") {
+        if (!validateColor(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setColorError(true);
+        } else {
+          setColorError(false);
+        }
+      }
+      if (inputs[i].name === "additional_info") {
+        if (!validateAdditionalInfo(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+        }
+        setCountCharsTextarea(inputs[i].value.length);
       }
 
       newCar[inputs[i].name] = inputs[i].value;
@@ -100,6 +178,8 @@ const FormCar = ({ isForViewing, isForEditing }) => {
 
     console.log("newCar");
     console.log(newCar);
+
+    if (stop) return;
 
     if (isForEditing) {
       dispatch(
@@ -144,18 +224,28 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               type="text"
               name="brand"
               initialValue={carForSettings?.brand ?? ""}
-              className={styles.input}
+              classNameContainer={styles.input}
               required
               readOnly={isForViewing}
+              errorText={
+                brandError
+                  ? "Введите корректное значение марки от 2 до 100 символов"
+                  : ""
+              }
             />
             <Input
               label="Модель"
               type="text"
               name="model"
               initialValue={carForSettings?.model ?? ""}
-              className={styles.input}
+              classNameContainer={styles.input}
               required
               readOnly={isForViewing}
+              errorText={
+                modelError
+                  ? "Введите корректное значение модели от 2 до 100 символов"
+                  : ""
+              }
             />
 
             <div className={styles.containerYearAndColor}>
@@ -167,6 +257,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
                 className={styles.inputYear}
                 required
                 readOnly={isForViewing}
+                errorText={yearError ? "Введите год от 1930 до 2030" : ""}
               />
               <Input
                 label="Цвет автомобиля"
@@ -176,6 +267,11 @@ const FormCar = ({ isForViewing, isForEditing }) => {
                 className={styles.inputColor}
                 required
                 readOnly={isForViewing}
+                errorText={
+                  colorError
+                    ? "Введите цвет автомобиля русскими буквами от 2 до 50 символов"
+                    : ""
+                }
               />
             </div>
 
@@ -184,9 +280,14 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               type="text"
               name="license_plate"
               initialValue={carForSettings?.license_plate ?? ""}
-              className={styles.input}
+              classNameContainer={styles.input}
               required
               readOnly={isForViewing}
+              errorText={
+                licensePlateError
+                  ? "Регистрационный номер должен иметь формат А777АА777"
+                  : ""
+              }
             />
 
             <SelectCustom
@@ -212,6 +313,12 @@ const FormCar = ({ isForViewing, isForEditing }) => {
                 readOnly={isForViewing}
                 defaultValue={carForSettings?.additional_info ?? ""}
               ></textarea>
+              {countCharsTextarea > 500 && (
+                <p className={styles.errorText}>
+                  Дополнительная информация не должна превышать 500 символов.
+                  Ваше количество символов: {countCharsTextarea}
+                </p>
+              )}
             </div>
             {!isForViewing && (
               <Button

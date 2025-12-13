@@ -44,3 +44,9 @@
   min-height: 78px;
   resize: none;
 }
+
+.errorText {
+  margin-top: 5px;
+  color: red;
+  font-size: 12px;
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./input.module.css";
 
 export default function Input({
@@ -47,6 +47,7 @@ export default function Input({
 
   const [isOpenContentSelect, setIsOpenContentSelect] = useState(false);
   const [contentSelect, setContentSelect] = useState([]);
+  const inputRef = useRef();
 
   function renderContentSelect(value) {
     if (!isSelect) return;
@@ -83,6 +84,13 @@ export default function Input({
     setValueInput(initialValue);
   }, [initialValue]);
 
+  const [errorStyles, setErrorStyles] = useState({ width: "100%" });
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    setErrorStyles({ width: inputRef.current.clientWidth });
+  }, [inputRef.current]);
+
   return (
     <div className={classNameContainer}>
       <label htmlFor={name} className={styles.label}>
@@ -97,6 +105,7 @@ export default function Input({
       </label>
       <input
         {...props}
+        ref={inputRef}
         id={name}
         name={name}
         value={valueInput}
@@ -148,7 +157,11 @@ export default function Input({
         <></>
       )}
 
-      {errorText && <p className={styles.errorText}>{errorText}</p>}
+      {errorText && (
+        <p style={errorStyles} className={styles.errorText}>
+          {errorText}
+        </p>
+      )}
     </div>
   );
 }
