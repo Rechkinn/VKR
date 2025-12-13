@@ -10,7 +10,6 @@ const SelectCustom = ({
   name,
 }) => {
   const [option, setOption] = useState();
-  console.log("option", option);
 
   useEffect(() => {
     setOption(defaultValue);
