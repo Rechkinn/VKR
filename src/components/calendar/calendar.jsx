@@ -245,10 +245,10 @@ export default function Calendar() {
   }
 
   function setDisabledButton() {
-    return (
+    const result =
       tripForSettings.creator_id === tripForSettings.driver_id &&
-      tripForSettings.trip_type.toLowerCase() === "own"
-    );
+      tripForSettings.trip_type.toLowerCase() === "own";
+    return !result;
   }
 
   return (
