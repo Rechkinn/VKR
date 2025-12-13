@@ -163,6 +163,8 @@ export function removeTrip(tripId, closeSettings = () => {}) {
         closeSettings();
       })
       .catch((error) => {
+        console.log("removeTrip error");
+        console.log(error);
         dispatch({
           type: REMOVE_TRIP_REQUEST_ERROR,
         });
@@ -250,13 +252,17 @@ export function changeTripType(tripId, closeSettingsTrip = () => {}) {
 
     doRequest(`/trips/${tripId}`, option)
       .then((updatingTrip) => {
+        console.log("changeTripType updatingTrip");
+        console.log(updatingTrip);
         dispatch({
           type: CHANGE_TRIP_TYPE_REQUEST_SUCCESS,
           updatingTrip: updatingTrip,
         });
         closeSettingsTrip();
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log("changeTripType error");
+        console.log(error);
         dispatch({
           type: CHANGE_TRIP_TYPE_REQUEST_ERROR,
         });
