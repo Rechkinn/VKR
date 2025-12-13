@@ -104,6 +104,8 @@ const TelegramAuth = () => {
       }
     }
     dispatch(getCars());
+    dispatch(getTrips());
+    dispatch(getTripsForCalendar());
   }, [webApp, dispatch]);
 
   function defaultAuthentication(initData) {
