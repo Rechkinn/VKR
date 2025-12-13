@@ -5,7 +5,7 @@ import arrowRightIcon from "../../image/calendar/arrow-for-calendar-right.svg";
 import addTripIcon from "../../image/calendar/add-trip.svg";
 import DayOfWeek from "../day-of-week/day-of-week";
 import CalendarDay from "../calendar-day/calendar-day";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Trip from "../trip/trip";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../loader/loader";
@@ -235,7 +235,7 @@ export default function Calendar() {
 
   function tryRemoveTrip(e) {
     e.stopPropagation();
-    dispatch(removeTrip(tripForSettings.id, () => closeSettingsTrip()));
+    dispatch(removeTrip(tripForSettings.id, closeSettingsTrip));
   }
 
   function addOwnTrip() {
@@ -270,7 +270,7 @@ export default function Calendar() {
   }
 
   function publishToChannel(trip) {
-    dispatch(changeTripType(trip.id, () => closeSettingsTrip()));
+    dispatch(changeTripType(trip.id, closeSettingsTrip));
   }
 
   return (

@@ -250,8 +250,6 @@ export function changeTripType(tripId, closeSettingsTrip = () => {}) {
 
     doRequest(`/trips/${tripId}`, option)
       .then((updatingTrip) => {
-        console.log("changeTripType updatingTrip");
-        console.log(updatingTrip);
         dispatch({
           type: CHANGE_TRIP_TYPE_REQUEST_SUCCESS,
           updatingTrip: updatingTrip,
