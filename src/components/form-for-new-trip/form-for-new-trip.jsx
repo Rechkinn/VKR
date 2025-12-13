@@ -16,6 +16,7 @@ import {
   ADD_TRIP_REQUEST_SUCCESS,
   addTripDelegated,
   addTripOwn,
+  updateTrip,
 } from "../../services/actions/trips";
 import Loader from "../loader/loader";
 import SelectCustom from "../select-custom/select-custom";
@@ -39,14 +40,18 @@ export default function FormForNewTrip() {
   const formRef = useRef();
 
   const location = useLocation();
-  // console.log("location в форме");
-  // console.log(location);
+
+  const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
+  console.log("tripForViewing");
+  console.log(tripForViewing);
 
   const {
     addTripRequest,
     addTripRequestError,
     addTripOwnRequest,
     addTripOwnRequestError,
+    updateTripRequest,
+    updateTripRequestError,
   } = useSelector((store) => store.trips);
 
   function closeForm() {
@@ -76,10 +81,6 @@ export default function FormForNewTrip() {
 
     const year = inputValue.split("-")[0];
     const currentDate = new Date();
-    // console.log(
-    //   "year.length === 4 && Number(year) >= currentDate.getFullYear()",
-    //   year.length === 4 && Number(year) >= currentDate.getFullYear()
-    // );
     return year.length === 4 && Number(year) >= currentDate.getFullYear();
   }
 
@@ -90,7 +91,7 @@ export default function FormForNewTrip() {
     return true;
   }
 
-  function createNewTrip(e) {
+  function actionWithTrip(e) {
     e.preventDefault();
 
     if (!formRef.current) return;
@@ -193,9 +194,13 @@ export default function FormForNewTrip() {
 
     if (stop) return;
 
-    location?.state?.isTripDelegated
-      ? dispatch(addTripDelegated(newTrip, closeForm))
-      : dispatch(addTripOwn(newTrip, closeForm));
+    if (tripForViewing) {
+      dispatch(updateTrip(newTrip, closeForm));
+    } else {
+      location?.state?.isTripDelegated
+        ? dispatch(addTripDelegated(newTrip, closeForm))
+        : dispatch(addTripOwn(newTrip, closeForm));
+    }
   }
 
   function resetError() {
@@ -226,12 +231,14 @@ export default function FormForNewTrip() {
 
   return (
     <>
-      {(addTripRequest || addTripOwnRequest) && (
+      {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
         <Loader>Создаём новую поездку...</Loader>
       )}
-      {addTripRequestError || addTripOwnRequestError ? (
+      {addTripRequestError ||
+      addTripOwnRequestError ||
+      updateTripRequestError ? (
         <>
-          <div>Ошибка создания новой поездки!</div>
+          <div>Ошибка обработки поездки!</div>
           <Link to="/" onClick={resetError}>
             Вернуться в профиль
           </Link>
@@ -239,7 +246,11 @@ export default function FormForNewTrip() {
       ) : (
         <>
           <header className={styles.header}>
-            <h1 className={styles.title}>Новая поездка</h1>
+            <h1 className={styles.title}>
+              {tripForViewing
+                ? `Поездка #${tripForViewing.id}`
+                : "Новая поездка"}
+            </h1>
           </header>
 
           <div className={styles.containerCreateTrip}>
@@ -247,7 +258,7 @@ export default function FormForNewTrip() {
               action=""
               ref={formRef}
               className={styles.form}
-              onSubmit={(e) => createNewTrip(e)}
+              onSubmit={(e) => actionWithTrip(e)}
             >
               <Button
                 type="button"
@@ -268,6 +279,9 @@ export default function FormForNewTrip() {
                 className={styles.inputDate}
                 errorText={dateError ? "Введите корректную дату" : ""}
                 required
+                initialValue={
+                  tripForViewing?.departure_datetime.split("T")[0] ?? ""
+                }
               />
 
               <Input
@@ -277,6 +291,11 @@ export default function FormForNewTrip() {
                 name="time"
                 className={styles.inputTime}
                 required
+                initialValue={
+                  tripForViewing?.departure_datetime
+                    .split("T")[1]
+                    .slice(0, 5) ?? ""
+                }
               />
 
               <Input
@@ -289,6 +308,7 @@ export default function FormForNewTrip() {
                 errorText={fromAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
+                initialValue={tripForViewing?.from_address ?? ""}
               />
 
               <Input
@@ -301,6 +321,7 @@ export default function FormForNewTrip() {
                 errorText={toAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
+                initialValue={tripForViewing?.to_address ?? ""}
               />
 
               <div className={styles.containerForTwoInputs}>
@@ -316,6 +337,7 @@ export default function FormForNewTrip() {
                         : ""
                     }
                     required
+                    initialValue={tripForViewing?.total_seats ?? ""}
                   />
                 </div>
                 <div className={styles.container60}>
@@ -323,7 +345,7 @@ export default function FormForNewTrip() {
                     name="car_class"
                     id="car_class"
                     label="Класс автомобиля"
-                    defaultValue="passenger_car"
+                    defaultValue={tripForViewing?.car_class ?? "passenger_car"}
                   >
                     <option value="passenger_car">Легковой</option>
                     <option value="minivan">Минивэн</option>
@@ -345,6 +367,7 @@ export default function FormForNewTrip() {
                     : ""
                 }
                 required
+                initialValue={tripForViewing?.passenger_phone_number ?? ""}
               />
 
               <Input
@@ -356,6 +379,7 @@ export default function FormForNewTrip() {
                     ? "Введите число большее 0 без лишних символов"
                     : ""
                 }
+                initialValue={tripForViewing?.price ?? ""}
               />
 
               <Input
@@ -368,6 +392,7 @@ export default function FormForNewTrip() {
                     ? "Введите число большее 0 без лишних символов"
                     : ""
                 }
+                initialValue={tripForViewing?.delegation_commission ?? ""}
               />
 
               <div>
@@ -378,6 +403,7 @@ export default function FormForNewTrip() {
                   name="description"
                   id="description"
                   className={styles.textarea}
+                  defaultValue={tripForViewing?.description ?? ""}
                 ></textarea>
               </div>
 
@@ -387,6 +413,8 @@ export default function FormForNewTrip() {
               >
                 {location?.state?.isTripDelegated
                   ? "Отправить в канал"
+                  : tripForViewing
+                  ? "Сохранить"
                   : "Создать"}
               </Button>
             </form>
