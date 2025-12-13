@@ -961,9 +961,9 @@ export const tripsReducer = (state = initialState, action) => {
       };
     case CHANGE_TRIP_TYPE_REQUEST_SUCCESS:
       return {
+        ...state,
         changeTripTypeRequest: false,
         changeTripTypeRequestError: false,
-        ...state,
         tripsForCalendar: state.tripsForCalendar.filter(
           (trip) => trip.id !== action.updatingTrip.id
         ),
