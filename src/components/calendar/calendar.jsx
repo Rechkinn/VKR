@@ -44,9 +44,12 @@ export default function Calendar() {
     removeTripRequestError,
     changeTripTypeRequest,
     changeTripTypeRequestError,
+    trips,
   } = useSelector((store) => store.trips);
   console.log("changeTripTypeRequest", changeTripTypeRequest);
   console.log("changeTripTypeRequestError", changeTripTypeRequestError);
+  console.log("tripsForCalendar", tripsForCalendar);
+  console.log("trips", trips);
 
   useEffect(() => {
     dispatch(getTripsForCalendar());
