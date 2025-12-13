@@ -29,6 +29,15 @@ export const ADD_TRIP_OWN_REQUEST = "ADD_TRIP_OWN_REQUEST";
 export const ADD_TRIP_OWN_REQUEST_ERROR = "ADD_TRIP_OWN_REQUEST_ERROR";
 export const ADD_TRIP_OWN_REQUEST_SUCCESS = "ADD_TRIP_OWN_REQUEST_SUCCESS";
 
+export const UPDATE_TRIP_REQUEST = "UPDATE_TRIP_REQUEST";
+export const UPDATE_TRIP_REQUEST_ERROR = "UPDATE_TRIP_REQUEST_ERROR";
+export const UPDATE_TRIP_REQUEST_SUCCESS = "UPDATE_TRIP_REQUEST_SUCCESS";
+
+export const CHANGE_TRIP_TYPE_REQUEST = "CHANGE_TRIP_TYPE_REQUEST";
+export const CHANGE_TRIP_TYPE_REQUEST_ERROR = "CHANGE_TRIP_TYPE_REQUEST_ERROR";
+export const CHANGE_TRIP_TYPE_REQUEST_SUCCESS =
+  "CHANGE_TRIP_TYPE_REQUEST_SUCCESS";
+
 export function getTrips() {
   return function (dispatch) {
     dispatch({
@@ -185,5 +194,71 @@ export function getTripsForCalendar() {
           type: GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR,
         })
       );
+  };
+}
+
+export function updateTrip(trip, closeForm = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: UPDATE_TRIP_REQUEST,
+    });
+
+    const option = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify(trip),
+    };
+
+    doRequest(`/trips/${trip.id}`, option)
+      .then((updatingTrip) => {
+        dispatch({
+          type: UPDATE_TRIP_REQUEST_SUCCESS,
+          updatingTrip: updatingTrip,
+        });
+        closeForm();
+      })
+      .catch(() => {
+        dispatch({
+          type: UPDATE_TRIP_REQUEST_ERROR,
+        });
+      });
+  };
+}
+
+export function changeTripType(tripId, closeSettingsTrip = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: CHANGE_TRIP_TYPE_REQUEST,
+    });
+
+    const option = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify({
+        trip_type: "delegated",
+        is_delegation_active: true,
+        status: "published",
+      }),
+    };
+
+    doRequest(`/trips/${tripId}`, option)
+      .then((updatingTrip) => {
+        dispatch({
+          type: CHANGE_TRIP_TYPE_REQUEST_SUCCESS,
+          updatingTrip: updatingTrip,
+        });
+        closeSettingsTrip();
+      })
+      .catch(() => {
+        dispatch({
+          type: CHANGE_TRIP_TYPE_REQUEST_ERROR,
+        });
+      });
   };
 }
