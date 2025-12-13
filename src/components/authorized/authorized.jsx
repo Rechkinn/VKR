@@ -9,6 +9,7 @@ import {
 } from "../../services/actions/user";
 import Loader from "../loader/loader";
 import { getCars } from "../../services/actions/car";
+import { getTrips, getTripsForCalendar } from "../../services/actions/trips";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
