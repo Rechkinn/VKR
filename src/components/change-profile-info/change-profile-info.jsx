@@ -27,12 +27,15 @@ export default function ChangeProfileInfo() {
     changeUserInfoRequest,
     changeUserInfoRequestError,
   } = useSelector((store) => store.user);
-  console.log("infoFromTelegram");
-  console.log(infoFromTelegram);
+  // console.log("infoFromTelegram");
+  // console.log(infoFromTelegram);
+
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
 
   const formRef = useRef();
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,14 +61,25 @@ export default function ChangeProfileInfo() {
     navigate("/");
   }
 
+  function validateName(inputValue) {
+    const regex = /^[A-Za-zА-Яа-яЁё]{2,200}$/;
+    return regex.test(inputValue);
+  }
+
+  function validatePhoneNumber(phone) {
+    const phoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
+
+    return phoneRegex.test(phone);
+  }
+
   function saveNewData(e) {
     e.preventDefault();
 
     if (!formRef.current) return;
 
     const newData = {};
-
     const inputs = formRef.current.elements;
+    let stop = false;
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "username") continue;
@@ -74,10 +88,42 @@ export default function ChangeProfileInfo() {
         continue;
       }
 
+      if (inputs[i].name === "phone_number") {
+        if (!validatePhoneNumber(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setPhoneNumberError(true);
+          break;
+        } else {
+          setPhoneNumberError(false);
+        }
+      }
+      if (inputs[i].name === "last_name") {
+        if (!validateName(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setLastNameError(true);
+          break;
+        } else {
+          setLastNameError(false);
+        }
+      }
+      if (inputs[i].name === "first_name") {
+        if (!validateName(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setFirstNameError(true);
+          break;
+        } else {
+          setFirstNameError(false);
+        }
+      }
+
       newData[inputs[i].name] = inputs[i].value;
     }
     console.log("newData");
     console.log(newData);
+    if (stop) return;
     dispatch(changeUserInfo(newData, closeFormToChangeProfileInfo));
   }
 
@@ -110,24 +156,34 @@ export default function ChangeProfileInfo() {
               type="text"
               name="first_name"
               initialValue={infoFromTelegram.first_name}
-              className={styles.input}
+              classNameContainer={styles.input}
+              errorText={
+                firstNameError
+                  ? "Введите корректное имя на русском или английском языке от 2 до 200 символов"
+                  : ""
+              }
             />
             <Input
               label="Фамилия"
               type="text"
               name="last_name"
               initialValue={infoFromTelegram.last_name}
-              className={styles.input}
+              classNameContainer={styles.input}
+              errorText={
+                lastNameError
+                  ? "Введите корректную фамилию на русском или английском языке от 2 до 200 символов"
+                  : ""
+              }
             />
             <Input
               label="Telegram"
               type="text"
               name="username"
               initialValue={`@${infoFromTelegram.username}`}
-              className={styles.input}
+              classNameContainer={styles.input}
               readOnly
             />
-            <Input
+            {/* <Input
               label="Номер телефона"
               type="text"
               name="phone_number"
@@ -136,7 +192,27 @@ export default function ChangeProfileInfo() {
                   ? infoFromTelegram.phone_number
                   : ""
               }
-              className={styles.mb18}
+              classNameContainer={styles.input}
+            /> */}
+            <Input
+              label="Номер телефона"
+              type="tel"
+              name="phone_number"
+              placeholder="+7 (___) ___-__-__"
+              initialValue={
+                infoFromTelegram?.phone_number
+                  ? validatePhoneNumber(infoFromTelegram.phone_number)
+                    ? infoFromTelegram.phone_number
+                    : ""
+                  : ""
+              }
+              errorText={
+                phoneNumberError
+                  ? "Номер должен быть в формате: +7 (XXX) XXX-XX-XX"
+                  : ""
+              }
+              classNameContainer={styles.input}
+              required
             />
             <SelectCustom
               defaultValue={infoFromTelegram.sbp_bank ?? undefined}

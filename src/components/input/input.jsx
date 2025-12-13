@@ -7,10 +7,12 @@ export default function Input({
   name = "",
   initialValue = "",
   className = "",
+  classNameContainer = "",
   iconForLabel = null,
   errorText = "",
   isSelect = false,
   setAdressError = null,
+
   // customValue = null,
   // formatPhoneNumber = null,
   ...props
@@ -82,7 +84,7 @@ export default function Input({
   }, [initialValue]);
 
   return (
-    <div>
+    <div className={classNameContainer}>
       <label htmlFor={name} className={styles.label}>
         {iconForLabel && (
           <img
@@ -100,7 +102,7 @@ export default function Input({
         value={valueInput}
         onChange={(event) => {
           // console.dir(event.target);
-          name === "passenger_phone_number"
+          name === "passenger_phone_number" || name === "phone_number"
             ? formatPhoneNumber(event.target.value)
             : name === "from_address" || name === "to_address"
             ? renderContentSelect(event.target.value)
