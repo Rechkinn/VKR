@@ -196,6 +196,8 @@ export default function FormForNewTrip() {
     if (stop) return;
 
     if (tripForViewing) {
+      console.log("{ ...tripForViewing, ...newTrip }");
+      console.log({ ...tripForViewing, ...newTrip });
       dispatch(updateTrip({ ...tripForViewing, ...newTrip }, closeForm));
     } else {
       location?.state?.isTripDelegated
