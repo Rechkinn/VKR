@@ -45,6 +45,8 @@ export default function Calendar() {
     changeTripTypeRequest,
     changeTripTypeRequestError,
   } = useSelector((store) => store.trips);
+  console.log("changeTripTypeRequest", changeTripTypeRequest);
+  console.log("changeTripTypeRequestError", changeTripTypeRequestError);
 
   useEffect(() => {
     dispatch(getTripsForCalendar());
