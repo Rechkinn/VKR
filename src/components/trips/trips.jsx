@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getTrips,
+  REMOVE_TRIP_REQUEST_RESET,
   removeTrip,
   SET_TRIP_FOR_SETTINGS,
 } from "../../services/actions/trips";
@@ -67,10 +68,20 @@ export default function Trips() {
     });
     openModal();
   }
+  function closeSettingsTrip() {
+    dispatch({
+      type: SET_TRIP_FOR_SETTINGS,
+      tripForSettings: null,
+    });
+    dispatch({
+      type: REMOVE_TRIP_REQUEST_RESET,
+    });
+    closeModal();
+  }
 
   function tryRemoveTrip(e) {
     e.stopPropagation();
-    dispatch(removeTrip(tripForSettings.id, closeModal));
+    dispatch(removeTrip(tripForSettings.id, closeSettingsTrip));
   }
 
   return (
@@ -84,19 +95,19 @@ export default function Trips() {
       {trips && (
         <>
           {visibilityModal && (
-            <Settings closeSettings={closeModal}>
+            <Settings closeSettings={closeSettingsTrip}>
               {removeTripRequest && <Loader>Пробуем удалить поездку...</Loader>}
               {!removeTripRequest && removeTripRequestError && (
                 <p style={{ color: "red", textAlign: "center" }}>
                   Ошибка удаления поездки!
                 </p>
               )}
-              {/* <Button
+              <Button
                 className="modal modalUpper"
                 onClick={(e) => e.stopPropagation()}
               >
-                Изменить
-              </Button> */}
+                Подробнее
+              </Button>
               <Button
                 className={`modal modalSingle ${styles.buttonRemoveTrip}`}
                 onClick={(e) => tryRemoveTrip(e)}
@@ -104,7 +115,7 @@ export default function Trips() {
               >
                 Удалить
               </Button>
-              <Button className="modal modalSingle" onClick={closeModal}>
+              <Button className="modal modalSingle" onClick={closeSettingsTrip}>
                 Отмена
               </Button>
             </Settings>
