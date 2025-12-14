@@ -50,11 +50,11 @@ export default function Trip({ trip, openSettingsTrip }) {
         <div className={styles.info}>
           <TripInfoLine>
             <img src={startPointIcon} alt="Иконка начальной точки" />
-            <span>{trip.from_address}</span>
+            <span>{trip.address}</span>
           </TripInfoLine>
           <TripInfoLine>
             <img src={endPointIcon} alt="Иконка конечной точки" />
-            <span>{trip.to_address}</span>
+            <span>{trip.address}</span>
           </TripInfoLine>
           <div className={styles.containerTimeAndPhone}>
             <TripInfoLine needGreyColor>
