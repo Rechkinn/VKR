@@ -115,6 +115,24 @@ export default function FormForNewTrip() {
         }
         setCountCharsTextarea(inputs[i].value.length);
       }
+      if (inputs[i].name === "from_address") {
+        if (inputs[i].value === "") {
+          inputs[i].focus();
+          stop = true;
+          setFromAdressError(true);
+        } else {
+          setFromAdressError(false);
+        }
+      }
+      if (inputs[i].name === "to_address") {
+        if (inputs[i].value === "") {
+          inputs[i].focus();
+          stop = true;
+          setToAdressError(true);
+        } else {
+          setToAdressError(false);
+        }
+      }
       if (inputs[i].name === "" || inputs[i].value === "") continue;
 
       if (inputs[i].name === "date") {
@@ -185,19 +203,6 @@ export default function FormForNewTrip() {
           setPhoneNumberError(true);
         } else {
           setPhoneNumberError(false);
-        }
-      }
-
-      if (inputs[i].name === "from_address") {
-        if (fromAdressError) {
-          inputs[i].focus();
-          stop = true;
-        }
-      }
-      if (inputs[i].name === "to_address") {
-        if (toAdressError) {
-          inputs[i].focus();
-          stop = true;
         }
       }
 
