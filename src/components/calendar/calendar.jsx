@@ -13,7 +13,7 @@ import {
   changeTripType,
   getTripsForCalendar,
   REMOVE_TRIP_REQUEST_RESET,
-  removeTrip,
+  removeTripOwn,
   SET_TRIP_FOR_SETTINGS,
 } from "../../services/actions/trips";
 import { useNavigate } from "react-router";
@@ -40,8 +40,8 @@ export default function Calendar() {
     getTripsForCalendarRequest,
     getTripsForCalendarRequestError,
     tripForSettings,
-    removeTripRequest,
-    removeTripRequestError,
+    removeTripOwnRequest,
+    removeTripOwnRequestError,
     changeTripTypeRequest,
     changeTripTypeRequestError,
     trips,
@@ -238,9 +238,8 @@ export default function Calendar() {
     }
   }
 
-  function tryRemoveTrip(e) {
-    e.stopPropagation();
-    dispatch(removeTrip(tripForSettings.id, closeSettingsTrip));
+  function tryRemoveTrip() {
+    dispatch(removeTripOwn(tripForSettings.id, closeSettingsTrip));
   }
 
   function addOwnTrip() {
@@ -295,10 +294,10 @@ export default function Calendar() {
           <>
             {visibilityModal && (
               <Settings closeSettings={closeSettingsTrip}>
-                {removeTripRequest && (
+                {removeTripOwnRequest && (
                   <Loader>Пробуем удалить поездку...</Loader>
                 )}
-                {!removeTripRequest && removeTripRequestError && (
+                {!removeTripOwnRequest && removeTripOwnRequestError && (
                   <p style={{ color: "red", textAlign: "center" }}>
                     Ошибка удаления поездки!
                   </p>
@@ -334,7 +333,8 @@ export default function Calendar() {
                 <Button
                   className={`modal modalLower ${styles.buttonRemoveTrip}`}
                   onClick={(e) => {
-                    tryRemoveTrip(e);
+                    e.stopPropagation();
+                    tryRemoveTrip();
                   }}
                   disabled={setDisabledButton(tripForSettings)}
                 >

@@ -27,6 +27,9 @@ import {
   CHANGE_TRIP_TYPE_REQUEST_ERROR,
   CHANGE_TRIP_TYPE_REQUEST,
   CHANGE_TRIP_TYPE_REQUEST_SUCCESS,
+  REMOVE_TRIP_OWN_REQUEST,
+  REMOVE_TRIP_OWN_REQUEST_ERROR,
+  REMOVE_TRIP_OWN_REQUEST_SUCCESS,
 } from "../actions/trips";
 
 const initialState = {
@@ -452,6 +455,9 @@ const initialState = {
 
   removeTripRequest: false,
   removeTripRequestError: false,
+
+  removeTripOwnRequest: false,
+  removeTripOwnRequestError: false,
 
   // tripsForCalendar: [
   //   {
@@ -1078,11 +1084,38 @@ export const tripsReducer = (state = initialState, action) => {
         removeTripRequest: false,
         removeTripRequestError: false,
       };
+    case REMOVE_TRIP_OWN_REQUEST:
+      return {
+        ...state,
+        removeTripOwnRequest: true,
+        removeTripOwnRequestError: false,
+      };
+
+    case REMOVE_TRIP_OWN_REQUEST_ERROR:
+      return {
+        ...state,
+        removeTripOwnRequest: false,
+        removeTripOwnRequestError: true,
+      };
+
+    case REMOVE_TRIP_OWN_REQUEST_SUCCESS:
+      return {
+        ...state,
+        tripsForCalendar: [
+          ...state.trips.filter((trip) => {
+            if (trip.id !== action.idTripForRemove) {
+              return trip;
+            }
+          }),
+        ],
+        removeTripOwnRequest: false,
+        removeTripOwnRequestError: false,
+      };
     case REMOVE_TRIP_REQUEST_RESET:
       return {
         ...state,
-        removeTripRequest: false,
-        removeTripRequestError: false,
+        removeTripOwnRequest: false,
+        removeTripOwnRequestError: false,
       };
 
     case SET_TRIP_FOR_SETTINGS:

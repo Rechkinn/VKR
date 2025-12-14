@@ -18,6 +18,12 @@ export const REMOVE_TRIP_REQUEST_ERROR = "REMOVE_TRIP_REQUEST_ERROR";
 export const REMOVE_TRIP_REQUEST_SUCCESS = "REMOVE_TRIP_REQUEST_SUCCESS";
 export const REMOVE_TRIP_REQUEST_RESET = "REMOVE_TRIP_REQUEST_RESET";
 
+export const REMOVE_TRIP_OWN_REQUEST = "REMOVE_TRIP_OWN_REQUEST";
+export const REMOVE_TRIP_OWN_REQUEST_ERROR = "REMOVE_TRIP_OWN_REQUEST_ERROR";
+export const REMOVE_TRIP_OWN_REQUEST_SUCCESS =
+  "REMOVE_TRIP_OWN_REQUEST_SUCCESS";
+export const REMOVE_TRIP_OWN_REQUEST_RESET = "REMOVE_TRIP_OWN_REQUEST_RESET";
+
 export const GET_TRIPS_FOR_CALENDAR_REQUEST = "GET_TRIPS_FOR_CALENDAR_REQUEST";
 export const GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR =
   "GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR";
@@ -165,6 +171,40 @@ export function removeTrip(tripId, closeSettings = () => {}) {
       .catch((error) => {
         dispatch({
           type: REMOVE_TRIP_REQUEST_ERROR,
+        });
+      });
+  };
+}
+
+export function removeTripOwn(tripId, closeSettings = () => {}) {
+  return function (dispatch) {
+    dispatch({
+      type: REMOVE_TRIP_OWN_REQUEST,
+    });
+
+    const option = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    };
+
+    doRequest(`/trips/${tripId}`, option)
+      .then((data) => {
+        dispatch({
+          type: REMOVE_TRIP_OWN_REQUEST_SUCCESS,
+          idTripForRemove: tripId,
+        });
+        dispatch({
+          type: SET_TRIP_FOR_SETTINGS,
+          tripForSettings: null,
+        });
+        closeSettings();
+      })
+      .catch((error) => {
+        dispatch({
+          type: REMOVE_TRIP_OWN_REQUEST_ERROR,
         });
       });
   };
