@@ -26,6 +26,7 @@ const SelectCustom = ({
         name={name}
         id={id}
         className={styles.select}
+        disabled={disabled}
       >
         {children}
       </select>

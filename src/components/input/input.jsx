@@ -12,7 +12,7 @@ export default function Input({
   errorText = "",
   isSelect = false,
   setAdressError = null,
-
+  readOnly = false,
   // customValue = null,
   // formatPhoneNumber = null,
   ...props
@@ -106,6 +106,7 @@ export default function Input({
       <input
         {...props}
         ref={inputRef}
+        readOnly={readOnly}
         id={name}
         name={name}
         value={valueInput}
@@ -126,7 +127,7 @@ export default function Input({
         // }}
       />
 
-      {isSelect && isOpenContentSelect ? (
+      {!readOnly && isSelect && isOpenContentSelect ? (
         contentSelect.length > 0 ? (
           <ul className={styles.containerContentSelect}>
             {contentSelect.map((element, i) => {

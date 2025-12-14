@@ -43,6 +43,7 @@ export default function FormForNewTrip() {
   const location = useLocation();
 
   const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
+  const [isOnlyViewing] = useState(location?.state?.isOnlyViewing ?? false);
 
   const {
     addTripRequest,
@@ -225,10 +226,6 @@ export default function FormForNewTrip() {
     dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
   }
 
-  // useEffect(() => {
-  //   dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
-  // }, []);
-
   return (
     <>
       {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
@@ -286,6 +283,7 @@ export default function FormForNewTrip() {
                 initialValue={
                   tripForViewing?.departure_datetime.split("T")[0] ?? ""
                 }
+                readOnly={isOnlyViewing}
               />
 
               <Input
@@ -300,6 +298,7 @@ export default function FormForNewTrip() {
                     .split("T")[1]
                     .slice(0, 5) ?? ""
                 }
+                readOnly={isOnlyViewing}
               />
 
               <Input
@@ -313,6 +312,7 @@ export default function FormForNewTrip() {
                 placeholder="Начните вводить адрес"
                 required
                 initialValue={tripForViewing?.from_address ?? ""}
+                readOnly={isOnlyViewing}
               />
 
               <Input
@@ -326,6 +326,7 @@ export default function FormForNewTrip() {
                 placeholder="Начните вводить адрес"
                 required
                 initialValue={tripForViewing?.to_address ?? ""}
+                readOnly={isOnlyViewing}
               />
 
               <div className={styles.containerForTwoInputs}>
@@ -340,6 +341,7 @@ export default function FormForNewTrip() {
                     }
                     required
                     initialValue={tripForViewing?.total_seats ?? ""}
+                    readOnly={isOnlyViewing}
                   />
                 </div>
                 <div className={styles.container60}>
@@ -348,6 +350,7 @@ export default function FormForNewTrip() {
                     id="car_class"
                     label="Класс автомобиля"
                     defaultValue={tripForViewing?.car_class ?? "passenger_car"}
+                    disabled={isOnlyViewing}
                   >
                     <option value="passenger_car">Легковой</option>
                     <option value="minivan">Минивэн</option>
@@ -370,6 +373,7 @@ export default function FormForNewTrip() {
                 }
                 required
                 initialValue={tripForViewing?.passenger_phone_number ?? ""}
+                readOnly={isOnlyViewing}
               />
 
               <Input
@@ -378,6 +382,7 @@ export default function FormForNewTrip() {
                 name="price"
                 errorText={priceError ? "Введите число от 0 до 999999" : ""}
                 initialValue={tripForViewing?.price ?? ""}
+                readOnly={isOnlyViewing}
               />
 
               <Input
@@ -391,6 +396,7 @@ export default function FormForNewTrip() {
                     : ""
                 }
                 initialValue={tripForViewing?.delegation_commission ?? ""}
+                readOnly={isOnlyViewing}
               />
 
               <div>
@@ -402,6 +408,7 @@ export default function FormForNewTrip() {
                   id="description"
                   className={styles.textarea}
                   defaultValue={tripForViewing?.description ?? ""}
+                  readOnly={isOnlyViewing}
                 ></textarea>
                 {countCharsTextarea > 500 && (
                   <p className={styles.errorText}>
@@ -411,16 +418,18 @@ export default function FormForNewTrip() {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className={`yellow ${styles.buttonPushForm}`}
-              >
-                {location?.state?.isTripDelegated
-                  ? "Отправить в канал"
-                  : tripForViewing
-                  ? "Сохранить"
-                  : "Создать"}
-              </Button>
+              {!isOnlyViewing && (
+                <Button
+                  type="submit"
+                  className={`yellow ${styles.buttonPushForm}`}
+                >
+                  {location?.state?.isTripDelegated
+                    ? "Отправить в канал"
+                    : tripForViewing
+                    ? "Сохранить"
+                    : "Создать"}
+                </Button>
+              )}
             </form>
           </div>
         </>

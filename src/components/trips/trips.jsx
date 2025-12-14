@@ -61,6 +61,12 @@ export default function Trips() {
     });
   }
 
+  function openDetailsTrip(trip) {
+    navigate("/create-new-trip", {
+      state: { detailsTrip: trip, toRoute: "/trips", isOnlyViewing: true },
+    });
+  }
+
   function openSettingsTrip(trip) {
     dispatch({
       type: SET_TRIP_FOR_SETTINGS,
@@ -68,6 +74,7 @@ export default function Trips() {
     });
     openModal();
   }
+
   function closeSettingsTrip() {
     dispatch({
       type: SET_TRIP_FOR_SETTINGS,
@@ -104,7 +111,10 @@ export default function Trips() {
               )}
               <Button
                 className="modal modalUpper"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openDetailsTrip(tripForSettings);
+                }}
               >
                 Подробнее
               </Button>
