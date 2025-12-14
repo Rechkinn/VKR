@@ -3,7 +3,6 @@ import styles from "./input.module.css";
 
 export default function Input({
   label = "",
-  // type = "text",
   name = "",
   initialValue = "",
   className = "",
@@ -13,8 +12,6 @@ export default function Input({
   isSelect = false,
   setAdressError = null,
   readOnly = false,
-  // customValue = null,
-  // formatPhoneNumber = null,
   ...props
 }) {
   const [valueInput, setValueInput] = useState("");
@@ -55,7 +52,6 @@ export default function Input({
     const url =
       "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
     const token = "b537cba152892a63e9e083bcd4ccf47b1b5e3fc9";
-    // let query = "томск улица богдана хмельницкого д 39";
 
     const options = {
       method: "POST",
@@ -71,13 +67,12 @@ export default function Input({
     fetch(url, options)
       .then((response) => response.json())
       .then((result) => {
-        // console.log(result?.suggestions);
         setContentSelect(result?.suggestions);
       })
       .catch((error) => console.log("error", error));
 
     setValueInput(value);
-    setAdressError(true);
+    // setAdressError(true);
   }
 
   useEffect(() => {
@@ -111,7 +106,6 @@ export default function Input({
         name={name}
         value={valueInput}
         onChange={(event) => {
-          // console.dir(event.target);
           name === "passenger_phone_number" || name === "phone_number"
             ? formatPhoneNumber(event.target.value)
             : name === "from_address" || name === "to_address"
@@ -120,24 +114,20 @@ export default function Input({
         }}
         className={`${styles.input} ${className}`}
         onFocus={() => setIsOpenContentSelect(true)}
-        // onBlur={(e) => {
-        //   console.log("onBlur");
-        //   console.dir(e);
-        //   // setIsOpenContentSelect(false);
-        // }}
+        onBlur={() => setIsOpenContentSelect(false)}
       />
 
-      {!readOnly && isSelect && isOpenContentSelect ? (
-        contentSelect.length > 0 ? (
+      {!readOnly &&
+        isSelect &&
+        isOpenContentSelect &&
+        contentSelect.length > 0 && (
           <ul className={styles.containerContentSelect}>
             {contentSelect.map((element, i) => {
               return (
                 <li
                   key={i}
                   className={styles.li}
-                  onClick={(e) => {
-                    // console.log("onClick");
-                    // console.dir(e);
+                  onPointerDown={(e) => {
                     e.stopPropagation();
                     setValueInput(element.value);
                     setIsOpenContentSelect(false);
@@ -149,14 +139,7 @@ export default function Input({
               );
             })}
           </ul>
-        ) : (
-          <ul className={styles.containerContentSelect}>
-            <li className={styles.notFound}>Ничего не найдено</li>
-          </ul>
-        )
-      ) : (
-        <></>
-      )}
+        )}
 
       {errorText && (
         <p style={errorStyles} className={styles.errorText}>
