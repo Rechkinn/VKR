@@ -46,10 +46,6 @@ export default function Calendar() {
     changeTripTypeRequestError,
     trips,
   } = useSelector((store) => store.trips);
-  console.log("changeTripTypeRequest", changeTripTypeRequest);
-  console.log("changeTripTypeRequestError", changeTripTypeRequestError);
-  console.log("tripsForCalendar", tripsForCalendar);
-  console.log("trips", trips);
 
   useEffect(() => {
     dispatch(getTripsForCalendar());
@@ -257,7 +253,9 @@ export default function Calendar() {
   }
 
   function setDisabledButton(trip, checkDate = false) {
-    if (!trip?.creator_id || !trip?.driver_id || trip?.trip_type) return true;
+    console.log("проверяем активность для кнопок. trip");
+    console.log(trip);
+    if (!trip?.creator_id || !trip?.driver_id || !trip?.trip_type) return true;
 
     let result =
       trip.creator_id === trip.driver_id &&
