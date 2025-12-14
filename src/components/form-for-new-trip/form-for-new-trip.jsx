@@ -23,8 +23,6 @@ import Loader from "../loader/loader";
 import SelectCustom from "../select-custom/select-custom";
 
 export default function FormForNewTrip() {
-  // const
-
   const [totalSeatsError, setTotalSeatsError] = useState(false);
   const [priceError, setPriceError] = useState(false);
   const [delegationCommissionError, setDelegationCommissionError] =
@@ -36,6 +34,8 @@ export default function FormForNewTrip() {
   const [fromAdressError, setFromAdressError] = useState(false);
   const [toAdressError, setToAdressError] = useState(false);
 
+  const [countCharsTextarea, setCountCharsTextarea] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formRef = useRef();
@@ -43,8 +43,6 @@ export default function FormForNewTrip() {
   const location = useLocation();
 
   const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
-  console.log("tripForViewing");
-  console.log(tripForViewing);
 
   const {
     addTripRequest,
@@ -63,26 +61,28 @@ export default function FormForNewTrip() {
     navigate(location?.state?.toRoute ?? "/", { replace: true });
   }
 
-  function validationNumber(inputValue) {
-    const regex = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
-    if (!regex.test(inputValue)) {
-      // console.log("какие-то посторонние символы");
-      return false;
-    }
+  function validationNumber(inputValue, min = -1, max = 999999) {
+    // const regex = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
+    // const regex = /^-?\d+$/;
+    const regex = /^-?(0|[1-9][0-9]{0,5})$/;
+    if (!regex.test(inputValue)) return false;
 
-    // console.log(
-    //   "результат значения Number(inputValue) > -1:",
-    //   Number(inputValue) > -1
-    // );
-    return Number(inputValue) > -1;
+    return Number(inputValue) > min && Number(inputValue) <= max;
   }
 
   function validateDate(inputValue) {
     // "121221-12-12"
 
-    const year = inputValue.split("-")[0];
     const currentDate = new Date();
-    return year.length === 4 && Number(year) >= currentDate.getFullYear();
+    const tripDate = new Date(inputValue);
+
+    const year = inputValue.split("-")[0];
+    const validYear =
+      year.length === 4 &&
+      Number(year) >= currentDate.getFullYear() &&
+      Number(year) <= currentDate.getFullYear() + 1;
+
+    return validYear && tripDate.getTime() >= currentDate.getTime();
   }
 
   function validatePhoneNumber(phone) {
@@ -107,6 +107,13 @@ export default function FormForNewTrip() {
     let time = "";
     let stop = false;
     for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].name === "description") {
+        if (inputs[i].value.length > 500) {
+          inputs[i].focus();
+          stop = true;
+        }
+        setCountCharsTextarea(inputs[i].value.length);
+      }
       if (inputs[i].name === "" || inputs[i].value === "") continue;
 
       if (inputs[i].name === "date") {
@@ -116,7 +123,6 @@ export default function FormForNewTrip() {
           inputs[i].focus();
           stop = true;
           setDateError(true);
-          break;
         } else {
           setDateError(false);
         }
@@ -134,30 +140,40 @@ export default function FormForNewTrip() {
         continue;
       }
 
-      if (
-        inputs[i].name === "delegation_commission" ||
-        inputs[i].name === "price" ||
-        inputs[i].name === "total_seats"
-      ) {
+      if (inputs[i].name === "price") {
         if (!validationNumber(inputs[i].value)) {
-          // console.log("проверка прошла безуспешно");
-
           inputs[i].focus();
           stop = true;
-          if (inputs[i].name === "total_seats") setTotalSeatsError(true);
-          else setTotalSeatsError(false);
-
-          if (inputs[i].name === "price") setPriceError(true);
-          else setPriceError(false);
-
-          if (inputs[i].name === "delegation_commission")
-            setDelegationCommissionError(true);
-          else setDelegationCommissionError(false);
-
-          break;
+          setPriceError(true);
+        } else {
+          setPriceError(false);
         }
 
         newTrip[inputs[i].name] = Number(inputs[i].value);
+        continue;
+      }
+      if (inputs[i].name === "total_seats") {
+        if (!validationNumber(inputs[i].value, 0, 100)) {
+          inputs[i].focus();
+          stop = true;
+          setTotalSeatsError(true);
+        } else {
+          setTotalSeatsError(false);
+        }
+
+        newTrip[inputs[i].name] = Number(inputs[i].value);
+        continue;
+      }
+
+      if (inputs[i].name === "delegation_commission") {
+        if (!validationNumber(inputs[i].value)) {
+          inputs[i].focus();
+          stop = true;
+          setDelegationCommissionError(true);
+        } else {
+          newTrip[inputs[i].name] = Number(inputs[i].value);
+          setDelegationCommissionError(false);
+        }
         continue;
       }
 
@@ -166,7 +182,6 @@ export default function FormForNewTrip() {
           inputs[i].focus();
           stop = true;
           setPhoneNumberError(true);
-          break;
         } else {
           setPhoneNumberError(false);
         }
@@ -176,14 +191,12 @@ export default function FormForNewTrip() {
         if (fromAdressError) {
           inputs[i].focus();
           stop = true;
-          break;
         }
       }
       if (inputs[i].name === "to_address") {
         if (toAdressError) {
           inputs[i].focus();
           stop = true;
-          break;
         }
       }
 
@@ -209,11 +222,12 @@ export default function FormForNewTrip() {
   function resetError() {
     dispatch({ type: ADD_TRIP_REQUEST_SUCCESS });
     dispatch({ type: ADD_TRIP_OWN_REQUEST_SUCCESS });
+    dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
   }
 
-  useEffect(() => {
-    dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
-  }, []);
+  // useEffect(() => {
+  //   dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
+  // }, []);
 
   return (
     <>
@@ -263,7 +277,11 @@ export default function FormForNewTrip() {
                 type="date"
                 name="date"
                 className={styles.inputDate}
-                errorText={dateError ? "Введите корректную дату" : ""}
+                errorText={
+                  dateError
+                    ? "Введите дату сегодняшнего дня или больше, но не более чем на год вперёд"
+                    : ""
+                }
                 required
                 initialValue={
                   tripForViewing?.departure_datetime.split("T")[0] ?? ""
@@ -318,9 +336,7 @@ export default function FormForNewTrip() {
                     type="number"
                     name="total_seats"
                     errorText={
-                      totalSeatsError
-                        ? "Введите число большее 0 без лишних символов"
-                        : ""
+                      totalSeatsError ? "Введите число от 1 до 100" : ""
                     }
                     required
                     initialValue={tripForViewing?.total_seats ?? ""}
@@ -360,11 +376,7 @@ export default function FormForNewTrip() {
                 label="Стоимость"
                 type="number"
                 name="price"
-                errorText={
-                  priceError
-                    ? "Введите число большее 0 без лишних символов"
-                    : ""
-                }
+                errorText={priceError ? "Введите число от 0 до 999999" : ""}
                 initialValue={tripForViewing?.price ?? ""}
               />
 
@@ -375,7 +387,7 @@ export default function FormForNewTrip() {
                 required
                 errorText={
                   delegationCommissionError
-                    ? "Введите число большее 0 без лишних символов"
+                    ? "Введите число от 0 до 999999"
                     : ""
                 }
                 initialValue={tripForViewing?.delegation_commission ?? ""}
@@ -391,6 +403,12 @@ export default function FormForNewTrip() {
                   className={styles.textarea}
                   defaultValue={tripForViewing?.description ?? ""}
                 ></textarea>
+                {countCharsTextarea > 500 && (
+                  <p className={styles.errorText}>
+                    Дополнительная информация не должна превышать 500 символов.
+                    Ваше количество символов: {countCharsTextarea}
+                  </p>
+                )}
               </div>
 
               <Button

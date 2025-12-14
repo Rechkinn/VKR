@@ -79,3 +79,9 @@
   width: 281px;
   height: 32.7px;
 }
+
+.errorText {
+  margin-top: 5px;
+  color: red;
+  font-size: 12px;
+}
