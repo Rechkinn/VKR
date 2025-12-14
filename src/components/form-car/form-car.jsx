@@ -285,7 +285,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               readOnly={isForViewing}
               errorText={
                 licensePlateError
-                  ? "Регистрационный номер должен иметь формат А777АА777"
+                  ? "Введите регистрационный номер в формате А777АА777 с русскими буквами"
                   : ""
               }
             />
