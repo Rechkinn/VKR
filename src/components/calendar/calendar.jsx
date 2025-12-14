@@ -67,6 +67,10 @@ export default function Calendar() {
 
   function closeSettingsTrip() {
     document.querySelector("body").style.overflow = "visible";
+    dispatch({
+      type: SET_TRIP_FOR_SETTINGS,
+      tripForSettings: null,
+    });
     closeModal();
   }
 
@@ -115,7 +119,7 @@ export default function Calendar() {
     if (tripsForCalendar) {
       hasTrips = tripsForCalendar.find((trip) => {
         return (
-          trip.departure_datetime.split("T")[0] ===
+          trip?.departure_datetime.split("T")[0] ===
           `${year}-${changeFormatValue(month)}-${changeFormatValue(day)}`
         );
       })
@@ -259,7 +263,7 @@ export default function Calendar() {
     result = !result;
     if (checkDate) {
       const currentDate = new Date();
-      const tripDate = new Date(trip.departure_datetime);
+      const tripDate = new Date(trip?.departure_datetime);
 
       if (tripDate.getTime() < currentDate.getTime()) {
         result = !result;
@@ -409,7 +413,7 @@ export default function Calendar() {
                       clickedDay.split(".").reverse().join("-")
                     );
                     const date2 = new Date(
-                      trip.departure_datetime.split("T")[0]
+                      trip?.departure_datetime.split("T")[0]
                     );
 
                     if (
