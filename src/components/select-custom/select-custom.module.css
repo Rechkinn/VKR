@@ -2,7 +2,7 @@
   width: 100%;
 }
 .label {
-  color: white;
+  color: var(--black-color);
   display: flex;
   font-size: 13px;
   margin-bottom: 10px;

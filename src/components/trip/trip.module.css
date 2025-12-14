@@ -1,11 +1,11 @@
 .trip {
-  padding: 7px 13px;
-  border: 1px solid #fdcd03;
-  border-radius: 5px;
-  color: white;
+  padding: 14px 13px 0 13px;
+  border: 1px solid var(--dark-grey-color);
+  border-radius: 20px;
+  color: var(--dark-grey-color);
   font-size: 14px;
   text-align: center;
-  background-color: black;
+  background-color: var(--light-grey-color);
 }
 .trip:nth-child(n):not(:last-child) {
   margin-bottom: 10px;

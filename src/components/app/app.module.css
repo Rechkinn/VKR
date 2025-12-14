@@ -1,20 +1,12 @@
-/* .main {
-  padding: 15px;
-  max-width: 390px;
-} */
-
 .backgroundYellowCircle {
   position: fixed;
   top: 0;
-
   left: 50%;
   transform: translate(-50%, -50%);
   width: 750px;
   height: 375px;
-  /* border-radius: 100%; */
   border-bottom-right-radius: 100%;
   border-bottom-left-radius: 100%;
-
-  background-color: #fdcd03;
+  background-color: var(--dark-green-color);
   z-index: -100;
 }

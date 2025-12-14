@@ -1,0 +1,11 @@
+.span {
+  text-align: center;
+  width: 57px;
+  height: 16px;
+  display: inline-block;
+  background-color: var(--dark-green-color);
+  border-radius: 30px;
+  color: var(--white-color);
+  font-weight: bold;
+  font-size: 12px;
+}

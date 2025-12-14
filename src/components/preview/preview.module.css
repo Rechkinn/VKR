@@ -1,0 +1,51 @@
+.section {
+  padding: 0 28px;
+}
+.img {
+  margin: auto;
+}
+
+.nameApp {
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 28px;
+}
+
+.textInputReferralCode {
+  margin: 0;
+  text-align: center;
+  margin-bottom: 19px;
+  font-size: 16px;
+}
+
+.containerTextAndArrow {
+  position: fixed;
+  left: 28px;
+  right: 28px;
+  bottom: 70px;
+
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--dark-green-color);
+}
+
+.arrowButton {
+  padding: 9px;
+  min-width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--dark-green-color);
+}
+
+.previewBar {
+  position: fixed;
+  bottom: 45px;
+  left: 0;
+}

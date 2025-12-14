@@ -3,12 +3,12 @@
   display: block;
   text-decoration: none;
   font-size: 9px;
-  color: #a3a9b5;
+  color: var(--dark-gray-color);
 }
 
 .activeLink {
   composes: link;
-  color: #fdcd03;
+  color: var(--dark-green-color);
 }
 
 .icon {

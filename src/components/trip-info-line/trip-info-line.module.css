@@ -8,5 +8,5 @@
 }
 
 .grey {
-  color: #737373;
+  color: var(--dark-grey-color);
 }

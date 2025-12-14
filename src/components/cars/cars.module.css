@@ -1,6 +1,5 @@
 .containerCars {
   margin-top: 20px;
-  /* padding: 16px; */
 }
 .article > :nth-child(n):not(:last-child) {
   margin-bottom: 16px;
@@ -16,12 +15,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
+  color: var(--black-color);
 }
 
 .nameSection {
   font-size: 18px;
-  /* font-weight: normal; */
 }
 
 .cars {
@@ -35,7 +33,7 @@
 
 .errorSettings {
   margin-bottom: 10px;
-  color: red;
+  color: var(--red-color);
   text-align: center;
   font-weight: bold;
   font-size: 20px;

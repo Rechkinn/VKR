@@ -211,13 +211,16 @@ const FormCar = ({ isForViewing, isForEditing }) => {
         </>
       ) : (
         <>
-          <Button onClick={closeCarForm}>
-            <img src={arrowLeftIcon} alt="Вернуться в профиль" />
-          </Button>
+          <header className={styles.header}>
+            <Button onClick={closeCarForm}>
+              <img src={arrowLeftIcon} alt="Вернуться в профиль" />
+            </Button>
+            <h1 className={styles.headerText}>Редактировать авто</h1>
+          </header>
 
-          <div className={styles.carPhoto}>
+          {/* <div className={styles.carPhoto}>
             <CarImage type="forForm" />
-          </div>
+          </div> */}
           <form action="" ref={formRef} onSubmit={(e) => saveNewData(e)}>
             <Input
               label="Марка"
@@ -322,7 +325,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
             </div>
             {!isForViewing && (
               <Button
-                className={`yellow ${styles.buttonConfirm}`}
+                className={`green ${styles.buttonConfirm}`}
                 style={{ marginBottom: "20px" }}
                 type="submit"
               >

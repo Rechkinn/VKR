@@ -30,7 +30,7 @@ import {
 //     role: "driver",
 //     sbp_bank: null,
 //     sbp_phone_number: null,
-//     subscription_exp: "2025-12-31T21:35:30.894573Z",
+//     subscription_exp: "2022-12-31T21:35:30.894573Z",
 //     telegram_id: 870593529,
 //     updated_at: "2025-11-12T09:13:16.296053Z",
 //     username: "Rechkinnnn",

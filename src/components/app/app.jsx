@@ -10,11 +10,19 @@ import ChangeProfileInfo from "../change-profile-info/change-profile-info";
 import FormForNewTrip from "../form-for-new-trip/form-for-new-trip";
 import { useEffect } from "react";
 import { PROFILE } from "../../utils/consts";
-import { getTrips } from "../../services/actions/trips";
+import { getTrips, getTripsForCalendar } from "../../services/actions/trips";
 import FormCar from "../form-car/form-car";
+import { getCars } from "../../services/actions/car";
 
 export default function App() {
   const { sunVisibility } = useSelector((store) => store.background);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCars());
+    dispatch(getTrips());
+    dispatch(getTripsForCalendar());
+  }, []);
 
   return (
     <>

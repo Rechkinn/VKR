@@ -4,7 +4,7 @@ input {
 }
 
 .label {
-  color: white;
+  color: var(--black-color);
   display: flex;
   font-size: 13px;
   margin-bottom: 10px;
@@ -15,7 +15,7 @@ input {
   font-size: 13px;
   width: 100%;
   border-radius: 5px;
-  caret-color: black;
+  caret-color: var(--black-color);
 }
 
 .iconForLabel {
@@ -25,23 +25,18 @@ input {
 
 .errorText {
   margin-top: 5px;
-  color: red;
+  color: var(--red-color);
   font-size: 12px;
 }
 
 .containerContentSelect {
-  /* position: fixed; */
   width: 281px;
   max-height: 150px;
   overflow-y: auto;
   margin-top: 5px;
-  /* padding: 5px 23px; */
-  /* background-color: #fdcd03; */
-  background-color: #ffffff;
-  color: black;
-  /* border: 2px solid #fdcd03; */
+  background-color: var(--white-color);
+  color: var(--black-color);
   border-radius: 5px;
-  /* z-index: 100; */
 }
 
 .li,
@@ -51,10 +46,9 @@ input {
 }
 
 .li:not(:last-child) {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--black-color);
 }
 
 .li:active {
-  /* background-color: white; */
-  background-color: #fdcd03;
+  background-color: var(--light-green-color);
 }

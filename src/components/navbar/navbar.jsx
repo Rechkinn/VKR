@@ -29,13 +29,6 @@ export default function Navbar() {
     });
   }, [pathname]);
 
-  // function setActiveSection(section) {
-  //   dispatch({
-  //     type: SET_ACTIVE_SECTION_NAVBAR,
-  //     activeSection: section,
-  //   });
-  // }
-
   return (
     <>
       {visibility && (

@@ -63,8 +63,6 @@ export default function FormForNewTrip() {
   }
 
   function validationNumber(inputValue, min = -1, max = 999999) {
-    // const regex = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
-    // const regex = /^-?\d+$/;
     const regex = /^-?(0|[1-9][0-9]{0,5})$/;
     if (!regex.test(inputValue)) return false;
 
@@ -426,10 +424,10 @@ export default function FormForNewTrip() {
               {!isOnlyViewing && (
                 <Button
                   type="submit"
-                  className={`yellow ${styles.buttonPushForm}`}
+                  className={`green ${styles.buttonPushForm}`}
                 >
                   {location?.state?.isTripDelegated
-                    ? "Отправить в канал"
+                    ? "Опубликовать в канал"
                     : tripForViewing
                     ? "Сохранить"
                     : "Создать"}

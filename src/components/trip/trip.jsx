@@ -32,11 +32,11 @@ export default function Trip({ trip, openSettingsTrip }) {
         <header className={styles.header}>
           <div className={styles.status}>
             <Status>{statusInRussian(trip.status)}</Status>
-            <img
+            {/* <img
               src={carIcon}
               alt="Иконка автомобиля"
               className={styles.carIcon}
-            />
+            /> */}
           </div>
           <Button onClick={openSettingsTrip}>
             <img

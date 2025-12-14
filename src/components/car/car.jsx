@@ -7,15 +7,13 @@ import Status from "../status/status";
 export default function Car({ car, openSettings }) {
   return (
     <article className={styles.car}>
-      <CarImage />
+      {/* <CarImage /> */}
 
       <div>
         <h3 className={styles.name}>{car.brand}</h3>
         <p className={styles.registrationNumber}>{car.model}</p>
         <p className={styles.registrationNumber}>{car.license_plate}</p>
       </div>
-
-      {/* {car.is_active && <Status extraClass={styles.carStatus}>Активно</Status>} */}
 
       <Button onClick={openSettings} className={styles.settingsButton}>
         <img src={settingsIcon} alt="" />

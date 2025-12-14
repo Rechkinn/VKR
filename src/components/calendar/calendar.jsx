@@ -2,7 +2,7 @@ import Button from "../button/button";
 import styles from "./calendar.module.css";
 import arrowLeftIcon from "../../image/calendar/arrow-for-calendar-left.svg";
 import arrowRightIcon from "../../image/calendar/arrow-for-calendar-right.svg";
-import addTripIcon from "../../image/calendar/add-trip.svg";
+import addTripIcon from "../../image/profile/addCarIcon.svg";
 import DayOfWeek from "../day-of-week/day-of-week";
 import CalendarDay from "../calendar-day/calendar-day";
 import { useState, useEffect } from "react";

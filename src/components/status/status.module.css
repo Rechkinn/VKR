@@ -3,10 +3,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  color: black;
+  background-color: var(--white-color);
+  color: var(--dark-grey-color);
   border-radius: 7px;
   font-size: 12px;
   font-weight: bold;
-  /* height: 18px; */
 }

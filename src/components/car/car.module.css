@@ -4,8 +4,8 @@
   display: flex;
 
   gap: 10px;
-  color: white;
-  border: 1px solid #fdcd03;
+  color: var(--black-color);
+  border: 1px solid var(--dark-grey-color);
   border-radius: 10px;
 }
 
@@ -19,20 +19,4 @@
   position: absolute;
   top: 19px;
   right: 10px;
-}
-
-.carStatus {
-  position: absolute;
-  right: 30px;
-
-  padding: 0 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  color: black;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: bold;
-  /* height: 18px; */
 }

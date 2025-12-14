@@ -16,25 +16,16 @@
 
 .activeDay {
   composes: day;
-  /* color: #4a5660; */
-  color: #afb6bc;
+  color: #0d0d0dcc;
 }
 
 .currentDay {
   composes: activeDay;
-
-  background-color: #fdcd03;
+  background-color: var(--dark-green-color);
 }
 
 .clickedDay {
-  /* outline: 1px solid #fdcd03; */
-  border: 1px solid #fdcd03;
-}
-
-.hasTrips {
-  /* position: absolute; */
-  /* width: 100%;
-  height: 100%; */
+  border: 1px solid var(--dark-green-color);
 }
 
 .hasTrips::after {
@@ -44,6 +35,6 @@
   content: "";
   width: 5px;
   height: 5px;
-  background-color: #fdcd03;
+  background-color: var(--dark-green-color);
   border-radius: 50%;
 }

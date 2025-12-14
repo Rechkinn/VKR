@@ -5,6 +5,7 @@ import { userReducer } from "./user";
 import { tripsReducer } from "./trips";
 import { modalReducer } from "./modal";
 import { carReducer } from "./car";
+import { referralReducer } from "./referral";
 
 export const rootReducer = combineReducers({
   navbar: navbarReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   trips: tripsReducer,
   modal: modalReducer,
   car: carReducer,
+  referral: referralReducer,
 });

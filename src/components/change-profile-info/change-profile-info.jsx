@@ -18,7 +18,6 @@ import Loader from "../loader/loader";
 import SelectCustom from "../select-custom/select-custom";
 
 export default function ChangeProfileInfo() {
-  // если чекбокс будет активным, то будет показываться поле для вода числового кода
   const [showInputCode, setShowInputCode] = useState(false);
   const checkboxRef = useRef();
 
@@ -27,8 +26,6 @@ export default function ChangeProfileInfo() {
     changeUserInfoRequest,
     changeUserInfoRequestError,
   } = useSelector((store) => store.user);
-  // console.log("infoFromTelegram");
-  // console.log(infoFromTelegram);
 
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
@@ -183,17 +180,7 @@ export default function ChangeProfileInfo() {
               classNameContainer={styles.input}
               readOnly
             />
-            {/* <Input
-              label="Номер телефона"
-              type="text"
-              name="phone_number"
-              initialValue={
-                infoFromTelegram?.phone_number
-                  ? infoFromTelegram.phone_number
-                  : ""
-              }
-              classNameContainer={styles.input}
-            /> */}
+
             <Input
               label="Номер телефона"
               type="tel"
@@ -275,7 +262,7 @@ export default function ChangeProfileInfo() {
           />
         )} */}
 
-            <Button className={`yellow ${styles.buttonSave}`} type="submit">
+            <Button className={`green ${styles.buttonSave}`} type="submit">
               Сохранить
             </Button>
           </form>

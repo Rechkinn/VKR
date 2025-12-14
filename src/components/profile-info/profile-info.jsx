@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import Car from "../car/car";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import Button from "../button/button";
+import StatusPro from "../status-pro/status-pro";
 
 export default function ProfileInfo() {
   const { infoFromTelegram } = useSelector((store) => store.user);
@@ -54,7 +55,7 @@ export default function ProfileInfo() {
     const carsBorders = cars.getBoundingClientRect();
 
     const maxHeight = sectionBorders.bottom - carsBorders.top - 45;
-    // console.log("устанавливаем значение");
+
     setStyleTripsContainer({
       maxHeight: maxHeight,
     });
@@ -63,7 +64,7 @@ export default function ProfileInfo() {
   useEffect(() => {
     dispatch({
       type: SET_SUN_VISIBILITY_ON_BACKGROUND,
-      sunVisibility: true,
+      sunVisibility: false,
     });
 
     window.addEventListener("resize", setMaxHeightContainerTrips);
@@ -72,9 +73,6 @@ export default function ProfileInfo() {
   }, []);
 
   useEffect(() => {
-    // console.log(
-    //   "Видимо изменились sectionRef.current и carsRef.current, поэтому сейчас запустим функцию setMaxHeightContainerTrips"
-    // );
     setMaxHeightContainerTrips();
   }, [sectionRef.current, carsRef.current]);
 
@@ -124,7 +122,7 @@ export default function ProfileInfo() {
       let difference = (finishDayMs - currentDayMs) / 1000 / 60 / 60 / 24;
       resultString =
         difference > 1
-          ? `До конца подписки осталось дней: ${Math.floor(difference)}`
+          ? `До конца подписки: ${Math.floor(difference)} дней`
           : `Подписка заканчивается ${infoFromTelegram.subscription_exp
               .split("T")[0]
               .split("-")
@@ -146,35 +144,22 @@ export default function ProfileInfo() {
       {infoFromTelegram && (
         <section ref={sectionRef} className={styles.section}>
           <header className={styles.header}>
-            <div
-              style={{
-                justifyContent: activeSubscription ? "center" : "space-between",
-              }}
-              className={styles.subscription}
-            >
-              <span className={styles.statusSubscription}>
-                {activeSubscriptionText}
-              </span>
-              {!activeSubscription && (
-                <Button className="black" onClick={subscribe}>
-                  Купить подписку
-                </Button>
+            <div className={styles.subscription}>
+              {activeSubscription ? (
+                <span className={styles.statusSubscription}>
+                  <StatusPro>PRO</StatusPro> {activeSubscriptionText}
+                </span>
+              ) : (
+                <>
+                  <Button
+                    className={`transparent ${styles.buyPass}`}
+                    onClick={subscribe}
+                  >
+                    Оформить подписку <StatusPro>PRO</StatusPro>
+                  </Button>
+                </>
               )}
             </div>
-            {/* <div className={styles.headerPart}>
-              <h1 className={styles.ratingText}>Рейтинг</h1>
-              <div className={styles.rating}>
-                <div className={styles.stars}>
-                  {renderStars(infoFromTelegram.rating_avg)}
-                </div>
-                <span className={styles.ratingValue}>
-                  {infoFromTelegram.rating_avg}
-                </span>
-              </div>
-            </div>
-            <div className={styles.headerPart}>
-              <Balance balanceValue={infoFromTelegram.balance} />
-            </div> */}
           </header>
 
           <div className={styles.content}>

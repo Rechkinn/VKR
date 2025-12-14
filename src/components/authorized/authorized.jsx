@@ -10,6 +10,7 @@ import {
 import Loader from "../loader/loader";
 import { getCars } from "../../services/actions/car";
 import { getTrips, getTripsForCalendar } from "../../services/actions/trips";
+import Preview from "../preview/preview";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -104,9 +105,9 @@ const TelegramAuth = () => {
         defaultAuthentication(initData);
       }
     }
-    dispatch(getCars());
-    dispatch(getTrips());
-    dispatch(getTripsForCalendar());
+    // dispatch(getCars());
+    // dispatch(getTrips());
+    // dispatch(getTripsForCalendar());
   }, [webApp, dispatch]);
 
   function defaultAuthentication(initData) {
@@ -126,7 +127,8 @@ const TelegramAuth = () => {
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && <App />}
+        // infoFromTelegram?.telegram_id && <App />}
+        infoFromTelegram?.telegram_id && <Preview />}
       {/* {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && (

@@ -136,7 +136,7 @@ export const Cars = forwardRef((props, ref) => {
             <header className={`${styles.header}`}>
               <h2 className={styles.nameSection}>Мои авто</h2>
               <Button
-                className="black withIcon"
+                className="transparent withIcon"
                 onClick={(e) => openCarForm(e, "/car/new")}
               >
                 <img src={addCarIcon} alt="" />

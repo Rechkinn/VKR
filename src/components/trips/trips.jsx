@@ -17,6 +17,7 @@ import Loader from "../loader/loader";
 import { useNavigate } from "react-router";
 import Settings from "../settings/settings";
 import { useModal } from "../../hooks/useModal";
+import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
 export default function Trips() {
   const dispatch = useDispatch();
@@ -32,6 +33,10 @@ export default function Trips() {
   const { visibilityModal, openModal, closeModal } = useModal();
 
   useEffect(() => {
+    dispatch({
+      type: SET_SUN_VISIBILITY_ON_BACKGROUND,
+      sunVisibility: true,
+    });
     if (!trips) dispatch(getTrips());
   }, []);
 
@@ -119,7 +124,7 @@ export default function Trips() {
                 Подробнее
               </Button>
               <Button
-                className={`modal modalSingle ${styles.buttonRemoveTrip}`}
+                className={`modal modalLower ${styles.buttonRemoveTrip}`}
                 onClick={(e) => tryRemoveTrip(e)}
                 disabled={tripForSettings.status === "confirmed"}
               >

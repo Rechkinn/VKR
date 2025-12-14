@@ -1,3 +1,15 @@
+.header {
+  margin-bottom: 26px;
+}
+
+.headerText {
+  display: inline-block;
+  margin: 0;
+  margin-left: 20px;
+  color: var(--black-color);
+  font-size: 18px;
+}
+
 .carPhoto > :first-child {
   margin: auto;
   margin-bottom: 10px;
@@ -29,7 +41,7 @@
 
 .label {
   margin-top: 16px;
-  color: white;
+  color: var(--black-color);
   display: flex;
   font-size: 13px;
   margin-bottom: 10px;
@@ -47,6 +59,6 @@
 
 .errorText {
   margin-top: 5px;
-  color: red;
+  color: var(--red-color);
   font-size: 12px;
 }

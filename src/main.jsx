@@ -7,6 +7,7 @@ import { rootReducer } from "./services/reducers";
 
 import Authorized from "./components/authorized/authorized";
 import { BrowserRouter } from "react-router";
+import Preview from "./components/preview/preview";
 
 const store = configureStore({
   reducer: rootReducer,
@@ -34,6 +35,7 @@ function renderApp() {
       <BrowserRouter>
         <Provider store={store}>
           <Authorized />
+          {/* <Preview /> */}
           {/* <App /> */}
         </Provider>
       </BrowserRouter>
