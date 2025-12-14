@@ -975,13 +975,7 @@ export const tripsReducer = (state = initialState, action) => {
             if (trip.id !== action.updatingTrip.id) return trip;
           }),
         ],
-        trips: [
-          ...state.trips.map((trip) => {
-            return trip.id === action.updatingTrip.id
-              ? action.updatingTrip
-              : trip;
-          }),
-        ],
+        trips: [...state.trips, action.updatingTrip],
       };
     case UPDATE_TRIP_REQUEST:
       return {
