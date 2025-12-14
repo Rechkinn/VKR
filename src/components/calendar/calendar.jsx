@@ -12,7 +12,7 @@ import Loader from "../loader/loader";
 import {
   changeTripType,
   getTripsForCalendar,
-  REMOVE_TRIP_REQUEST_RESET,
+  REMOVE_TRIP_OWN_REQUEST_RESET,
   removeTripOwn,
   SET_TRIP_FOR_SETTINGS,
 } from "../../services/actions/trips";
@@ -52,7 +52,7 @@ export default function Calendar() {
   }, []);
 
   function openSettingsTrip(trip) {
-    dispatch({ type: REMOVE_TRIP_REQUEST_RESET });
+    dispatch({ type: REMOVE_TRIP_OWN_REQUEST_RESET });
     document.querySelector("body").style.overflow = "hidden";
     dispatch({
       type: SET_TRIP_FOR_SETTINGS,

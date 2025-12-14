@@ -115,7 +115,7 @@ export default function Trips() {
               >
                 Удалить
               </Button>
-              <Button className="modal modalSingle" onClick={closeSettingsTrip}>
+              <Button className="modal modalSingle" onClick={closeModal}>
                 Отмена
               </Button>
             </Settings>

@@ -30,6 +30,7 @@ import {
   REMOVE_TRIP_OWN_REQUEST,
   REMOVE_TRIP_OWN_REQUEST_ERROR,
   REMOVE_TRIP_OWN_REQUEST_SUCCESS,
+  REMOVE_TRIP_OWN_REQUEST_RESET,
 } from "../actions/trips";
 
 const initialState = {
@@ -1078,6 +1079,12 @@ export const tripsReducer = (state = initialState, action) => {
         removeTripRequest: false,
         removeTripRequestError: false,
       };
+    case REMOVE_TRIP_REQUEST_RESET:
+      return {
+        ...state,
+        removeTripRequest: false,
+        removeTripRequestError: false,
+      };
     case REMOVE_TRIP_OWN_REQUEST:
       return {
         ...state,
@@ -1105,7 +1112,7 @@ export const tripsReducer = (state = initialState, action) => {
         removeTripOwnRequest: false,
         removeTripOwnRequestError: false,
       };
-    case REMOVE_TRIP_REQUEST_RESET:
+    case REMOVE_TRIP_OWN_REQUEST_RESET:
       return {
         ...state,
         removeTripOwnRequest: false,
