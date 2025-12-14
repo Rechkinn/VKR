@@ -257,7 +257,7 @@ export default function Calendar() {
   }
 
   function setDisabledButton(trip, checkDate = false) {
-    if (!trip?.creator_id && !trip?.driver_id && trip?.trip_type) return true;
+    if (!trip?.creator_id || !trip?.driver_id || trip?.trip_type) return true;
 
     let result =
       trip.creator_id === trip.driver_id &&
