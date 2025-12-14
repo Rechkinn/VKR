@@ -82,7 +82,7 @@ export default function FormForNewTrip() {
       Number(year) >= currentDate.getFullYear() &&
       Number(year) <= currentDate.getFullYear() + 1;
 
-    return validYear && tripDate.getTime() >= currentDate.getTime();
+    return validYear && tripDate.getTime() > currentDate.getTime();
   }
 
   function validatePhoneNumber(phone) {
@@ -279,7 +279,7 @@ export default function FormForNewTrip() {
                 className={styles.inputDate}
                 errorText={
                   dateError
-                    ? "Введите дату сегодняшнего дня или больше, но не более чем на год вперёд"
+                    ? "Введите дату больше сегодняшнего дня, но не более чем на год вперёд"
                     : ""
                 }
                 required
