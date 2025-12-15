@@ -127,7 +127,7 @@ export default function Input({
                 <li
                   key={i}
                   className={styles.li}
-                  onPointerDown={(e) => {
+                  onPointerUp={(e) => {
                     e.stopPropagation();
                     setValueInput(element.value);
                     setIsOpenContentSelect(false);
