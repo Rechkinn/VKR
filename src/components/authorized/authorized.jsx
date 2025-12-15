@@ -119,16 +119,17 @@ const TelegramAuth = () => {
       {userTelegramInfoRequest && <Loader>Аутентификация...</Loader>}
 
       {!userTelegramInfoRequest && userTelegramInfoRequestError && (
-        <>
-          <p style={{ color: "red" }}>Ошибка аутентификации!</p>
-          <div style={{ color: "red" }}>подробности: {customLog}</div>
-        </>
+        // <>
+        //   <p style={{ color: "red" }}>Ошибка аутентификации!</p>
+        //   <div style={{ color: "red" }}>подробности: {customLog}</div>
+        // </>
+        <Preview />
       )}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        // infoFromTelegram?.telegram_id && <App />}
-        infoFromTelegram?.telegram_id && <Preview />}
+        // infoFromTelegram?.telegram_id && <Preview />}
+        infoFromTelegram?.telegram_id && <App />}
       {/* {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
         infoFromTelegram?.telegram_id && (

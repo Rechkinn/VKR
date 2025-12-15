@@ -97,8 +97,8 @@ export default function Preview() {
                 ? "Реферальный код не найден!"
                 : ""
             }
-            readOnly
-            placeholder="Поле отключено"
+            // readOnly
+            // placeholder="Поле отключено"
           />
         </form>
       );
@@ -172,8 +172,8 @@ export default function Preview() {
           form="form-for-referral-code"
           type="submit"
           onClick={() => {
-            increaseCompletedPage();
-            // if (currentPage !== "inputReferralCode") increaseCompletedPage();
+            // increaseCompletedPage();
+            if (currentPage !== "inputReferralCode") increaseCompletedPage();
           }}
         >
           <img src={arrow} alt="" className={styles.img} />
