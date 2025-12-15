@@ -66,11 +66,11 @@ export function getTrips() {
           trips: trips,
         });
       })
-      .catch(
+      .catch(() => {
         dispatch({
           type: GET_TRIPS_REQUEST_ERROR,
-        })
-      );
+        });
+      });
   };
 }
 
@@ -230,11 +230,11 @@ export function getTripsForCalendar() {
           trips: trips,
         });
       })
-      .catch(
+      .catch(() => {
         dispatch({
           type: GET_TRIPS_FOR_CALENDAR_REQUEST_ERROR,
-        })
-      );
+        });
+      });
   };
 }
 

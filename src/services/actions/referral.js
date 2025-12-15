@@ -47,10 +47,10 @@ export function useReferralCode(
         });
         increaseCompletedPage();
       })
-      .catch(
+      .catch(() => {
         dispatch({
           type: USE_REFERRAL_CODE_REQUEST_ERROR,
-        })
-      );
+        });
+      });
   };
 }
