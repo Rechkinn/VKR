@@ -61,7 +61,7 @@ export default function Preview() {
       setReferralError(true);
     } else {
       referralData = {
-        telegram_id: infoFromTelegram.telegram_id,
+        telegram_id: infoFromTelegram.id,
         referral_code: inputReferralCode.value,
       };
       setReferralError(false);
