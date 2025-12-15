@@ -1,4 +1,5 @@
 import { doRequest } from "../../utils/doRequest";
+import { SET_USER_DATA_IN_LOCAL_STORAGE, SET_USER_TELEGRAM_INFO } from "./user";
 
 export const USE_REFERRAL_CODE_REQUEST = "USE_REFERRAL_CODE_REQUEST";
 export const USE_REFERRAL_CODE_REQUEST_ERROR =
