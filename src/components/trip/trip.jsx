@@ -38,12 +38,8 @@ export default function Trip({ trip, openSettingsTrip }) {
               className={styles.carIcon}
             /> */}
           </div>
-          <Button onClick={openSettingsTrip}>
-            <img
-              src={settingsIcon}
-              alt="Иконка настроек"
-              className={styles.carIcon}
-            />
+          <Button onClick={openSettingsTrip} className={styles.settingsButton}>
+            <img src={settingsIcon} alt="Иконка настроек" />
           </Button>
         </header>
 

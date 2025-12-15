@@ -19,4 +19,8 @@
   position: absolute;
   top: 19px;
   right: 10px;
+
+  width: 25px;
+  display: flex;
+  justify-content: end;
 }
