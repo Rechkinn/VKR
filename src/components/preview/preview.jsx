@@ -28,6 +28,8 @@ export default function Preview() {
   const formRef = useRef();
   const dispatch = useDispatch();
   const { infoFromTelegram } = useSelector((store) => store.user);
+  console.log("infoFromTelegram preview");
+  console.log(infoFromTelegram);
   const { useReferralCodeRequest, useReferralCodeRequestError } = useSelector(
     (store) => store.referral
   );
