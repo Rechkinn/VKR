@@ -432,7 +432,7 @@ export default function Calendar() {
                   })}
                 </div>
               </div>
-              <p style={{ color: "black" }}>-</p>
+              <p className={styles.minusForCorrectlyRenderContainerTrips}>-</p>
             </section>
           </>
         )}

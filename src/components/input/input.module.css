@@ -11,6 +11,8 @@ input {
 }
 
 .input {
+  background-color: var(--white-color);
+  color: var(--black-color);
   padding: 5px 23px;
   font-size: 13px;
   width: 100%;

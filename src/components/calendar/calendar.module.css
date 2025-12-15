@@ -76,3 +76,7 @@
 .containerTripsButton :last-child {
   margin-left: 5px;
 }
+
+.minusForCorrectlyRenderContainerTrips {
+  color: var(--background-color);
+}
