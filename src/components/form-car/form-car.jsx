@@ -118,7 +118,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "") continue;
-      if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
+
       if (inputs[i].name === "year") {
         if (!validateYear(inputs[i].value)) {
           inputs[i].focus();
@@ -300,7 +300,6 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               label={"Класс авто"}
               defaultValue={carForSettings?.car_class ?? "any"}
             >
-              <option value="any">Любой</option>
               <option value="passenger_car">Легковой</option>
               <option value="business">Минивэн</option>
               <option value="microbus">Микроавтобус</option>
