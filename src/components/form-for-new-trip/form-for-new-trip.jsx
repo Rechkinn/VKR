@@ -6,6 +6,7 @@ import watchIcon from "../../image/section-trips/watch-icon.svg";
 import startPointIcon from "../../image/section-trips/start-point-icon.svg";
 import endPointIcon from "../../image/section-trips/end-point-icon.svg";
 import phoneIcon from "../../image/section-trips/phone-icon.svg";
+import swapIcon from "../../image/swap.svg";
 import Button from "../button/button";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import Input from "../input/input";
@@ -39,6 +40,13 @@ export default function FormForNewTrip() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formRef = useRef();
+
+  const toAddressRef = useRef();
+  const fromAddressRef = useRef();
+  const [valueFromAddressForSwap, setValueFromAddressForSwap] = useState(
+    "Новокузнецк Аэропорт"
+  );
+  const [valueToAddressForSwap, setValueToAddressForSwap] = useState("Шерегеш");
 
   const location = useLocation();
 
@@ -230,6 +238,22 @@ export default function FormForNewTrip() {
     dispatch({ type: UPDATE_TRIP_REQUEST_RESET });
   }
 
+  useEffect(() => {
+    if (tripForViewing?.to_address)
+      setValueToAddressForSwap(tripForViewing?.to_address);
+    if (tripForViewing?.from_address)
+      setValueFromAddressForSwap(tripForViewing?.from_address);
+  }, [tripForViewing?.to_address, tripForViewing?.from_address]);
+
+  function swapAdresses() {
+    if (!toAddressRef?.current || !fromAddressRef?.current) return;
+
+    const valueTo = toAddressRef.current.value;
+
+    setValueToAddressForSwap(fromAddressRef.current.value);
+    setValueFromAddressForSwap(valueTo);
+  }
+
   return (
     <>
       {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
@@ -307,6 +331,7 @@ export default function FormForNewTrip() {
               />
 
               <Input
+                ref={fromAddressRef}
                 label="Откуда"
                 iconForLabel={startPointIcon}
                 type="text"
@@ -316,11 +341,13 @@ export default function FormForNewTrip() {
                 errorText={fromAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
-                initialValue={tripForViewing?.from_address ?? ""}
+                // initialValue={tripForViewing?.from_address ?? ""}
+                initialValue={valueFromAddressForSwap}
                 readOnly={isOnlyViewing}
               />
 
               <Input
+                ref={toAddressRef}
                 label="Куда"
                 iconForLabel={endPointIcon}
                 type="text"
@@ -330,8 +357,20 @@ export default function FormForNewTrip() {
                 errorText={toAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
-                initialValue={tripForViewing?.to_address ?? ""}
+                // initialValue={tripForViewing?.to_address ?? ''}
+                initialValue={valueToAddressForSwap}
                 readOnly={isOnlyViewing}
+                swapButton={
+                  !isOnlyViewing && (
+                    <Button
+                      onClick={swapAdresses}
+                      type="button"
+                      className={styles.swap}
+                    >
+                      <img src={swapIcon} alt="" />
+                    </Button>
+                  )
+                }
               />
 
               <div className={styles.containerForTwoInputs}>
