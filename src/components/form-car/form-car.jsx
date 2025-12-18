@@ -301,7 +301,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               defaultValue={carForSettings?.car_class ?? "any"}
             >
               <option value="passenger_car">Легковой</option>
-              <option value="business">Минивэн</option>
+              <option value="business">Бизнес</option>
               <option value="microbus">Микроавтобус</option>
               <option value="bus">Автобус</option>
             </SelectCustom>
