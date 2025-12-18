@@ -291,7 +291,7 @@ export default function FormForNewTrip() {
               />
 
               <Input
-                label="Время"
+                label="Время выезда"
                 iconForLabel={watchIcon}
                 type="time"
                 name="time"
