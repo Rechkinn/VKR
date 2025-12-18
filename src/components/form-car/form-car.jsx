@@ -84,7 +84,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
   }
 
   function validateBrandOrModel(inputValue) {
-    const regex = /^[A-Za-zА-Яа-яЁё0-9]{2,100}$/;
+    const regex = /^[A-Za-zА-Яа-яЁё0-9\-\ ]{2,100}$/;
     return regex.test(inputValue);
   }
   function validateYear(inputValue) {
@@ -118,6 +118,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
 
     for (let i = 0; i < inputs.length; i++) {
       if (inputs[i].name === "") continue;
+      if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
       if (inputs[i].name === "year") {
         if (!validateYear(inputs[i].value)) {
           inputs[i].focus();
@@ -297,10 +298,11 @@ const FormCar = ({ isForViewing, isForEditing }) => {
               name="car_class"
               id="car_class"
               label={"Класс авто"}
-              defaultValue={carForSettings?.car_class ?? "passenger_car"}
+              defaultValue={carForSettings?.car_class ?? "any"}
             >
+              <option value="any">Любой</option>
               <option value="passenger_car">Легковой</option>
-              <option value="minivan">Минивэн</option>
+              <option value="business">Минивэн</option>
               <option value="microbus">Микроавтобус</option>
               <option value="bus">Автобус</option>
             </SelectCustom>

@@ -131,8 +131,9 @@ export default function FormForNewTrip() {
           setToAdressError(false);
         }
       }
-      if (inputs[i].name === "" || inputs[i].value === "") continue;
 
+      if (inputs[i].name === "" || inputs[i].value === "") continue;
+      if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
       if (inputs[i].name === "date") {
         date = `${inputs[i].value}`;
 
@@ -352,11 +353,12 @@ export default function FormForNewTrip() {
                     name="car_class"
                     id="car_class"
                     label="Класс автомобиля"
-                    defaultValue={tripForViewing?.car_class ?? "passenger_car"}
+                    defaultValue={tripForViewing?.car_class ?? "any"}
                     disabled={isOnlyViewing}
                   >
+                    <option value="any">Любой</option>
                     <option value="passenger_car">Легковой</option>
-                    <option value="minivan">Минивэн</option>
+                    <option value="business">Минивэн</option>
                     <option value="microbus">Микроавтобус</option>
                     <option value="bus">Автобус</option>
                   </SelectCustom>
