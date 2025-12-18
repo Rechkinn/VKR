@@ -203,7 +203,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
       {(!createCarRequest && createCarRequestError) ||
       (!editCarRequest && editCarRequestError) ? (
         <>
-          <div style={{ color: "white" }}>
+          <div>
             {`Ошибка ${
               isForEditing ? "редактирования" : "создания"
             } автомобиля!`}
