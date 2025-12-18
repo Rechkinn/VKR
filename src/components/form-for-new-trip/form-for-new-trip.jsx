@@ -295,6 +295,7 @@ export default function FormForNewTrip() {
                 iconForLabel={watchIcon}
                 type="time"
                 name="time"
+                step="300"
                 className={styles.inputTime}
                 required
                 initialValue={
