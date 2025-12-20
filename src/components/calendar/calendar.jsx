@@ -48,11 +48,7 @@ export default function Calendar() {
     trips,
   } = useSelector((store) => store.trips);
 
-  const [notifications, setNotifications] = useState([
-    {
-      message: "Опубликовано в канал!",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     dispatch(getTripsForCalendar());
