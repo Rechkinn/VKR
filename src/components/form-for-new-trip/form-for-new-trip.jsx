@@ -309,7 +309,14 @@ export default function FormForNewTrip() {
                 }
                 required
                 initialValue={
-                  tripForViewing?.departure_datetime.split("T")[0] ?? ""
+                  tripForViewing?.departure_datetime.split("T")[0]
+                    ? tripForViewing?.departure_datetime.split("T")[0]
+                    : location?.state?.selectedDate
+                    ? location?.state?.selectedDate
+                        .split(".")
+                        .reverse()
+                        .join("-")
+                    : ""
                 }
                 readOnly={isOnlyViewing}
               />
