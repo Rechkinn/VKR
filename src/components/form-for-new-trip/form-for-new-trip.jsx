@@ -304,7 +304,7 @@ export default function FormForNewTrip() {
                 className={styles.inputDate}
                 errorText={
                   dateError
-                    ? "Введите дату больше от сегодняшнего дня, но не более чем на год вперёд"
+                    ? "Введите дату от сегодняшнего дня, но не более чем на год вперёд"
                     : ""
                 }
                 required
