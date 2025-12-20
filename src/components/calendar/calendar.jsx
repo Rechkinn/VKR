@@ -328,6 +328,13 @@ export default function Calendar() {
     });
   }
 
+  console.log("getTripsForCalendarRequest");
+  console.log(getTripsForCalendarRequest);
+  console.log("getTripsForCalendarRequestError");
+  console.log(getTripsForCalendarRequestError);
+  console.log("tripsForCalendar");
+  console.log(tripsForCalendar);
+
   return (
     <>
       {getTripsForCalendarRequest && <Loader>Получаем ваши поездки...</Loader>}
