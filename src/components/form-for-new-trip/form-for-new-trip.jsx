@@ -254,6 +254,20 @@ export default function FormForNewTrip() {
     setValueFromAddressForSwap(valueTo);
   }
 
+  function getInitialDate() {
+    // const date =
+    if (tripForViewing?.departure_datetime.split("T")[0]) {
+      return tripForViewing?.departure_datetime.split("T")[0];
+    } else if (location?.state?.selectedDate) {
+      const date =
+        location?.state?.selectedDate.length < 10
+          ? `0${location?.state?.selectedDate}`
+          : location?.state?.selectedDate;
+      return date.split(".").reverse().join("-");
+    }
+    return "";
+  }
+
   return (
     <>
       {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
@@ -308,16 +322,17 @@ export default function FormForNewTrip() {
                     : ""
                 }
                 required
-                initialValue={
-                  tripForViewing?.departure_datetime.split("T")[0]
-                    ? tripForViewing?.departure_datetime.split("T")[0]
-                    : location?.state?.selectedDate
-                    ? location?.state?.selectedDate
-                        .split(".")
-                        .reverse()
-                        .join("-")
-                    : ""
-                }
+                // initialValue={
+                //   tripForViewing?.departure_datetime.split("T")[0]
+                //     ? tripForViewing?.departure_datetime.split("T")[0]
+                //     : location?.state?.selectedDate
+                //     ? location?.state?.selectedDate
+                //         .split(".")
+                //         .reverse()
+                //         .join("-")
+                //     : ""
+                // }
+                initialValue={getInitialDate()}
                 readOnly={isOnlyViewing}
               />
 
