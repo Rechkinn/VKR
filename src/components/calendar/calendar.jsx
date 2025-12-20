@@ -271,6 +271,7 @@ export default function Calendar() {
       state: {
         toRoute: "/calendar",
         isTripDelegated: false,
+        selectedDate: clickedDay,
       },
     });
   }
