@@ -307,7 +307,8 @@ export default function Calendar() {
       setNotifications([{ message: "Опубликовано в канал!" }]);
     }
 
-    dispatch(changeTripType(trip.id, caseSuccessfulChange));
+    dispatch(changeTripType(trip.id, closeSettingsTrip));
+    // dispatch(changeTripType(trip.id, caseSuccessfulChange));
   }
 
   function renderNotifications(notifications) {
