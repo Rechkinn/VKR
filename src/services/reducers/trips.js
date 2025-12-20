@@ -763,17 +763,9 @@ export const tripsReducer = (state = initialState, action) => {
       return {
         ...state,
         tripsForCalendar: [
-          ...state.tripsForCalendar.map((trip) => {
-            if (trip.id !== action.idTripForRemove) {
-              console.log("trip.id", trip.id);
-              console.log("action.idTripForRemove", action.idTripForRemove);
-              console.log(
-                "trip.id !== action.idTripForRemove",
-                trip.id !== action.idTripForRemove
-              );
-              return trip;
-            }
-          }),
+          ...state.tripsForCalendar.map(
+            (trip) => trip.id !== action.idTripForRemove
+          ),
         ],
         removeTripOwnRequest: false,
         removeTripOwnRequestError: false,
