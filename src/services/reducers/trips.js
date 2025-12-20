@@ -763,7 +763,7 @@ export const tripsReducer = (state = initialState, action) => {
       return {
         ...state,
         tripsForCalendar: [
-          ...state.tripsForCalendar.map(
+          ...state.tripsForCalendar.filter(
             (trip) => trip.id !== action.idTripForRemove
           ),
         ],
