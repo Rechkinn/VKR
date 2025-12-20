@@ -5,7 +5,7 @@ import arrowRightIcon from "../../image/calendar/arrow-for-calendar-right.svg";
 import addTripIcon from "../../image/profile/addCarIcon.svg";
 import DayOfWeek from "../day-of-week/day-of-week";
 import CalendarDay from "../calendar-day/calendar-day";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Trip from "../trip/trip";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../loader/loader";
@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router";
 import { useModal } from "../../hooks/useModal";
 import Settings from "../settings/settings";
+import Notification from "../notification/notification";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -47,9 +48,36 @@ export default function Calendar() {
     trips,
   } = useSelector((store) => store.trips);
 
+  const [notifications, setNotifications] = useState([
+    {
+      message: "Опубликовано в канал!",
+    },
+  ]);
+
   useEffect(() => {
     dispatch(getTripsForCalendar());
   }, []);
+
+  // useEffect(() => {
+  //   console.log("ТУТ useEffect");
+  //   if (!notificationRef?.current) return;
+
+  //   console.log("ииииии ТУТ useEffect");
+
+  //   const hiddenNotification = () => {
+  //     setIsVisibleNotification(false);
+  //   };
+
+  //   notificationRef?.current.addEventListener(
+  //     "onAnimationEnd",
+  //     hiddenNotification
+  //   );
+  //   return () =>
+  //     notificationRef?.current.removeEventListener(
+  //       "onAnimationEnd",
+  //       hiddenNotification
+  //     );
+  // }, [notificationRef?.current]);
 
   function openSettingsTrip(trip) {
     dispatch({ type: REMOVE_TRIP_OWN_REQUEST_RESET });
@@ -278,7 +306,29 @@ export default function Calendar() {
   }
 
   function publishToChannel(trip) {
-    dispatch(changeTripType(trip.id, closeSettingsTrip));
+    function caseSuccessfulChange() {
+      closeSettingsTrip();
+      setNotifications([{ message: "Опубликовано в канал!" }]);
+    }
+
+    dispatch(changeTripType(trip.id, caseSuccessfulChange));
+  }
+
+  function renderNotifications(notifications) {
+    const animationDuration = 3;
+    return notifications.map((notification, i) => {
+      setTimeout(() => {
+        setNotifications([]);
+      }, 1000 * animationDuration * notifications.length);
+      return (
+        <Notification
+          duration={animationDuration}
+          delay={i * animationDuration}
+        >
+          {notification.message}
+        </Notification>
+      );
+    });
   }
 
   return (
@@ -352,7 +402,11 @@ export default function Calendar() {
             <section className={styles.section}>
               <header className={styles.header}>
                 <h1 className={styles.title}>Календарь</h1>
+                <div className={styles.containerNotifications}>
+                  {notifications && renderNotifications(notifications)}
+                </div>
               </header>
+
               <article className={styles.calendar}>
                 <header className={styles.calendarHeader}>
                   <Button onClick={() => changeMonth(-1)}>
