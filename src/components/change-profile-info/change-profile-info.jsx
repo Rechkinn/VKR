@@ -59,7 +59,7 @@ export default function ChangeProfileInfo() {
   }
 
   function validateName(inputValue) {
-    const regex = /^[A-Za-zА-Яа-яЁё]{2,200}$/;
+    const regex = /^[А-Яа-яЁёIV .,()\-]{2,200}$/;
     return regex.test(inputValue);
   }
 
@@ -91,7 +91,6 @@ export default function ChangeProfileInfo() {
           inputs[i].focus();
           stop = true;
           setPhoneNumberError(true);
-          break;
         } else {
           setPhoneNumberError(false);
         }
@@ -101,7 +100,6 @@ export default function ChangeProfileInfo() {
           inputs[i].focus();
           stop = true;
           setLastNameError(true);
-          break;
         } else {
           setLastNameError(false);
         }
@@ -111,7 +109,6 @@ export default function ChangeProfileInfo() {
           inputs[i].focus();
           stop = true;
           setFirstNameError(true);
-          break;
         } else {
           setFirstNameError(false);
         }
@@ -157,7 +154,7 @@ export default function ChangeProfileInfo() {
               classNameContainer={styles.input}
               errorText={
                 firstNameError
-                  ? "Введите корректное имя на русском или английском языке от 2 до 200 символов"
+                  ? "Введите корректное имя на русском языке от 2 до 200 символов"
                   : ""
               }
             />
@@ -169,7 +166,7 @@ export default function ChangeProfileInfo() {
               classNameContainer={styles.input}
               errorText={
                 lastNameError
-                  ? "Введите корректную фамилию на русском или английском языке от 2 до 200 символов"
+                  ? "Введите корректную фамилию на русском языке от 2 до 200 символов"
                   : ""
               }
             />
