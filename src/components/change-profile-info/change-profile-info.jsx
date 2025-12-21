@@ -79,7 +79,8 @@ export default function ChangeProfileInfo() {
     let stop = false;
 
     for (let i = 0; i < inputs.length; i++) {
-      if (inputs[i].name === "username") continue;
+      if (inputs[i].name === "username" || inputs[i].name === "referral_id")
+        continue;
       if (inputs[i].name === "sbp_bank" && inputs[i].value === "nothing") {
         newData[inputs[i].name] = null;
         continue;
