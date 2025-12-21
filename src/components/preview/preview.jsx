@@ -84,7 +84,7 @@ export default function Preview() {
           onSubmit={(e) => handleFormSubmit(e)}
           id="form-for-referral-code"
         >
-          <img src={mainLogo} alt="" className={styles.img} />
+          <img src={mainLogo} alt="" className={styles.logo} />
           <h1 className={styles.nameApp}>OkGo!</h1>
           <p className={styles.textInputReferralCode}>
             Чтобы начать, ведите реферальный код

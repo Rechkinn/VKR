@@ -5,6 +5,12 @@
   margin: auto;
 }
 
+.logo {
+  composes: img;
+  width: 89px;
+  height: 89px;
+}
+
 .nameApp {
   text-align: center;
   margin-bottom: 32px;
