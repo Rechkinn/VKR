@@ -218,6 +218,15 @@ export default function ChangeProfileInfo() {
               <option value="Т-Банк">Т-Банк</option>
             </SelectCustom>
 
+            <Input
+              label="Ваш реферальный код"
+              type="number"
+              name="referral_id"
+              initialValue={infoFromTelegram.telegram_id}
+              classNameContainer={styles.mt16}
+              readOnly
+            />
+
             {/* <div className={styles.customCheckboxContainer}>
           <label
             htmlFor="become-driver"

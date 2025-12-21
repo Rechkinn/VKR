@@ -18,6 +18,10 @@
   margin-bottom: 16px;
 }
 
+.mt16 {
+  margin-top: 16px;
+}
+
 .customCheckboxContainer {
   display: flex;
   margin-bottom: 18px;
