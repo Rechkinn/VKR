@@ -103,6 +103,30 @@ export default function ProfileInfo() {
       : "Декабря";
   }
 
+  function formatWordDay(days) {
+    console.log("days", days);
+    const standard1 = "567890";
+    console.log("`${days}`.at(-1)");
+    console.log(`${days}`.at(-1));
+    console.log(
+      "standard1.includes(`${days}`.at(-1))",
+      standard1.includes(`${days}`.at(-1))
+    );
+    if (standard1.includes(`${days}`.at(-1))) return "дней";
+
+    const lastChar = `${days}`.at(-1);
+
+    if (`${days}`.length >= 2) {
+      const beforeLastChar = `${days}`.at(-2);
+      const lastTwoChar = Number(`${beforeLastChar}${lastChar}`);
+      if (lastTwoChar >= 11 && lastTwoChar <= 14) return "дней";
+    }
+
+    if (lastChar === "1") return "день";
+
+    return "дня";
+  }
+
   useEffect(() => {
     const currentDay = new Date();
     const finishDay = new Date(infoFromTelegram.subscription_exp);
@@ -122,7 +146,9 @@ export default function ProfileInfo() {
       let difference = (finishDayMs - currentDayMs) / 1000 / 60 / 60 / 24;
       resultString =
         difference > 1
-          ? `До конца подписки: ${Math.floor(difference)} дней`
+          ? `До конца подписки: ${Math.floor(difference)} ${formatWordDay(
+              Math.floor(difference)
+            )}`
           : `Подписка заканчивается ${infoFromTelegram.subscription_exp
               .split("T")[0]
               .split("-")
