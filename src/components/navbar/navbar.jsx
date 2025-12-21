@@ -49,7 +49,7 @@ export default function Navbar() {
                 activeIcon={carActiveIcon}
                 icon={carIcon}
               >
-                Поездки
+                Предложенные
               </NavbarLink>
             </li>
             <li className={styles.li}>

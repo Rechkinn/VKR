@@ -137,7 +137,7 @@ export default function Trips() {
           )}
           <section ref={sectionRef} className={styles.section}>
             <header className={styles.header}>
-              <h1 className={styles.title}>Мои поездки</h1>
+              <h1 className={styles.title}>Предложенные поездки</h1>
               {/* <div className={styles.balance}>
                 <Balance balanceValue={infoFromTelegram.balance} />
                 <Button className="black">Пополнить</Button>
@@ -151,7 +151,7 @@ export default function Trips() {
                 <span className={styles.buttonIconBackground}>
                   <img src={carIcon} alt="Иконка автомобиля" />
                 </span>
-                <span className={styles.buttonText}>Создать поездку</span>
+                <span className={styles.buttonText}>Предложить поездку</span>
               </Button>
 
               {/* <Tabs /> */}
