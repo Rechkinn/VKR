@@ -47,6 +47,10 @@ const Input = forwardRef(
       setValueInput(formattedValue);
     }
 
+    function formatLicensePlate(value) {
+      setValueInput(value.toUpperCase());
+    }
+
     const [isOpenContentSelect, setIsOpenContentSelect] = useState(false);
     const [contentSelect, setContentSelect] = useState([]);
     // const inputRef = useRef();
@@ -125,6 +129,8 @@ const Input = forwardRef(
               ? formatPhoneNumber(event.target.value)
               : name === "from_address" || name === "to_address"
               ? renderContentSelect(event.target.value)
+              : name === "license_plate"
+              ? formatLicensePlate(event.target.value)
               : setValueInput(event.target.value);
           }}
           className={`${styles.input} ${className}`}

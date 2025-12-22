@@ -84,7 +84,7 @@ const FormCar = ({ isForViewing, isForEditing }) => {
   }
 
   function validateBrandOrModel(inputValue) {
-    const regex = /^[A-Za-zА-Яа-яЁё0-9\-\ ]{2,100}$/;
+    const regex = /^[A-Za-zА-Яа-яЁё0-9\W_ ]{2,100}$/;
     return regex.test(inputValue);
   }
   function validateYear(inputValue) {
@@ -94,12 +94,34 @@ const FormCar = ({ isForViewing, isForEditing }) => {
     else return false;
   }
   function validateColor(inputValue) {
-    const regex = /^[А-Яа-яЁё]{2,50}$/;
+    const regex = /^[А-Яа-яЁё\W_ ]{2,50}$/;
     return regex.test(inputValue);
   }
   function validateLicensePlate(inputValue) {
     const regex = /^[УКЕНХВАРОСМТ]{1}[0-9]{3}[УКЕНХВАРОСМТ]{2}[0-9]{2,3}$/;
-    return regex.test(inputValue);
+
+    const validNumber = inputValue.slice(1, 4) !== "000";
+    console.log("validNumber", validNumber);
+    // 0[1-9]|[1-9][0-9]
+    // А777АА777
+    const regexRegion =
+      /^(0[1-9]{1}|[1-9]{1}[0-9]{1}|102|103|109|111|113|116|118|12[1-6]{1}|130|134|136|138|139|142|147|150|152|15[4-6]{1}|158|159|161|163|164|169|17[2-4]{1}|177|178|180|181|18[4-6]{1}|190|192|193|19[6-9]{1}|702|716|725|750|754|761|763|774|777|790|797|799|977|323|252|550)$/;
+    // const regexRegion = /^(0[1-9]{1}|[1-9]{1}[0-9]{1})$/;
+    // console.log(
+    //   "inputValue.slice(6, inputValue.length)",
+    //   inputValue.slice(6, inputValue.length)
+    // );
+    const validRegion =
+      inputValue.length > 6
+        ? regexRegion.test(inputValue.slice(6, inputValue.length))
+        : false;
+
+    console.log("validRegion", validRegion);
+    console.log(
+      "regex.test(inputValue) && validNumber && validRegion;",
+      regex.test(inputValue) && validNumber && validRegion
+    );
+    return regex.test(inputValue) && validNumber && validRegion;
   }
   function validateAdditionalInfo(inputValue) {
     return inputValue.length <= 500;
@@ -206,7 +228,8 @@ const FormCar = ({ isForViewing, isForEditing }) => {
           <div>
             {`Ошибка ${
               isForEditing ? "редактирования" : "создания"
-            } автомобиля!`}
+            } автомобиля!`}{" "}
+            {isForEditing && "Проверьте корректность введёных данных!"}
           </div>
           <Link to="/">Вернуться в профиль</Link>
         </>
