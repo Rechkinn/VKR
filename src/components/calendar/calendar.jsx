@@ -16,11 +16,12 @@ import {
   removeTripOwn,
   SET_TRIP_FOR_SETTINGS,
 } from "../../services/actions/trips";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useModal } from "../../hooks/useModal";
 import Settings from "../settings/settings";
 import Notification from "../notification/notification";
 import { isDevelopmentMode } from "../../utils/development-mode";
+import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -53,6 +54,10 @@ export default function Calendar() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    dispatch({
+      type: SET_SUN_VISIBILITY_ON_BACKGROUND,
+      sunVisibility: true,
+    });
     dispatch(getTripsForCalendar());
   }, []);
 
