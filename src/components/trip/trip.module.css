@@ -6,8 +6,6 @@
   font-size: 14px;
   text-align: center;
   background-color: var(--light-grey-color);
-}
-.trip:nth-child(n):not(:last-child) {
   margin-bottom: 10px;
 }
 
