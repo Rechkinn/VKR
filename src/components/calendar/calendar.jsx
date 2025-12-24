@@ -48,6 +48,7 @@ export default function Calendar() {
     changeTripTypeRequestError,
     trips,
   } = useSelector((store) => store.trips);
+  const { infoFromTelegram } = useSelector((store) => store.user);
 
   const [notifications, setNotifications] = useState([]);
 
@@ -303,6 +304,7 @@ export default function Calendar() {
         detailsTrip: trip,
         toRoute: "/calendar",
         whoShowInfo: "creator",
+        isOnlyViewing: trip?.creator_id === infoFromTelegram?.id ? false : true,
       },
     });
   }

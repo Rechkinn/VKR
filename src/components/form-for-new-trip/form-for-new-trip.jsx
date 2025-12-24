@@ -523,7 +523,7 @@ export default function FormForNewTrip() {
                       tripForViewing?.[location?.state?.whoShowInfo]
                         ?.sbp_bank ?? ""
                     }`.trim()}
-                    placeholder="Данные телефона и банка отсутствуют"
+                    placeholder="Данные телефона отсутствуют"
                     readOnly
                   />
 
