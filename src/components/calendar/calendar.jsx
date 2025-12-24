@@ -298,7 +298,11 @@ export default function Calendar() {
 
   function openDetailsTrip(trip) {
     navigate("/create-new-trip", {
-      state: { detailsTrip: trip, toRoute: "/calendar" },
+      state: {
+        detailsTrip: trip,
+        toRoute: "/calendar",
+        whoShowInfo: "creator",
+      },
     });
   }
 
@@ -328,13 +332,6 @@ export default function Calendar() {
       );
     });
   }
-
-  console.log("getTripsForCalendarRequest");
-  console.log(getTripsForCalendarRequest);
-  console.log("getTripsForCalendarRequestError");
-  console.log(getTripsForCalendarRequestError);
-  console.log("tripsForCalendar");
-  console.log(tripsForCalendar);
 
   return (
     <>

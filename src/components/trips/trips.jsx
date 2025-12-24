@@ -68,7 +68,12 @@ export default function Trips() {
 
   function openDetailsTrip(trip) {
     navigate("/create-new-trip", {
-      state: { detailsTrip: trip, toRoute: "/trips", isOnlyViewing: true },
+      state: {
+        detailsTrip: trip,
+        toRoute: "/trips",
+        isOnlyViewing: true,
+        whoShowInfo: "driver",
+      },
     });
   }
 
