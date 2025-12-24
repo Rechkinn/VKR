@@ -310,8 +310,8 @@ export default function Calendar() {
       getStateForFormTrip(
         trip,
         "/calendar",
-        "creator",
-        trip?.creator_id === infoFromTelegram?.id ? false : true
+        trip?.creator_id === infoFromTelegram?.id ? false : true,
+        "creator"
       )
       //   {
       //   state: {
@@ -508,10 +508,10 @@ export default function Calendar() {
                           getStateForFormTrip(
                             trip,
                             "/calendar",
-                            "creator",
                             trip?.creator_id === infoFromTelegram?.id
                               ? false
-                              : true
+                              : true,
+                            "creator"
                           )?.state
                         }
                       />
