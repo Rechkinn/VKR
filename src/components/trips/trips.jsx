@@ -47,7 +47,7 @@ export default function Trips() {
 
   function setMaxHeightContainerTrips() {
     setStyleTripsContainer({
-      maxHeight: `${window.innerHeight - 139 - 99.5 - 125.5}px`,
+      maxHeight: `${window.innerHeight - 139 - 99.5 - 145.5}px`,
     });
   }
 
