@@ -7,6 +7,7 @@
   color: var(--black-color);
   border: 1px solid var(--dark-grey-color);
   border-radius: 10px;
+  margin-bottom: 15px;
 }
 
 .name,

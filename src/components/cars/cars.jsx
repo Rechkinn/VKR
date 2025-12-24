@@ -44,7 +44,7 @@ export const Cars = forwardRef((props, ref) => {
   }
 
   function openCarForm(event, path) {
-    event.stopPropagation();
+    if (event) event.stopPropagation();
     hiddenNavbarAndSun();
     navigate(`${path}`);
   }
@@ -155,6 +155,7 @@ export const Cars = forwardRef((props, ref) => {
                       key={car.id}
                       car={car}
                       openSettings={() => openSettingsCar(car)}
+                      openCarForm={(e) => openCarForm(e, `/car/edit/${car.id}`)}
                     />
                   );
                 }

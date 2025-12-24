@@ -27,10 +27,6 @@
   max-height: 300px;
 }
 
-.cars > :nth-child(n):not(:last-child) {
-  margin-bottom: 15px;
-}
-
 .errorSettings {
   margin-bottom: 10px;
   color: var(--red-color);
