@@ -97,26 +97,29 @@ const Input = forwardRef(
 
     return (
       <div className={classNameContainer}>
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <label htmlFor={name} className={styles.label}>
-            {iconForLabel && (
-              <img
-                src={iconForLabel}
-                alt="Иконка для label"
-                className={styles.iconForLabel}
-              />
-            )}
-            {label}
-          </label>
-          {swapButton && <>{swapButton}</>}
-        </div>
+        {label && (
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <label htmlFor={name} className={styles.label}>
+              {iconForLabel && (
+                <img
+                  src={iconForLabel}
+                  alt="Иконка для label"
+                  className={styles.iconForLabel}
+                />
+              )}
+              {label}
+            </label>
+            {swapButton && <>{swapButton}</>}
+          </div>
+        )}
+
         <input
           {...props}
           ref={ref}
