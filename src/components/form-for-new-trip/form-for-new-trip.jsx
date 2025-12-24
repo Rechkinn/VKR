@@ -271,6 +271,14 @@ export default function FormForNewTrip() {
     return "";
   }
 
+  function getNameAgent(username, first_name) {
+    let resultName = "";
+
+    resultName += username ?? "";
+    resultName += first_name ? ` (${first_name})` : "";
+    return resultName.trim();
+  }
+
   return (
     <>
       {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
@@ -487,6 +495,54 @@ export default function FormForNewTrip() {
                   </p>
                 )}
               </div>
+
+              {tripForViewing && tripForViewing?.trip_type !== "own" && (
+                <>
+                  <Input
+                    label={
+                      location?.state?.whoShowInfo === "creator"
+                        ? "Агент"
+                        : "Водитель"
+                    }
+                    type="text"
+                    name="info-field-human-1"
+                    initialValue={getNameAgent(
+                      tripForViewing?.[location?.state?.whoShowInfo]?.username,
+                      tripForViewing?.[location?.state?.whoShowInfo]?.first_name
+                    )}
+                    placeholder="Данные имени отсутствуют"
+                    readOnly
+                  />
+                  <Input
+                    type="text"
+                    name="info-field-human-2"
+                    initialValue={`${
+                      tripForViewing?.[location?.state?.whoShowInfo]
+                        ?.phone_number ?? ""
+                    } ${
+                      tripForViewing?.[location?.state?.whoShowInfo]
+                        ?.sbp_bank ?? ""
+                    }`.trim()}
+                    placeholder="Данные телефона и банка отсутствуют"
+                    readOnly
+                  />
+
+                  {location?.state?.whoShowInfo === "driver" && (
+                    <Input
+                      label="Авто"
+                      type="text"
+                      name="info-field-car"
+                      initialValue={`${tripForViewing?.vehicle?.color ?? ""} ${
+                        tripForViewing?.vehicle?.brand ?? ""
+                      } ${tripForViewing?.vehicle?.model ?? ""} ${
+                        tripForViewing?.vehicle?.license_plate ?? ""
+                      }`.trim()}
+                      placeholder="Данные об авто отсутствуют"
+                      readOnly
+                    />
+                  )}
+                </>
+              )}
 
               {!isOnlyViewing && (
                 <Button
