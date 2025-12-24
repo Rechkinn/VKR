@@ -15,6 +15,7 @@ import {
   SET_CAR_FOR_SETTINGS,
 } from "../../services/actions/car";
 import Loader from "../loader/loader";
+import { isDevelopmentMode } from "../../utils/development-mode";
 
 export const Cars = forwardRef((props, ref) => {
   const { visibilityModal, openModal, closeModal } = useModal();
@@ -73,18 +74,20 @@ export const Cars = forwardRef((props, ref) => {
 
   return (
     <>
-      {getCarsRequest && (
-        <div style={{ color: "red", textAlign: "center" }}>
-          Ищем ваши авто...
-        </div>
+      {!isDevelopmentMode && (
+        <>
+          {getCarsRequest && <Loader>Ищем ваши авто...</Loader>}
+          {!getCarsRequest && getCarsRequestError && (
+            <div style={{ color: "red", textAlign: "center" }}>
+              Ошибка получения данных об авто!
+            </div>
+          )}
+        </>
       )}
-      {!getCarsRequest && getCarsRequestError && (
-        <div style={{ color: "red", textAlign: "center" }}>
-          Ошибка получения данных об авто!
-        </div>
-      )}
+
       {/* {true && ( */}
-      {!getCarsRequest && !getCarsRequestError && (
+      {/* {!getCarsRequest && !getCarsRequestError && ( */}
+      {cars && (
         <>
           {visibilityModal && (
             <Settings closeSettings={closeSettingsCar}>

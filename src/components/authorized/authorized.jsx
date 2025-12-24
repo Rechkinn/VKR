@@ -11,6 +11,7 @@ import Loader from "../loader/loader";
 import { getCars } from "../../services/actions/car";
 import { getTrips, getTripsForCalendar } from "../../services/actions/trips";
 import Preview from "../preview/preview";
+import { isDevelopmentMode } from "../../utils/development-mode";
 
 const TelegramAuth = () => {
   const [webApp, setWebApp] = useState(null);
@@ -61,7 +62,8 @@ const TelegramAuth = () => {
 
         if (webApp.disableVerticalSwipes) webApp.disableVerticalSwipes();
         if (webApp.expand) webApp.expand();
-        if (webApp.requestFullscreen) webApp.requestFullscreen();
+        if (!isDevelopmentMode)
+          if (webApp.requestFullscreen) webApp.requestFullscreen();
 
         setWebApp(webApp);
       } catch (e) {

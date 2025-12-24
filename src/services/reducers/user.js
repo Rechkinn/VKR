@@ -1,3 +1,4 @@
+import { isDevelopmentMode } from "../../utils/development-mode";
 import {
   SET_USER_TELEGRAM_INFO,
   USER_TELEGRAM_INFO_REQUEST_ERROR,
@@ -12,43 +13,45 @@ import {
   CHANGE_USER_INFO_REQUEST_SUCCESS,
 } from "../actions/user";
 
-// const initialState = {
-//   infoFromTelegram: {
-//     allows_write_to_pm: true,
-//     created_at: "2025-10-29T11:31:34.834898Z",
-//     first_name: "Алексей",
-//     id: 3,
-//     is_active: true,
-//     is_verified: true,
-//     language_code: "ru",
-//     last_name: "Редькин",
-//     phone_number: "+7 (222) 222-22-22",
-//     photo_url:
-//       "https://t.me/i/userpic/320/JtGPbJBctx4LLq_nm2R9calFGN2KxnnIKkyKLZQyodE.svg",
-//     rating_avg: 4.9,
-//     rating_count: 0,
-//     role: "driver",
-//     sbp_bank: null,
-//     sbp_phone_number: null,
-//     subscription_exp: "2025-12-21T21:35:30.894573Z",
-//     telegram_id: 870593529,
-//     updated_at: "2025-11-12T09:13:16.296053Z",
-//     username: "Rechkinnnn",
-//   },
-//   userTelegramInfoRequest: false,
-//   userTelegramInfoRequestError: false,
-
-//   changeUserInfoRequest: false,
-//   changeUserInfoRequestError: false,
-// };
-
 const initialState = {
-  infoFromTelegram: {},
+  infoFromTelegram: isDevelopmentMode
+    ? {
+        allows_write_to_pm: true,
+        created_at: "2025-10-29T11:31:34.834898Z",
+        first_name: "Алексей",
+        id: 3,
+        is_active: true,
+        is_verified: true,
+        language_code: "ru",
+        last_name: "Редькин",
+        phone_number: "+7 (222) 222-22-22",
+        photo_url:
+          "https://t.me/i/userpic/320/JtGPbJBctx4LLq_nm2R9calFGN2KxnnIKkyKLZQyodE.svg",
+        rating_avg: 4.9,
+        rating_count: 0,
+        role: "driver",
+        sbp_bank: null,
+        sbp_phone_number: null,
+        subscription_exp: "2025-12-21T21:35:30.894573Z",
+        telegram_id: 870593529,
+        updated_at: "2025-11-12T09:13:16.296053Z",
+        username: "Rechkinnnn",
+      }
+    : {},
   userTelegramInfoRequest: false,
   userTelegramInfoRequestError: false,
+
   changeUserInfoRequest: false,
   changeUserInfoRequestError: false,
 };
+
+// const initialState = {
+//   infoFromTelegram: {},
+//   userTelegramInfoRequest: false,
+//   userTelegramInfoRequestError: false,
+//   changeUserInfoRequest: false,
+//   changeUserInfoRequestError: false,
+// };
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {

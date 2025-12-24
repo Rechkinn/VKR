@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import Settings from "../settings/settings";
 import { useModal } from "../../hooks/useModal";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
+import { isDevelopmentMode } from "../../utils/development-mode";
 
 export default function Trips() {
   const dispatch = useDispatch();
@@ -103,12 +104,17 @@ export default function Trips() {
 
   return (
     <>
-      {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
-      {getTripsRequestError && (
-        <div>Ошибка загрузки поездок! Попробуйте перезагрузить приложение!</div>
+      {!isDevelopmentMode && (
+        <>
+          {getTripsRequest && <Loader>Узнаём о ваших поездках...</Loader>}
+          {getTripsRequestError && (
+            <div>
+              Ошибка загрузки поездок! Попробуйте перезагрузить приложение!
+            </div>
+          )}
+        </>
       )}
 
-      {/* {true && ( */}
       {trips && (
         <>
           {visibilityModal && (

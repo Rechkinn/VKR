@@ -1,3 +1,4 @@
+import { isDevelopmentMode } from "../../utils/development-mode";
 import {
   CAR_CREATE_REQUEST,
   CAR_CREATE_REQUEST_ERROR,
@@ -18,35 +19,37 @@ import {
 } from "../actions/car";
 
 const initialState = {
-  // cars: [
-  //   {
-  //     brand: "Mercedes-Benz",
-  //     model: "AMG GTS 500",
-  //     year: 0,
-  //     color: "string",
-  //     license_plate: "А123МР77",
-  //     additional_info: "qwe wq eqwe qwe wqe qwe qwe qwe qwee",
-  //     car_class: "microbus",
-  //     id: 1,
-  //     driver_id: 0,
-  //     photo_url: "string",
-  //     is_active: true,
-  //   },
-  //   {
-  //     brand: "string",
-  //     model: "string",
-  //     year: 0,
-  //     color: "string",
-  //     license_plate: "string",
-  //     additional_info: "QWEWQE WEQWE qwe",
-  //     car_class: "bus",
-  //     id: 2,
-  //     driver_id: 0,
-  //     photo_url: "string",
-  //     is_active: true,
-  //   },
-  // ],
-  cars: [],
+  cars: isDevelopmentMode
+    ? [
+        {
+          brand: "Mercedes-Benz",
+          model: "AMG GTS 500",
+          year: 0,
+          color: "string",
+          license_plate: "А123МР77",
+          additional_info: "qwe wq eqwe qwe wqe qwe qwe qwe qwee",
+          car_class: "microbus",
+          id: 1,
+          driver_id: 0,
+          photo_url: "string",
+          is_active: true,
+        },
+        {
+          brand: "string",
+          model: "string",
+          year: 0,
+          color: "string",
+          license_plate: "string",
+          additional_info: "QWEWQE WEQWE qwe",
+          car_class: "bus",
+          id: 2,
+          driver_id: 0,
+          photo_url: "string",
+          is_active: true,
+        },
+      ]
+    : [],
+  // cars: [],
   createCarRequest: false,
   createCarRequestError: false,
 
