@@ -271,10 +271,10 @@ export default function FormForNewTrip() {
     return "";
   }
 
-  function getNameAgent(username, first_name) {
+  function getNameHuman(username, first_name) {
     let resultName = "";
 
-    resultName += username ?? "";
+    resultName += username ? `@${username}` : "";
     resultName += first_name ? ` (${first_name})` : "";
     return resultName.trim();
   }
@@ -506,7 +506,7 @@ export default function FormForNewTrip() {
                     }
                     type="text"
                     name="info-field-human-1"
-                    initialValue={getNameAgent(
+                    initialValue={getNameHuman(
                       tripForViewing?.[location?.state?.whoShowInfo]?.username,
                       tripForViewing?.[location?.state?.whoShowInfo]?.first_name
                     )}
