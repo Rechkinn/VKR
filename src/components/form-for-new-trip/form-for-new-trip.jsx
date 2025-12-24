@@ -53,6 +53,9 @@ export default function FormForNewTrip() {
   const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
   const [isOnlyViewing] = useState(location?.state?.isOnlyViewing ?? false);
 
+  console.log("tripForViewing");
+  console.log(tripForViewing);
+
   const {
     addTripRequest,
     addTripRequestError,
