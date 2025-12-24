@@ -8,8 +8,9 @@ import phoneIcon from "../../image/section-trips/phone-icon.svg";
 import settingsIcon from "../../image/section-trips/settings-icon.svg";
 import TripInfoLine from "../trip-info-line/trip-info-line";
 import Status from "../status/status";
+import { Link } from "react-router";
 
-export default function Trip({ trip, openSettingsTrip }) {
+export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
   function statusInRussian(status) {
     if (status === "published") {
       return "Опубликовано";
@@ -27,7 +28,11 @@ export default function Trip({ trip, openSettingsTrip }) {
   }
 
   return (
-    <>
+    <Link
+      to="/create-new-trip"
+      state={stateForFormTrip}
+      style={{ textDecoration: "none" }}
+    >
       <article className={styles.trip}>
         <header className={styles.header}>
           <div className={styles.status}>
@@ -38,7 +43,14 @@ export default function Trip({ trip, openSettingsTrip }) {
               className={styles.carIcon}
             /> */}
           </div>
-          <Button onClick={openSettingsTrip} className={styles.settingsButton}>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openSettingsTrip();
+            }}
+            className={styles.settingsButton}
+          >
             <img src={settingsIcon} alt="Иконка настроек" />
           </Button>
         </header>
@@ -67,13 +79,7 @@ export default function Trip({ trip, openSettingsTrip }) {
             </TripInfoLine>
           </div>
         </div>
-
-        {/* {trip.status === ACTIVE_TAB && (
-        <Button className={`yellow ${styles.buttonFinishTrip}`}>
-          Завершить поездку
-        </Button>
-      )} */}
       </article>
-    </>
+    </Link>
   );
 }

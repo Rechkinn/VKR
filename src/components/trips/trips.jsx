@@ -19,6 +19,7 @@ import Settings from "../settings/settings";
 import { useModal } from "../../hooks/useModal";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import { isDevelopmentMode } from "../../utils/development-mode";
+import { getStateForFormTrip } from "../../utils/state-for-form-trip";
 
 export default function Trips() {
   const dispatch = useDispatch();
@@ -68,14 +69,18 @@ export default function Trips() {
   }
 
   function openDetailsTrip(trip) {
-    navigate("/create-new-trip", {
-      state: {
-        detailsTrip: trip,
-        toRoute: "/trips",
-        isOnlyViewing: true,
-        whoShowInfo: "driver",
-      },
-    });
+    navigate(
+      "/create-new-trip",
+      getStateForFormTrip(trip, "/trips", true, "driver")
+      //   {
+      //   state: {
+      //     detailsTrip: trip,
+      //     toRoute: "/trips",
+      //     isOnlyViewing: true,
+      //     whoShowInfo: "driver",
+      //   },
+      // }
+    );
   }
 
   function openSettingsTrip(trip) {
@@ -178,6 +183,10 @@ export default function Trips() {
                       key={trip.id}
                       trip={trip}
                       openSettingsTrip={() => openSettingsTrip(trip)}
+                      stateForFormTrip={
+                        getStateForFormTrip(trip, "/trips", true, "driver")
+                          ?.state
+                      }
                     />
                   );
                 })}

@@ -22,6 +22,7 @@ import Settings from "../settings/settings";
 import Notification from "../notification/notification";
 import { isDevelopmentMode } from "../../utils/development-mode";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
+import { getStateForFormTrip } from "../../utils/state-for-form-trip";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -304,14 +305,23 @@ export default function Calendar() {
   }
 
   function openDetailsTrip(trip) {
-    navigate("/create-new-trip", {
-      state: {
-        detailsTrip: trip,
-        toRoute: "/calendar",
-        whoShowInfo: "creator",
-        isOnlyViewing: trip?.creator_id === infoFromTelegram?.id ? false : true,
-      },
-    });
+    navigate(
+      "/create-new-trip",
+      getStateForFormTrip(
+        trip,
+        "/calendar",
+        "creator",
+        trip?.creator_id === infoFromTelegram?.id ? false : true
+      )
+      //   {
+      //   state: {
+      //     detailsTrip: trip,
+      //     toRoute: "/calendar",
+      //     whoShowInfo: "creator",
+      //     isOnlyViewing: trip?.creator_id === infoFromTelegram?.id ? false : true,
+      //   },
+      // }
+    );
   }
 
   function publishToChannel(trip) {
@@ -494,6 +504,16 @@ export default function Calendar() {
                         key={trip.id}
                         trip={trip}
                         openSettingsTrip={() => openSettingsTrip(trip)}
+                        stateForFormTrip={
+                          getStateForFormTrip(
+                            trip,
+                            "/calendar",
+                            "creator",
+                            trip?.creator_id === infoFromTelegram?.id
+                              ? false
+                              : true
+                          )?.state
+                        }
                       />
                     );
                   }
