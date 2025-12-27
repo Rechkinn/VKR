@@ -23,6 +23,8 @@
 }
 
 .containerCreateTrip {
+  position: relative;
+
   margin: auto;
   max-width: 321px;
   width: 100%;
@@ -94,4 +96,10 @@
 
 .buttonRemoveTrip {
   margin-bottom: 5px;
+}
+
+.containerNotifications {
+  position: absolute;
+  bottom: 95%;
+  right: -5%;
 }

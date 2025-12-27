@@ -20,6 +20,7 @@ import { useModal } from "../../hooks/useModal";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import { isDevelopmentMode } from "../../utils/development-mode";
 import { getStateForFormTrip } from "../../utils/state-for-form-trip";
+import Notification from "../notification/notification";
 
 export default function Trips() {
   const dispatch = useDispatch();
@@ -28,7 +29,6 @@ export default function Trips() {
   const { trips, getTripsRequest, getTripsRequestError } = useSelector(
     (store) => store.trips
   );
-
   const { tripForSettings, removeTripRequest, removeTripRequestError } =
     useSelector((store) => store.trips);
 
@@ -45,6 +45,7 @@ export default function Trips() {
   const sectionRef = useRef();
   const tripsContainerRef = useRef();
   const [styleTripsContainer, setStyleTripsContainer] = useState();
+  const [notifications, setNotifications] = useState([]);
 
   function setMaxHeightContainerTrips() {
     setStyleTripsContainer({
@@ -59,13 +60,42 @@ export default function Trips() {
       window.removeEventListener("resize", setMaxHeightContainerTrips);
   }, []);
 
-  function openFormToCreateTrip() {
-    navigate("/create-new-trip", {
-      state: {
-        toRoute: "/trips",
-        isTripDelegated: true,
-      },
+  function renderNotifications(notifications) {
+    const animationDuration = 3;
+    return notifications.map((notification, i) => {
+      setTimeout(() => {
+        setNotifications([]);
+      }, 1000 * animationDuration * notifications.length);
+      return (
+        <Notification
+          key={i}
+          duration={animationDuration}
+          delay={i * animationDuration}
+          backgroundColor="error"
+        >
+          {notification.message}
+        </Notification>
+      );
     });
+  }
+
+  function openFormToCreateTrip() {
+    const dateEndingSubscribe = new Date(
+      infoFromTelegram?.subscription_exp ?? "2000-01-01"
+    );
+    const dateCurrent = new Date();
+
+    if (dateEndingSubscribe.getTime() < dateCurrent.getTime()) {
+      if (notifications.length > 0) return;
+      setNotifications([{ message: "Подписка неактивна!" }]);
+    } else {
+      navigate("/create-new-trip", {
+        state: {
+          toRoute: "/trips",
+          isTripDelegated: true,
+        },
+      });
+    }
   }
 
   function openDetailsTrip(trip) {
@@ -160,6 +190,9 @@ export default function Trips() {
               </div> */}
             </header>
             <div className={styles.containerCreateTrip}>
+              <div className={styles.containerNotifications}>
+                {notifications && renderNotifications(notifications)}
+              </div>
               <Button
                 className={styles.buttonCreateTrip}
                 onClick={openFormToCreateTrip}
