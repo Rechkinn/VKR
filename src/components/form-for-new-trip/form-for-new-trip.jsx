@@ -49,6 +49,8 @@ export default function FormForNewTrip() {
   const [valueToAddressForSwap, setValueToAddressForSwap] = useState("Шерегеш");
 
   const location = useLocation();
+  console.log("location");
+  console.log(location);
 
   const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
   const [isOnlyViewing] = useState(location?.state?.isOnlyViewing ?? false);
@@ -64,6 +66,8 @@ export default function FormForNewTrip() {
     updateTripRequest,
     updateTripRequestError,
   } = useSelector((store) => store.trips);
+
+  const { infoFromTelegram } = useSelector((store) => store.user);
 
   function closeForm() {
     dispatch({
@@ -102,7 +106,33 @@ export default function FormForNewTrip() {
     return true;
   }
 
+  function checkSubscription() {
+    if (
+      location?.state?.detailsTrip ||
+      location?.state?.toRoute.includes("calendar")
+    )
+      return;
+
+    const dateEndingSubscribe = new Date(
+      infoFromTelegram?.subscription_exp ?? "2000-01-01"
+    );
+    const dateCurrent = new Date();
+
+    if (dateEndingSubscribe.getTime() < dateCurrent.getTime()) {
+      navigate("/", {
+        replace: true,
+      });
+      window.Telegram.WebApp.openLink("https://t.me/test_alss_bot?start=123");
+    }
+  }
+
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
   function actionWithTrip(e) {
+    checkSubscription();
+
     e.preventDefault();
 
     if (!formRef.current) return;
