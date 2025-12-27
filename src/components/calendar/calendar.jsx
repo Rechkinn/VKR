@@ -62,27 +62,6 @@ export default function Calendar() {
     dispatch(getTripsForCalendar());
   }, []);
 
-  // useEffect(() => {
-  //   console.log("ТУТ useEffect");
-  //   if (!notificationRef?.current) return;
-
-  //   console.log("ииииии ТУТ useEffect");
-
-  //   const hiddenNotification = () => {
-  //     setIsVisibleNotification(false);
-  //   };
-
-  //   notificationRef?.current.addEventListener(
-  //     "onAnimationEnd",
-  //     hiddenNotification
-  //   );
-  //   return () =>
-  //     notificationRef?.current.removeEventListener(
-  //       "onAnimationEnd",
-  //       hiddenNotification
-  //     );
-  // }, [notificationRef?.current]);
-
   function openSettingsTrip(trip) {
     dispatch({ type: REMOVE_TRIP_OWN_REQUEST_RESET });
     document.querySelector("body").style.overflow = "hidden";
@@ -285,8 +264,6 @@ export default function Calendar() {
   }
 
   function setDisabledButton(trip, checkDate = false) {
-    console.log("проверяем активность для кнопок. trip");
-    console.log(trip);
     if (!trip?.creator_id || !trip?.driver_id || !trip?.trip_type) return true;
 
     let result =

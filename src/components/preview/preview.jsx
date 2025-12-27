@@ -24,12 +24,12 @@ export default function Preview() {
   ];
 
   const [referralError, setReferralError] = useState(false);
-  console.log("referralError", referralError);
+  // console.log("referralError", referralError);
   const formRef = useRef();
   const dispatch = useDispatch();
   const { infoFromTelegram } = useSelector((store) => store.user);
-  console.log("infoFromTelegram preview");
-  console.log(infoFromTelegram);
+  // console.log("infoFromTelegram preview");
+  // console.log(infoFromTelegram);
   const { useReferralCodeRequest, useReferralCodeRequestError } = useSelector(
     (store) => store.referral
   );
@@ -67,8 +67,8 @@ export default function Preview() {
       setReferralError(false);
     }
 
-    console.log("referralData");
-    console.log(referralData);
+    // console.log("referralData");
+    // console.log(referralData);
 
     if (stop) return;
     dispatch(useReferralCode(referralData, increaseCompletedPage));

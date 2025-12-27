@@ -17,8 +17,8 @@ export default function ProfileInfo() {
   const [activeSubscription, setActiveSubscription] = useState(false);
   const [activeSubscriptionText, setActiveSubscriptionText] = useState("");
 
-  console.log("infoFromTelegram в ProfileInfo");
-  console.log(infoFromTelegram);
+  // console.log("infoFromTelegram в ProfileInfo");
+  // console.log(infoFromTelegram);
 
   function renderStars(rating) {
     const array = [];
@@ -104,14 +104,8 @@ export default function ProfileInfo() {
   }
 
   function formatWordDay(days) {
-    console.log("days", days);
     const standard1 = "567890";
-    console.log("`${days}`.at(-1)");
-    console.log(`${days}`.at(-1));
-    console.log(
-      "standard1.includes(`${days}`.at(-1))",
-      standard1.includes(`${days}`.at(-1))
-    );
+
     if (standard1.includes(`${days}`.at(-1))) return "дней";
 
     const lastChar = `${days}`.at(-1);

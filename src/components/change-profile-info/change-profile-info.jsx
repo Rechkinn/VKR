@@ -4,23 +4,19 @@ import styles from "./change-profile-info.module.css";
 import arrowLeftIcon from "../../image/change-profile-info/arrow-left.svg";
 import { useEffect, useRef, useState } from "react";
 import Input from "../input/input";
-import moreDetailIcon from "../../image/change-profile-info/more-details.svg";
+
 import { useDispatch, useSelector } from "react-redux";
 import { SET_VISIBILITY_NAVBAR } from "../../services/actions/navbar";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import {
   CHANGE_USER_INFO_REQUEST_SUCCESS,
   changeUserInfo,
-  SET_USER_TELEGRAM_INFO,
 } from "../../services/actions/user";
 import { Link, useNavigate } from "react-router";
 import Loader from "../loader/loader";
 import SelectCustom from "../select-custom/select-custom";
 
 export default function ChangeProfileInfo() {
-  const [showInputCode, setShowInputCode] = useState(false);
-  const checkboxRef = useRef();
-
   const {
     infoFromTelegram,
     changeUserInfoRequest,
@@ -116,8 +112,8 @@ export default function ChangeProfileInfo() {
 
       newData[inputs[i].name] = inputs[i].value;
     }
-    console.log("newData");
-    console.log(newData);
+    // console.log("newData");
+    // console.log(newData);
     if (stop) return;
     dispatch(changeUserInfo(newData, closeFormToChangeProfileInfo));
   }
@@ -205,7 +201,6 @@ export default function ChangeProfileInfo() {
               id="sbp_bank"
               name="sbp_bank"
             >
-              {/* <option value={"nothing"}>Не выбрано</option> */}
               <option value="nothing">Не выбрано</option>
               <option value="Сбербанк">Сбербанк</option>
               <option value="Газпромбанк">Газпромбанк</option>
@@ -224,50 +219,6 @@ export default function ChangeProfileInfo() {
               classNameContainer={styles.mt16}
               readOnly
             />
-
-            {/* <div className={styles.customCheckboxContainer}>
-          <label
-            htmlFor="become-driver"
-            onClick={() => {
-              console.log("123");
-              setShowInputCode(checkboxRef?.current?.checked);
-            }}
-            className={styles.customChekcboxText}
-          >
-            <input
-              ref={checkboxRef}
-              type="checkbox"
-              id="become-driver"
-              name="become-driver"
-              className={styles.originalChekcbox}
-            />
-            <span className={styles.customChekcbox}>
-              <span className={styles.customChekcboxIconArrow}></span>
-            </span>
-            Стать водителем
-          </label>
-          <Button
-            className={styles.moreDetail}
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <img src={moreDetailIcon} alt="Подробнее" />
-          </Button>
-        </div>
-        {showInputCode && (
-          <Input
-            type="text"
-            name="code"
-            initialValue={
-              localStorage.getItem("account1")
-                ? localStorage.getItem("account1").phone
-                : ""
-            }
-            placeholder="Введите код"
-            className={styles.inputCode}
-          />
-        )} */}
 
             <Button className={`green ${styles.buttonSave}`} type="submit">
               Сохранить

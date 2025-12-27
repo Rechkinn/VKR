@@ -119,7 +119,7 @@ export function changeUserInfo(newUserInfo, functionToCloseForm = () => {}) {
         dispatch({
           type: CHANGE_USER_INFO_REQUEST_SUCCESS,
         });
-        console.log(user);
+        // console.log(user);
         functionToCloseForm();
       })
       .catch(() => {

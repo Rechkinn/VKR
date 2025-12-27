@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import styles from "./input.module.css";
 
 const Input = forwardRef(
@@ -53,7 +53,6 @@ const Input = forwardRef(
 
     const [isOpenContentSelect, setIsOpenContentSelect] = useState(false);
     const [contentSelect, setContentSelect] = useState([]);
-    // const inputRef = useRef();
 
     function renderContentSelect(value) {
       if (!isSelect) return;
@@ -81,7 +80,6 @@ const Input = forwardRef(
         .catch((error) => console.log("error", error));
 
       setValueInput(value);
-      // setAdressError(true);
     }
 
     useEffect(() => {

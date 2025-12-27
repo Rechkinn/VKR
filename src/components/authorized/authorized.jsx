@@ -67,7 +67,6 @@ const TelegramAuth = () => {
 
         setWebApp(webApp);
       } catch (e) {
-        console.log(e);
         setCustomLog(e.message);
         dispatch({
           type: USER_TELEGRAM_INFO_REQUEST_ERROR,
@@ -120,23 +119,11 @@ const TelegramAuth = () => {
     <>
       {userTelegramInfoRequest && <Loader>Аутентификация...</Loader>}
 
-      {!userTelegramInfoRequest && userTelegramInfoRequestError && (
-        // <>
-        //   <p style={{ color: "red" }}>Ошибка аутентификации!</p>
-        //   <div style={{ color: "red" }}>подробности: {customLog}</div>
-        // </>
-        <Preview />
-      )}
+      {!userTelegramInfoRequest && userTelegramInfoRequestError && <Preview />}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&
-        // infoFromTelegram?.telegram_id && <Preview />}
         infoFromTelegram?.telegram_id && <App />}
-      {/* {!userTelegramInfoRequest &&
-        !userTelegramInfoRequestError &&
-        infoFromTelegram?.telegram_id && (
-          <div style={{ color: "red" }}>Логи: {customLog}</div>
-        )} */}
 
       {!userTelegramInfoRequest &&
         !userTelegramInfoRequestError &&

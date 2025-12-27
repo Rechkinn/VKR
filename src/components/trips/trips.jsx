@@ -102,14 +102,6 @@ export default function Trips() {
     navigate(
       "/create-new-trip",
       getStateForFormTrip(trip, "/trips", true, "driver")
-      //   {
-      //   state: {
-      //     detailsTrip: trip,
-      //     toRoute: "/trips",
-      //     isOnlyViewing: true,
-      //     whoShowInfo: "driver",
-      //   },
-      // }
     );
   }
 
@@ -184,10 +176,6 @@ export default function Trips() {
           <section ref={sectionRef} className={styles.section}>
             <header className={styles.header}>
               <h1 className={styles.title}>Предложенные поездки</h1>
-              {/* <div className={styles.balance}>
-                <Balance balanceValue={infoFromTelegram.balance} />
-                <Button className="black">Пополнить</Button>
-              </div> */}
             </header>
             <div className={styles.containerCreateTrip}>
               <div className={styles.containerNotifications}>

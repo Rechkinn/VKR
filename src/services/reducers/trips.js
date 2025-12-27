@@ -108,7 +108,6 @@ const initialState = {
         },
       ]
     : null,
-  // trips: null,
   getTripsRequest: false,
   getTripsRequestError: false,
 
@@ -263,7 +262,6 @@ const initialState = {
         },
       ]
     : null,
-  // tripsForCalendar: null,
   getTripsForCalendarRequest: false,
   getTripsForCalendarRequestError: false,
 

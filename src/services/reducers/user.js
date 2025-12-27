@@ -45,14 +45,6 @@ const initialState = {
   changeUserInfoRequestError: false,
 };
 
-// const initialState = {
-//   infoFromTelegram: {},
-//   userTelegramInfoRequest: false,
-//   userTelegramInfoRequestError: false,
-//   changeUserInfoRequest: false,
-//   changeUserInfoRequestError: false,
-// };
-
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USER_TELEGRAM_INFO:

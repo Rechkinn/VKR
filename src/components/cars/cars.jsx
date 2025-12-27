@@ -2,7 +2,7 @@ import Button from "../button/button";
 import Car from "../car/car";
 import styles from "./cars.module.css";
 import addCarIcon from "../../image/profile/addCarIcon.svg";
-import { forwardRef, useEffect } from "react";
+import { forwardRef } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
@@ -111,24 +111,6 @@ export const Cars = forwardRef((props, ref) => {
               >
                 Удалить
               </Button>
-
-              {/* <Button
-                className="modal modalLower"
-                onClick={(e) =>
-                  openCarForm(e, `/car/view/${carForSettings.id}`)
-                }
-              >
-                Узнать детали
-              </Button> */}
-
-              {/* <Button
-                className="modal modalLower"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                Сделать активной
-              </Button> */}
 
               <Button className="modal modalSingle" onClick={closeSettingsCar}>
                 Отмена

@@ -67,8 +67,8 @@ export function createCar(car, closeCarForm = () => {}) {
 
     doRequest("/vehicles", option)
       .then((newCar) => {
-        console.log("newCar с сервера пришло");
-        console.log(newCar);
+        // console.log("newCar с сервера пришло");
+        // console.log(newCar);
         dispatch({
           type: CAR_CREATE_REQUEST_SUCCESS,
           newCar: newCar,
@@ -100,8 +100,8 @@ export function editCar(carId, car, closeCarForm = () => {}) {
 
     doRequest(`/vehicles/${carId}`, option)
       .then((updatingCar) => {
-        console.log("updatingCar с сервера пришло");
-        console.log(updatingCar);
+        // console.log("updatingCar с сервера пришло");
+        // console.log(updatingCar);
         dispatch({
           type: EDIT_CAR_REQUEST_SUCCESS,
           updatingCar: updatingCar,

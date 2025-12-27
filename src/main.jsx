@@ -1,13 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./components/app/app";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./services/reducers";
-
 import Authorized from "./components/authorized/authorized";
 import { BrowserRouter } from "react-router";
-import Preview from "./components/preview/preview";
 
 const store = configureStore({
   reducer: rootReducer,
@@ -16,17 +13,7 @@ const store = configureStore({
 });
 
 // If you're running in a plain browser, we inject a mock Telegram.WebApp
-if (!window.Telegram) {
-  import("./telegramMock").then((m) => {
-    window.Telegram = m.createMockTelegram();
-    if (window.Telegram.WebApp && window.Telegram.WebApp.ready) {
-      window.Telegram.WebApp.ready();
-    }
-    renderApp();
-  });
-} else {
-  renderApp();
-}
+if (window.Telegram) renderApp();
 
 function renderApp() {
   const root = createRoot(document.getElementById("root"));
@@ -35,8 +22,6 @@ function renderApp() {
       <BrowserRouter>
         <Provider store={store}>
           <Authorized />
-          {/* <Preview /> */}
-          {/* <App /> */}
         </Provider>
       </BrowserRouter>
     </StrictMode>

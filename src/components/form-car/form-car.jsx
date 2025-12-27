@@ -189,8 +189,8 @@ const FormCar = ({ isForViewing, isForEditing }) => {
       newCar[inputs[i].name] = inputs[i].value;
     }
 
-    console.log("newCar");
-    console.log(newCar);
+    // console.log("newCar");
+    // console.log(newCar);
 
     if (stop) return;
 

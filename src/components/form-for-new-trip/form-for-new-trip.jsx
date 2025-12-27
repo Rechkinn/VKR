@@ -49,14 +49,12 @@ export default function FormForNewTrip() {
   const [valueToAddressForSwap, setValueToAddressForSwap] = useState("Шерегеш");
 
   const location = useLocation();
-  console.log("location");
-  console.log(location);
 
   const [tripForViewing, _] = useState(location?.state?.detailsTrip ?? null);
   const [isOnlyViewing] = useState(location?.state?.isOnlyViewing ?? false);
 
-  console.log("tripForViewing");
-  console.log(tripForViewing);
+  // console.log("tripForViewing");
+  // console.log(tripForViewing);
 
   const {
     addTripRequest,
@@ -249,14 +247,14 @@ export default function FormForNewTrip() {
       newTrip[inputs[i].name] = inputs[i].value;
     }
 
-    console.log("newTrip");
-    console.log(newTrip);
+    // console.log("newTrip");
+    // console.log(newTrip);
 
     if (stop) return;
 
     if (tripForViewing) {
-      console.log("{ ...tripForViewing, ...newTrip }");
-      console.log({ ...tripForViewing, ...newTrip });
+      // console.log("{ ...tripForViewing, ...newTrip }");
+      // console.log({ ...tripForViewing, ...newTrip });
       dispatch(updateTrip({ ...tripForViewing, ...newTrip }, closeForm));
     } else {
       location?.state?.isTripDelegated
@@ -288,7 +286,6 @@ export default function FormForNewTrip() {
   }
 
   function getInitialDate() {
-    // const date =
     if (tripForViewing?.departure_datetime.split("T")[0]) {
       return tripForViewing?.departure_datetime.split("T")[0];
     } else if (location?.state?.selectedDate) {
@@ -363,16 +360,6 @@ export default function FormForNewTrip() {
                     : ""
                 }
                 required
-                // initialValue={
-                //   tripForViewing?.departure_datetime.split("T")[0]
-                //     ? tripForViewing?.departure_datetime.split("T")[0]
-                //     : location?.state?.selectedDate
-                //     ? location?.state?.selectedDate
-                //         .split(".")
-                //         .reverse()
-                //         .join("-")
-                //     : ""
-                // }
                 initialValue={getInitialDate()}
                 readOnly={isOnlyViewing}
               />
@@ -404,7 +391,6 @@ export default function FormForNewTrip() {
                 errorText={fromAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
-                // initialValue={tripForViewing?.from_address ?? ""}
                 initialValue={valueFromAddressForSwap}
                 readOnly={isOnlyViewing}
               />
@@ -420,7 +406,6 @@ export default function FormForNewTrip() {
                 errorText={toAdressError ? "Выберите адрес из списка" : ""}
                 placeholder="Начните вводить адрес"
                 required
-                // initialValue={tripForViewing?.to_address ?? ''}
                 initialValue={valueToAddressForSwap}
                 readOnly={isOnlyViewing}
                 swapButton={
