@@ -37,6 +37,16 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
     }
   }
 
+  function formatPhoneNumber(phoneNumber) {
+    const arrayPhoneNumber = phoneNumber.split("");
+    let result = "+";
+    for (let i = 0; i < arrayPhoneNumber.length; i++) {
+      if (!isNaN(Number(arrayPhoneNumber[i]))) {
+        result += arrayPhoneNumber[i];
+      }
+    }
+  }
+
   return (
     <Link
       to="/create-new-trip"
@@ -83,10 +93,10 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
               {/* <span>{trip.passenger_phone_number}</span> */}
               <a
                 // href={`tel:+79511677611`}
-                href={`tel:${trip.passenger_phone_number}`}
+                href={`tel:${formatPhoneNumber(trip.passenger_phone_number)}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                {trip.passenger_phone_number}
+                {formatPhoneNumber(trip.passenger_phone_number)}
               </a>
               {/* <a href="tel:+79511677611">+79511677611</a> */}
             </TripInfoLine>
