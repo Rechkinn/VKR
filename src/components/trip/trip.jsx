@@ -89,6 +89,7 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
                 {/* {trip.passenger_phone_number} */}
                 +79511677611
               </a>
+              <a href="tel:+79511677611">+79511677611</a>
             </TripInfoLine>
           </div>
         </div>
