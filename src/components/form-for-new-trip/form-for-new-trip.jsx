@@ -96,7 +96,7 @@ export default function FormForNewTrip() {
 
     const tripDate = new Date(
       arrayInputData[0],
-      arrayInputData[1],
+      arrayInputData[1] - 1,
       arrayInputData[2],
       arrayInputTime[0],
       arrayInputTime[1],
