@@ -254,92 +254,15 @@ export default function Calendar() {
     dispatch(removeTripOwn(tripForSettings.id, closeSettingsTrip));
   }
 
-  const exportToCalendar = (trip) => {
-    // ---------- 1. Форматирование даты в формате YYYYMMDDTHHMMSS (локальное время) ----------
-    const formatDate = (date) => {
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      const hours = String(d.getHours()).padStart(2, "0");
-      const minutes = String(d.getMinutes()).padStart(2, "0");
-      const seconds = String(d.getSeconds()).padStart(2, "0");
-      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
-    };
+  const exportToCalendar = (tripId) => {
+    // openLink открывает Safari, Safari обрабатывает .ics нативно
 
-    // ---------- 2. Экранирование спецсимволов для iCalendar ----------
-    const escapeICS = (str) => {
-      if (!str) return "";
-      return str
-        .replace(/\\/g, "\\\\")
-        .replace(/;/g, "\\;")
-        .replace(/,/g, "\\,")
-        .replace(/\n/g, "\\n");
-    };
+    console.log("exportToCalendar tripId", tripId);
 
-    // ---------- 3. Определяем дату окончания (например, через 1 час) ----------
-    const departure = new Date(trip.departure_datetime);
-    const durationHours = 1; // можно заменить на реальную длительность из trip, если есть
-    const endDate = new Date(
-      departure.getTime() + durationHours * 60 * 60 * 1000,
+    const token = localStorage.getItem("access_token");
+    window.Telegram.WebApp.openLink(
+      `https://xn--80aqak6ae.xn--p1ai/api/v1/trips/${tripId}/export.ics?token=${token}`,
     );
-
-    // ---------- 4. Сборка DESCRIPTION ----------
-    const description = [
-      `Маршрут: ${trip.from_address} → ${trip.to_address}`,
-      `Мест: ${trip.total_seats}`,
-      trip.price ? `Цена: ${trip.price} ₽` : null,
-      trip.delegation_commission
-        ? `Комиссия: ${trip.delegation_commission} ₽`
-        : null,
-      trip.passenger_phone_number
-        ? `Пассажир: ${trip.passenger_phone_number}`
-        : null,
-    ]
-      .filter(Boolean)
-      .join("\\n");
-
-    // ---------- 5. Формирование содержимого .ics ----------
-    const icsLines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//AllTransfer//alltransfer.ru//RU",
-      "CALSCALE:GREGORIAN",
-      "BEGIN:VEVENT",
-      `UID:trip-${trip.id}@alltransfer.ru`,
-      `SUMMARY:${escapeICS(trip.from_address)} → ${escapeICS(trip.to_address)}`,
-      `DTSTART:${formatDate(departure)}`,
-      `DTEND:${formatDate(endDate)}`,
-      `DTSTAMP:${formatDate(new Date())}`,
-      `LOCATION:${escapeICS(trip.from_address)}`,
-      `DESCRIPTION:${escapeICS(description)}`,
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ];
-    const icsContent = icsLines.join("\r\n");
-
-    // ---------- 6. Создание Blob и открытие в новой вкладке ----------
-    const blob = new Blob([icsContent], {
-      type: "text/calendar;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-
-    // Пытаемся открыть в новой вкладке
-    const newWindow = window.open(url, "_blank");
-
-    if (
-      !newWindow ||
-      newWindow.closed ||
-      typeof newWindow.closed === "undefined"
-    ) {
-      // Всплывающее окно заблокировано – показываем инструкцию
-      alert(
-        "Не удалось открыть файл календаря. Пожалуйста, разрешите всплывающие окна для этого сайта и попробуйте снова.",
-      );
-    } else {
-      // Успешно открыли – через секунду освобождаем URL
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
   };
 
   function addOwnTrip() {
@@ -471,7 +394,11 @@ export default function Calendar() {
                 onClick={(e) => {
                   e.stopPropagation();
                   // openDetailsTrip(tripForSettings);
-                  exportToCalendar(tripForSettings);
+                  console.log(
+                    "Экспортировать в календарь tripForSettings",
+                    tripForSettings,
+                  );
+                  exportToCalendar(tripForSettings.id);
                 }}
               >
                 Экспортировать в календарь
