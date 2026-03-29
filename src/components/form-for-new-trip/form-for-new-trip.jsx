@@ -542,10 +542,14 @@ export default function FormForNewTrip() {
                     readOnly
                     onClick={(e) => {
                       e.preventDefault();
-                      openChat(
-                        tripForViewing?.[location?.state?.whoShowInfo]
-                          ?.username,
-                      );
+                      if (
+                        tripForViewing?.[location?.state?.whoShowInfo]?.username
+                      ) {
+                        openChat(
+                          tripForViewing?.[location?.state?.whoShowInfo]
+                            ?.username,
+                        );
+                      }
                     }}
                   />
                   <Input
