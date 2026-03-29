@@ -235,27 +235,7 @@ export default function FormForNewTrip() {
         }
         console.log("newTrip после", newTrip);
         continue;
-
-        // if (!validateDateTime(date, time)) {
-        //   // inputs[i].focus();
-        //   stop = true;
-        //   setDateError(true);
-        // } else {
-        //   setDateError(false);
-        // }
-
-        // if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
-        //   newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
-        // }
-        // continue;
       }
-      // if (inputs[i].name === "time") {
-      //   time += `${inputs[i].value}`;
-      //   if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
-      //     newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
-      //   }
-      //   continue;
-      // }
 
       if (inputs[i].name === "price") {
         if (!validationNumber(inputs[i].value)) {
@@ -427,7 +407,7 @@ export default function FormForNewTrip() {
                 className={styles.inputDate}
                 errorText={
                   dateError
-                    ? `Введите дату от сегодняшнего дня, но не более чем на год вперёд. Также проверьте, чтобы время было больше ${new Date().getHours()}:${new Date().getMinutes()}.`
+                    ? `Введите дату от сегодняшнего дня, но не более чем на год вперёд`
                     : ""
                 }
                 required
@@ -447,6 +427,11 @@ export default function FormForNewTrip() {
                   tripForViewing?.departure_datetime
                     .split("T")[1]
                     .slice(0, 5) ?? ""
+                }
+                errorText={
+                  dateError
+                    ? `Проверьте, чтобы указанное время больше текущего, если поездка создается на сегодняшний день`
+                    : ""
                 }
                 readOnly={isOnlyViewing}
               />
