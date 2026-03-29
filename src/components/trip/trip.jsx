@@ -38,20 +38,20 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
   }
 
   function formatPhoneNumber(phoneNumber) {
-    console.log("phoneNumber", phoneNumber);
+    // console.log("phoneNumber", phoneNumber);
     const arrayPhoneNumber = phoneNumber.split("");
-    console.log("arrayPhoneNumber", arrayPhoneNumber);
+    // console.log("arrayPhoneNumber", arrayPhoneNumber);
     let result = "+";
     for (let i = 0; i < arrayPhoneNumber.length; i++) {
-      console.log("Number(arrayPhoneNumber[i])", Number(arrayPhoneNumber[i]));
-      console.log(
-        "isNaN(Number(arrayPhoneNumber[i]))",
-        isNaN(Number(arrayPhoneNumber[i])),
-      );
-      console.log("result перед условием", result);
+      // console.log("Number(arrayPhoneNumber[i])", Number(arrayPhoneNumber[i]));
+      // console.log(
+      //   "isNaN(Number(arrayPhoneNumber[i]))",
+      //   isNaN(Number(arrayPhoneNumber[i])),
+      // );
+      // console.log("result перед условием", result);
       if (!isNaN(Number(arrayPhoneNumber[i])) && arrayPhoneNumber[i] !== " ") {
         result += arrayPhoneNumber[i];
-        console.log("result после условия", result);
+        // console.log("result после условия", result);
       }
     }
     return result;
