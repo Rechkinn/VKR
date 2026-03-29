@@ -44,7 +44,7 @@ export default function FormForNewTrip() {
   const toAddressRef = useRef();
   const fromAddressRef = useRef();
   const [valueFromAddressForSwap, setValueFromAddressForSwap] = useState(
-    "Новокузнецк Аэропорт"
+    "Новокузнецк Аэропорт",
   );
   const [valueToAddressForSwap, setValueToAddressForSwap] = useState("Шерегеш");
 
@@ -112,7 +112,7 @@ export default function FormForNewTrip() {
       return;
 
     const dateEndingSubscribe = new Date(
-      infoFromTelegram?.subscription_exp ?? "2000-01-01"
+      infoFromTelegram?.subscription_exp ?? "2000-01-01",
     );
     const dateCurrent = new Date();
 
@@ -304,6 +304,10 @@ export default function FormForNewTrip() {
     resultName += username ? `@${username}` : "";
     resultName += first_name ? ` (${first_name})` : "";
     return resultName.trim();
+  }
+
+  function openChat(telegram_id) {
+    window.Telegram.WebApp.openTelegramLink(`tg://user?id=${telegram_id}`);
   }
 
   return (
@@ -523,10 +527,17 @@ export default function FormForNewTrip() {
                     name="info-field-human-1"
                     initialValue={getNameHuman(
                       tripForViewing?.[location?.state?.whoShowInfo]?.username,
-                      tripForViewing?.[location?.state?.whoShowInfo]?.first_name
+                      tripForViewing?.[location?.state?.whoShowInfo]
+                        ?.first_name,
                     )}
                     placeholder="Данные имени отсутствуют"
                     readOnly
+                    onClick={() =>
+                      openChat(
+                        tripForViewing?.[location?.state?.whoShowInfo]
+                          ?.telegram_id,
+                      )
+                    }
                   />
                   <Input
                     type="text"
@@ -567,8 +578,8 @@ export default function FormForNewTrip() {
                   {location?.state?.isTripDelegated
                     ? "Опубликовать в канал"
                     : tripForViewing
-                    ? "Сохранить"
-                    : "Создать"}
+                      ? "Сохранить"
+                      : "Создать"}
                 </Button>
               )}
             </form>
