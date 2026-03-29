@@ -208,10 +208,21 @@ export default function FormForNewTrip() {
       if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
 
       if (inputs[i].name === "date" || inputs[i].name === "time") {
+        console.log("inputs[i].name", inputs[i].name);
+
         if (inputs[i].name === "date") date = `${inputs[i].value}`;
         if (inputs[i].name === "time") time = `${inputs[i].value}`;
 
         // date = `${inputs[i].value}`;
+
+        console.log("date", date);
+        console.log("time", time);
+        console.log("newTrip", newTrip);
+        console.log(
+          "!validateDateTime(date, time)",
+          !validateDateTime(date, time),
+        );
+
         if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
           if (!validateDateTime(date, time)) {
             // inputs[i].focus();
@@ -222,6 +233,7 @@ export default function FormForNewTrip() {
             setDateError(false);
           }
         }
+        console.log("newTrip после", newTrip);
         continue;
 
         // if (!validateDateTime(date, time)) {
