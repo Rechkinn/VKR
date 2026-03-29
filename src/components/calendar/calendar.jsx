@@ -255,7 +255,7 @@ export default function Calendar() {
   }
 
   const exportToCalendar = (trip) => {
-    // Форматирование даты: YYYYMMDDTHHMMSS (локальное время, без Z)
+    // Форматирование даты (локальное, без часового пояса)
     const formatDate = (date) => {
       const d = new Date(date);
       const year = d.getFullYear();
@@ -267,7 +267,6 @@ export default function Calendar() {
       return `${year}${month}${day}T${hours}${minutes}${seconds}`;
     };
 
-    // Экранирование для iCalendar (запятые, точки с запятой, обратные слеши, переводы строк)
     const escapeICS = (str) => {
       if (!str) return "";
       return str
@@ -278,7 +277,7 @@ export default function Calendar() {
     };
 
     const departure = new Date(trip.departure_datetime);
-    // Длительность поездки, например, 1 час (можно вычислить из trip, если есть)
+    // Длительность – например, 1 час (можно заменить на реальное время прибытия)
     const durationHours = 1;
     const endDate = new Date(
       departure.getTime() + durationHours * 60 * 60 * 1000,
@@ -298,7 +297,7 @@ export default function Calendar() {
       .filter(Boolean)
       .join("\\n");
 
-    const icsLines = [
+    const icsContent = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//AllTransfer//alltransfer.ru//RU",
@@ -313,16 +312,37 @@ export default function Calendar() {
       `DESCRIPTION:${escapeICS(description)}`,
       "END:VEVENT",
       "END:VCALENDAR",
-    ];
+    ].join("\r\n");
 
-    const icsContent = icsLines.join("\r\n");
+    // Создаём файл
+    const file = new File([icsContent], `trip_${trip.id}.ics`, {
+      type: "text/calendar",
+    });
 
-    // Создаём data URL (работает на iOS, Android, везде)
-    const dataUrl =
-      "data:text/calendar;charset=utf-8," + encodeURIComponent(icsContent);
-
-    // Открываем URL – iOS покажет диалог "Добавить в Календарь"
-    window.location.href = dataUrl;
+    // Используем Web Share API
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({ files: [file] })
+    ) {
+      navigator
+        .share({
+          title: "Поездка",
+          text: `${trip.from_address} → ${trip.to_address}`,
+          files: [file],
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") {
+            console.error("Ошибка шаринга:", err);
+            alert("Не удалось поделиться. Попробуйте другой способ.");
+          }
+        });
+    } else {
+      // Запасной вариант – показать инструкцию или попросить скопировать ссылку
+      alert(
+        'Ваш браузер не поддерживает добавление в календарь напрямую.\nПожалуйста, используйте стандартное приложение "Календарь" на iPhone.',
+      );
+    }
   };
 
   function addOwnTrip() {
