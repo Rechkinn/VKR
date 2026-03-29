@@ -502,6 +502,7 @@ export default function FormForNewTrip() {
                     <option value="business">Бизнес</option>
                     <option value="microbus">Микроавтобус</option>
                     <option value="bus">Автобус</option>
+                    <option value="seat">Место в авто</option>
                   </SelectCustom>
                 </div>
               </div>
