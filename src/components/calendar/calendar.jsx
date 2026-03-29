@@ -256,12 +256,11 @@ export default function Calendar() {
 
   const exportToCalendar = (tripId) => {
     // openLink открывает Safari, Safari обрабатывает .ics нативно
-
     console.log("exportToCalendar tripId", tripId);
 
     const token = localStorage.getItem("access_token");
     window.Telegram.WebApp.openLink(
-      `https://xn--80aqak6ae.xn--p1ai/api/v1/trips/${tripId}/export.ics?token=${token}`,
+      `https://xn--80aqak6ae.xn--p1ai/api/v1/trips/${tripId}/calendar-export?token=${token}`,
     );
   };
 
