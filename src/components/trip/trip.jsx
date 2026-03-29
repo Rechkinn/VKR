@@ -82,10 +82,12 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
               <img src={phoneIcon} alt="Иконка телефонной трубки" />
               {/* <span>{trip.passenger_phone_number}</span> */}
               <a
-                href={`tel:${trip.passenger_phone_number}`}
+                href={`tel:+79511677611`}
+                // href={`tel:${trip.passenger_phone_number}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                {trip.passenger_phone_number}
+                {/* {trip.passenger_phone_number} */}
+                +79511677611
               </a>
             </TripInfoLine>
           </div>
