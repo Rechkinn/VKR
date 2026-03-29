@@ -310,6 +310,14 @@ export default function FormForNewTrip() {
     window.Telegram.WebApp.openTelegramLink(`tg://user?id=${telegram_id}`);
   }
 
+  useEffect(() => {
+    console.log("form-for-new-trip");
+    console.log("tripForViewing", tripForViewing);
+    console.log("location", location);
+
+    // tripForViewing?.[location?.state?.whoShowInfo];
+  }, []);
+
   return (
     <>
       {(addTripRequest || addTripOwnRequest || updateTripRequest) && (
@@ -532,12 +540,13 @@ export default function FormForNewTrip() {
                     )}
                     placeholder="Данные имени отсутствуют"
                     readOnly
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.preventDefault();
                       openChat(
                         tripForViewing?.[location?.state?.whoShowInfo]
                           ?.telegram_id,
-                      )
-                    }
+                      );
+                    }}
                   />
                   <Input
                     type="text"
