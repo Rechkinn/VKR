@@ -255,18 +255,35 @@ export default function Calendar() {
   }
 
   const exportToCalendar = (trip) => {
-    console.log("экспорт поездки", trip);
-
-    // Форматирование даты для iCalendar (YYYYMMDDTHHMMSS)
+    // Форматирование даты: YYYYMMDDTHHMMSS (локальное время, без Z)
     const formatDate = (date) => {
-      return new Date(date)
-        .toISOString()
-        .replace(/[-:]/g, "") // убираем дефисы и двоеточия
-        .replace(/\.\d+/, "") // убираем миллисекунды
-        .replace(/Z$/, ""); // убираем Z (будем считать локальным временем)
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const hours = String(d.getHours()).padStart(2, "0");
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      const seconds = String(d.getSeconds()).padStart(2, "0");
+      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
     };
 
-    // Описание события с экранированием перевода строки
+    // Экранирование для iCalendar (запятые, точки с запятой, обратные слеши, переводы строк)
+    const escapeICS = (str) => {
+      if (!str) return "";
+      return str
+        .replace(/\\/g, "\\\\")
+        .replace(/;/g, "\\;")
+        .replace(/,/g, "\\,")
+        .replace(/\n/g, "\\n");
+    };
+
+    const departure = new Date(trip.departure_datetime);
+    // Длительность поездки, например, 1 час (можно вычислить из trip, если есть)
+    const durationHours = 1;
+    const endDate = new Date(
+      departure.getTime() + durationHours * 60 * 60 * 1000,
+    );
+
     const description = [
       `Маршрут: ${trip.from_address} → ${trip.to_address}`,
       `Мест: ${trip.total_seats}`,
@@ -279,34 +296,33 @@ export default function Calendar() {
         : null,
     ]
       .filter(Boolean)
-      .join("\\n"); // двойной слеш, чтобы в ics остался \n
+      .join("\\n");
 
-    const ics = [
+    const icsLines = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//AllTransfer//alltransfer.ru//RU",
       "CALSCALE:GREGORIAN",
       "BEGIN:VEVENT",
       `UID:trip-${trip.id}@alltransfer.ru`,
-      `SUMMARY:${trip.from_address} → ${trip.to_address}`,
-      `DTSTART:${formatDate(trip.departure_datetime)}`,
-      `DTEND:${formatDate(trip.departure_datetime)}`,
+      `SUMMARY:${escapeICS(trip.from_address)} → ${escapeICS(trip.to_address)}`,
+      `DTSTART:${formatDate(departure)}`,
+      `DTEND:${formatDate(endDate)}`,
       `DTSTAMP:${formatDate(new Date())}`,
-      `LOCATION:${trip.from_address}`,
-      `DESCRIPTION:${description}`,
+      `LOCATION:${escapeICS(trip.from_address)}`,
+      `DESCRIPTION:${escapeICS(description)}`,
       "END:VEVENT",
       "END:VCALENDAR",
-    ].join("\r\n");
+    ];
 
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `trip_${trip.id}.ics`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const icsContent = icsLines.join("\r\n");
+
+    // Создаём data URL (работает на iOS, Android, везде)
+    const dataUrl =
+      "data:text/calendar;charset=utf-8," + encodeURIComponent(icsContent);
+
+    // Открываем URL – iOS покажет диалог "Добавить в Календарь"
+    window.location.href = dataUrl;
   };
 
   function addOwnTrip() {
