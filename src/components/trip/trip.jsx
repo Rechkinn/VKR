@@ -49,11 +49,12 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
         isNaN(Number(arrayPhoneNumber[i])),
       );
       console.log("result перед условием", result);
-      if (!isNaN(Number(arrayPhoneNumber[i]))) {
+      if (!isNaN(Number(arrayPhoneNumber[i])) && arrayPhoneNumber[i] !== " ") {
         result += arrayPhoneNumber[i];
         console.log("result после условия", result);
       }
     }
+    return result;
   }
 
   return (
