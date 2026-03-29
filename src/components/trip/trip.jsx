@@ -81,33 +81,14 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
             <TripInfoLine needGreyColor>
               <img src={phoneIcon} alt="Иконка телефонной трубки" />
               {/* <span>{trip.passenger_phone_number}</span> */}
-              {/* <a
-                href={`tel:+79511677611`}
-                // href={`tel:${trip.passenger_phone_number}`}
+              <a
+                // href={`tel:+79511677611`}
+                href={`tel:${trip.passenger_phone_number}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 {trip.passenger_phone_number}
               </a>
-              <a href="tel:+79511677611">+79511677611</a> */}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  // window.location.href = `tel:+79511677611`;
-                  // window.location.assign(`tel:+79511677611`);
-                  // Linking.openURL("telprompt:+79511677611");
-                  const tg = window.Telegram.WebApp;
-                  tg.openLink(`tel:+79511677611`);
-                  // tg.openLink(`tel:${trip.passenger_phone_number}`);
-                  // Linking.openURL('telprompt:${number}')
-                  // window.location.assign(`tel:${trip.passenger_phone_number}`);
-                  // window.location.href = `tel:${trip.passenger_phone_number}`;
-                }}
-              >
-                +79511677611
-                {/* {trip.passenger_phone_number} */}
-              </a>
+              {/* <a href="tel:+79511677611">+79511677611</a> */}
             </TripInfoLine>
           </div>
         </div>
