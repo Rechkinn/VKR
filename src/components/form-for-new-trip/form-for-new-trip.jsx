@@ -306,8 +306,8 @@ export default function FormForNewTrip() {
     return resultName.trim();
   }
 
-  function openChat(telegram_id) {
-    window.Telegram.WebApp.openTelegramLink(`tg://user?id=${telegram_id}`);
+  function openChat(username) {
+    window.Telegram.WebApp.openTelegramLink(`https://t.me/${username}`);
   }
 
   useEffect(() => {
@@ -544,7 +544,7 @@ export default function FormForNewTrip() {
                       e.preventDefault();
                       openChat(
                         tripForViewing?.[location?.state?.whoShowInfo]
-                          ?.telegram_id,
+                          ?.username,
                       );
                     }}
                   />
