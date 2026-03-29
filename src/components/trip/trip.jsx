@@ -96,7 +96,10 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
                   e.stopPropagation();
                   // window.location.href = `tel:+79511677611`;
                   // window.location.assign(`tel:+79511677611`);
-                  Linking.openURL("telprompt:+79511677611");
+                  // Linking.openURL("telprompt:+79511677611");
+                  const tg = window.Telegram.WebApp;
+                  tg.openLink(`tel:+79511677611`);
+                  // tg.openLink(`tel:${trip.passenger_phone_number}`);
                   // Linking.openURL('telprompt:${number}')
                   // window.location.assign(`tel:${trip.passenger_phone_number}`);
                   // window.location.href = `tel:${trip.passenger_phone_number}`;
