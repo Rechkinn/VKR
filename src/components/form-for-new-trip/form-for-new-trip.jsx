@@ -82,16 +82,30 @@ export default function FormForNewTrip() {
     return Number(inputValue) > min && Number(inputValue) <= max;
   }
 
-  function validateDate(inputValue) {
-    // "121221-12-12"
+  function validateDateTime(inputData, inputTime) {
+    console.log("inputData", inputData);
+    console.log("inputTime", inputTime);
+
+    if (inputData === "" || inputTime === "") return false;
 
     const currentDate = new Date();
-    const tripDate = new Date(inputValue);
+
+    // "121221-12-12"
+    const arrayInputData = inputData.split("-");
+    const arrayInputTime = inputTime.split(":");
+
+    const tripDate = new Date(
+      arrayInputData[0],
+      arrayInputData[1],
+      arrayInputData[2],
+      arrayInputTime[0],
+      arrayInputTime[1],
+    );
 
     console.log("currentDate", currentDate);
     console.log("tripDate", tripDate);
 
-    const year = inputValue.split("-")[0];
+    const year = inputData.split("-")[0];
     const validYear =
       year.length === 4 &&
       Number(year) >= currentDate.getFullYear() &&
@@ -196,7 +210,7 @@ export default function FormForNewTrip() {
       if (inputs[i].name === "date") {
         date = `${inputs[i].value}`;
 
-        if (!validateDate(date)) {
+        if (!validateDateTime(date, time)) {
           // inputs[i].focus();
           stop = true;
           setDateError(true);
