@@ -36,7 +36,7 @@ export default function Calendar() {
   const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
   const [clickedDay, setClickedDay] = useState(
-    `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
+    `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
   );
 
   const {
@@ -158,7 +158,7 @@ export default function Calendar() {
     const daysInPrevMonth = new Date(
       date.getFullYear(),
       date.getMonth(),
-      0
+      0,
     ).getDate();
 
     // Заполняем дни предыдущего месяца
@@ -168,7 +168,7 @@ export default function Calendar() {
       const { day, month, year, hasTrips } = getDetailsDate(
         dayValue,
         changeFormatValue(date.getMonth() === 0 ? 12 : date.getMonth()),
-        `${date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()}`
+        `${date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()}`,
       );
 
       resultArrayDays.push({
@@ -192,7 +192,7 @@ export default function Calendar() {
       const { day, month, year, hasTrips } = getDetailsDate(
         i,
         changeFormatValue(date.getMonth() + 1),
-        `${date.getFullYear()}`
+        `${date.getFullYear()}`,
       );
 
       resultArrayDays.push({
@@ -217,7 +217,7 @@ export default function Calendar() {
           date.getMonth() + 1 === 12
             ? date.getFullYear() + 1
             : date.getFullYear()
-        }`
+        }`,
       );
 
       resultArrayDays.push({
@@ -251,6 +251,13 @@ export default function Calendar() {
 
   function tryRemoveTrip() {
     dispatch(removeTripOwn(tripForSettings.id, closeSettingsTrip));
+  }
+
+  // dispatch(exportDataToCalendar(tripForSettings.id, closeSettingsTrip));
+  function handleExportCalendar(tripId) {
+    const token = localStorage.getItem("access_token");
+    const url = `https://your-domain.com/api/v1/trips/${tripId}/export.ics?token=${token}`;
+    window.Telegram.WebApp.openLink(url);
   }
 
   function addOwnTrip() {
@@ -288,8 +295,8 @@ export default function Calendar() {
         trip,
         "/calendar",
         trip?.creator_id === infoFromTelegram?.id ? false : true,
-        "creator"
-      )
+        "creator",
+      ),
       //   {
       //   state: {
       //     detailsTrip: trip,
@@ -314,9 +321,12 @@ export default function Calendar() {
   function renderNotifications(notifications) {
     const animationDuration = 3;
     return notifications.map((notification, i) => {
-      setTimeout(() => {
-        setNotifications([]);
-      }, 1000 * animationDuration * notifications.length);
+      setTimeout(
+        () => {
+          setNotifications([]);
+        },
+        1000 * animationDuration * notifications.length,
+      );
       return (
         <Notification
           duration={animationDuration}
@@ -373,6 +383,16 @@ export default function Calendar() {
                 }}
               >
                 Подробнее
+              </Button>
+              <Button
+                className={`modal modalMiddle ${styles.buttonRemoveTrip}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // openDetailsTrip(tripForSettings);
+                  handleExportCalendar(tripForSettings.id);
+                }}
+              >
+                Экспортировать в календарь
               </Button>
               <Button
                 className={`modal modalMiddle ${styles.buttonRemoveTrip}`}
@@ -437,7 +457,7 @@ export default function Calendar() {
                               key={`${day.value}.${day.month}.${day.year}`}
                               onClick={() =>
                                 setClickedDay(
-                                  `${day.value}.${day.month}.${day.year}`
+                                  `${day.value}.${day.month}.${day.year}`,
                                 )
                               }
                               clickedDay={clickedDay}
@@ -465,10 +485,10 @@ export default function Calendar() {
               <div className={styles.trips}>
                 {tripsForCalendar.map((trip) => {
                   const date1 = new Date(
-                    clickedDay.split(".").reverse().join("-")
+                    clickedDay.split(".").reverse().join("-"),
                   );
                   const date2 = new Date(
-                    trip?.departure_datetime.split("T")[0]
+                    trip?.departure_datetime.split("T")[0],
                   );
 
                   if (
@@ -488,7 +508,7 @@ export default function Calendar() {
                             trip?.creator_id === infoFromTelegram?.id
                               ? false
                               : true,
-                            "creator"
+                            "creator",
                           )?.state
                         }
                       />
