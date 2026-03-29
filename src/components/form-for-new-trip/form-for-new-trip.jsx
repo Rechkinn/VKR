@@ -88,11 +88,30 @@ export default function FormForNewTrip() {
     const currentDate = new Date();
     const tripDate = new Date(inputValue);
 
+    console.log("currentDate", currentDate);
+    console.log("tripDate", tripDate);
+
     const year = inputValue.split("-")[0];
     const validYear =
       year.length === 4 &&
       Number(year) >= currentDate.getFullYear() &&
       Number(year) <= currentDate.getFullYear() + 1;
+
+    console.log("year.length === 4", year.length === 4);
+    console.log(
+      "Number(year) >= currentDate.getFullYear()",
+      Number(year) >= currentDate.getFullYear(),
+    );
+    console.log(
+      "Number(year) <= currentDate.getFullYear() + 1",
+      Number(year) <= currentDate.getFullYear() + 1,
+    );
+
+    console.log("validYear", validYear);
+    console.log(
+      "tripDate.getTime() >= currentDate.getTime()",
+      tripDate.getTime() >= currentDate.getTime(),
+    );
 
     return validYear && tripDate.getTime() >= currentDate.getTime();
   }
@@ -173,6 +192,7 @@ export default function FormForNewTrip() {
 
       if (inputs[i].name === "" || inputs[i].value === "") continue;
       if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
+
       if (inputs[i].name === "date") {
         date = `${inputs[i].value}`;
 
