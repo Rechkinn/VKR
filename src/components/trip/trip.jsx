@@ -12,18 +12,28 @@ import { Link } from "react-router";
 
 export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
   function statusInRussian(status) {
-    if (status === "published") {
-      return "Опубликовано";
-    } else if (status === "pending") {
-      return "Ожидание";
-    } else if (status === "confirmed") {
-      return "Подтверждено";
-    } else if (status === "cancelled") {
-      return "Отменено";
-    } else if (status === "completed") {
-      return "Завершено";
+    if (trip_type === "own") {
+      if (status === "published") {
+        return "Создано";
+      } else {
+        throw new Error("Передан не существующий статус поездки!");
+      }
+    } else if (trip_type === "delegated") {
+      if (status === "published") {
+        return "Поиск водителя";
+      } else if (status === "pending") {
+        return "Получен отклик";
+      } else if (status === "confirmed") {
+        return "Водитель найден";
+      } else if (status === "cancelled") {
+        return "Отменено";
+      } else if (status === "completed") {
+        return "Завершено";
+      } else {
+        throw new Error("Передан не существующий статус поездки!");
+      }
     } else {
-      throw new Error("Передан не существующий статус поездки!");
+      throw new Error("Передан не существующий тип поездки!");
     }
   }
 
@@ -70,7 +80,8 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
             </TripInfoLine>
             <TripInfoLine needGreyColor>
               <img src={phoneIcon} alt="Иконка телефонной трубки" />
-              <span>{trip.passenger_phone_number}</span>
+              {/* <span>{trip.passenger_phone_number}</span> */}
+              <a href={`tel:${trip.passenger_phone_number}`}></a>
             </TripInfoLine>
           </div>
         </div>
