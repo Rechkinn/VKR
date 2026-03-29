@@ -419,7 +419,6 @@ export default function FormForNewTrip() {
               >
                 <img src={closeIcon} alt="Иконка закрытия формы" />
               </Button>
-
               <Input
                 label="Дата"
                 iconForLabel={dateIcon}
@@ -428,7 +427,7 @@ export default function FormForNewTrip() {
                 className={styles.inputDate}
                 errorText={
                   dateError
-                    ? "Введите дату от сегодняшнего дня, но не более чем на год вперёд"
+                    ? `Введите дату от сегодняшнего дня, но не более чем на год вперёд. Также проверьте, чтобы время было больше ${new Date().getHours()}:${new Date().getMinutes()}.`
                     : ""
                 }
                 required
@@ -451,7 +450,6 @@ export default function FormForNewTrip() {
                 }
                 readOnly={isOnlyViewing}
               />
-
               <Input
                 ref={fromAddressRef}
                 label="Откуда"
@@ -466,7 +464,6 @@ export default function FormForNewTrip() {
                 initialValue={valueFromAddressForSwap}
                 readOnly={isOnlyViewing}
               />
-
               <Input
                 ref={toAddressRef}
                 label="Куда"
@@ -492,7 +489,6 @@ export default function FormForNewTrip() {
                   )
                 }
               />
-
               <div className={styles.containerForTwoInputs}>
                 <div className={styles.container40}>
                   <Input
@@ -524,7 +520,6 @@ export default function FormForNewTrip() {
                   </SelectCustom>
                 </div>
               </div>
-
               <Input
                 label="Номер телефона пассажира"
                 iconForLabel={phoneIcon}
@@ -540,7 +535,6 @@ export default function FormForNewTrip() {
                 initialValue={tripForViewing?.passenger_phone_number ?? ""}
                 readOnly={isOnlyViewing}
               />
-
               <Input
                 label="Стоимость"
                 type="number"
@@ -549,7 +543,6 @@ export default function FormForNewTrip() {
                 initialValue={tripForViewing?.price ?? ""}
                 readOnly={isOnlyViewing}
               />
-
               <Input
                 label="Комссия"
                 type="number"
@@ -563,7 +556,6 @@ export default function FormForNewTrip() {
                 initialValue={tripForViewing?.delegation_commission ?? ""}
                 readOnly={isOnlyViewing}
               />
-
               <div>
                 <label htmlFor="description" className={styles.label}>
                   Дополнительная информация
@@ -582,7 +574,6 @@ export default function FormForNewTrip() {
                   </p>
                 )}
               </div>
-
               {tripForViewing && tripForViewing?.trip_type !== "own" && (
                 <>
                   <Input
@@ -642,7 +633,6 @@ export default function FormForNewTrip() {
                   )}
                 </>
               )}
-
               {!isOnlyViewing && (
                 <Button
                   type="submit"
