@@ -11,7 +11,7 @@ import Status from "../status/status";
 import { Link } from "react-router";
 
 export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
-  function statusInRussian(status) {
+  function statusInRussian(status, trip_type) {
     if (trip_type === "own") {
       if (status === "published") {
         return "Создано";
@@ -46,7 +46,7 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
       <article className={styles.trip}>
         <header className={styles.header}>
           <div className={styles.status}>
-            <Status>{statusInRussian(trip.status)}</Status>
+            <Status>{statusInRussian(trip.status, trip.trip_type)}</Status>
           </div>
           <Button
             onClick={(e) => {
