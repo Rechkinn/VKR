@@ -254,12 +254,60 @@ export default function Calendar() {
     dispatch(removeTripOwn(tripForSettings.id, closeSettingsTrip));
   }
 
-  // dispatch(exportDataToCalendar(tripForSettings.id, closeSettingsTrip));
-  function handleExportCalendar(tripId) {
-    const token = localStorage.getItem("access_token");
-    const url = `${BASE_URL}/trips/${tripId}/export.ics?token=${token}`;
-    window.Telegram.WebApp.openLink(url);
-  }
+  const exportToCalendar = (trip) => {
+    console.log("экспорт поездки", trip);
+
+    // Форматирование даты для iCalendar (YYYYMMDDTHHMMSS)
+    const formatDate = (date) => {
+      return new Date(date)
+        .toISOString()
+        .replace(/[-:]/g, "") // убираем дефисы и двоеточия
+        .replace(/\.\d+/, "") // убираем миллисекунды
+        .replace(/Z$/, ""); // убираем Z (будем считать локальным временем)
+    };
+
+    // Описание события с экранированием перевода строки
+    const description = [
+      `Маршрут: ${trip.from_address} → ${trip.to_address}`,
+      `Мест: ${trip.total_seats}`,
+      trip.price ? `Цена: ${trip.price} ₽` : null,
+      trip.delegation_commission
+        ? `Комиссия: ${trip.delegation_commission} ₽`
+        : null,
+      trip.passenger_phone_number
+        ? `Пассажир: ${trip.passenger_phone_number}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join("\\n"); // двойной слеш, чтобы в ics остался \n
+
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//AllTransfer//alltransfer.ru//RU",
+      "CALSCALE:GREGORIAN",
+      "BEGIN:VEVENT",
+      `UID:trip-${trip.id}@alltransfer.ru`,
+      `SUMMARY:${trip.from_address} → ${trip.to_address}`,
+      `DTSTART:${formatDate(trip.departure_datetime)}`,
+      `DTEND:${formatDate(trip.departure_datetime)}`,
+      `DTSTAMP:${formatDate(new Date())}`,
+      `LOCATION:${trip.from_address}`,
+      `DESCRIPTION:${description}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `trip_${trip.id}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   function addOwnTrip() {
     navigate("/create-new-trip", {
@@ -390,7 +438,7 @@ export default function Calendar() {
                 onClick={(e) => {
                   e.stopPropagation();
                   // openDetailsTrip(tripForSettings);
-                  handleExportCalendar(tripForSettings.id);
+                  exportToCalendar(tripForSettings);
                 }}
               >
                 Экспортировать в календарь
