@@ -23,6 +23,7 @@ import Notification from "../notification/notification";
 import { isDevelopmentMode } from "../../utils/development-mode";
 import { SET_SUN_VISIBILITY_ON_BACKGROUND } from "../../services/actions/background";
 import { getStateForFormTrip } from "../../utils/state-for-form-trip";
+import { BASE_URL } from "../../utils/consts";
 
 export default function Calendar() {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ export default function Calendar() {
   const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
   const [clickedDay, setClickedDay] = useState(
-    `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
+    `${`${date.getDate()}`.length > 1 ? date.getDate() : `0${date.getDate()}`}.${date.getMonth() + 1}.${date.getFullYear()}`,
   );
 
   const {
@@ -256,7 +257,7 @@ export default function Calendar() {
   // dispatch(exportDataToCalendar(tripForSettings.id, closeSettingsTrip));
   function handleExportCalendar(tripId) {
     const token = localStorage.getItem("access_token");
-    const url = `https://your-domain.com/api/v1/trips/${tripId}/export.ics?token=${token}`;
+    const url = `${BASE_URL}/trips/${tripId}/export.ics?token=${token}`;
     window.Telegram.WebApp.openLink(url);
   }
 
