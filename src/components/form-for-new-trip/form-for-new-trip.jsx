@@ -207,29 +207,43 @@ export default function FormForNewTrip() {
       if (inputs[i].name === "" || inputs[i].value === "") continue;
       if (inputs[i].name === "car_class" && inputs[i].value === "any") continue;
 
-      if (inputs[i].name === "date") {
-        date = `${inputs[i].value}`;
+      if (inputs[i].name === "date" || inputs[i].name === "time") {
+        if (inputs[i].name === "date") date = `${inputs[i].value}`;
+        if (inputs[i].name === "time") time = `${inputs[i].value}`;
 
-        if (!validateDateTime(date, time)) {
-          // inputs[i].focus();
-          stop = true;
-          setDateError(true);
-        } else {
-          setDateError(false);
-        }
-
+        // date = `${inputs[i].value}`;
         if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
-          newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
+          if (!validateDateTime(date, time)) {
+            // inputs[i].focus();
+            stop = true;
+            setDateError(true);
+          } else {
+            newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
+            setDateError(false);
+          }
         }
         continue;
+
+        // if (!validateDateTime(date, time)) {
+        //   // inputs[i].focus();
+        //   stop = true;
+        //   setDateError(true);
+        // } else {
+        //   setDateError(false);
+        // }
+
+        // if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
+        //   newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
+        // }
+        // continue;
       }
-      if (inputs[i].name === "time") {
-        time += `${inputs[i].value}`;
-        if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
-          newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
-        }
-        continue;
-      }
+      // if (inputs[i].name === "time") {
+      //   time += `${inputs[i].value}`;
+      //   if (date !== "" && time !== "" && !newTrip?.departure_datetime) {
+      //     newTrip["departure_datetime"] = `${date}T${time}:00.007Z`;
+      //   }
+      //   continue;
+      // }
 
       if (inputs[i].name === "price") {
         if (!validationNumber(inputs[i].value)) {
