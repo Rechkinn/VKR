@@ -255,7 +255,7 @@ export default function Calendar() {
   }
 
   const exportToCalendar = (trip) => {
-    // Форматирование даты (локальное, без часового пояса)
+    // ---------- 1. Форматирование даты в формате YYYYMMDDTHHMMSS (локальное время) ----------
     const formatDate = (date) => {
       const d = new Date(date);
       const year = d.getFullYear();
@@ -267,6 +267,7 @@ export default function Calendar() {
       return `${year}${month}${day}T${hours}${minutes}${seconds}`;
     };
 
+    // ---------- 2. Экранирование спецсимволов для iCalendar ----------
     const escapeICS = (str) => {
       if (!str) return "";
       return str
@@ -276,13 +277,14 @@ export default function Calendar() {
         .replace(/\n/g, "\\n");
     };
 
+    // ---------- 3. Определяем дату окончания (например, через 1 час) ----------
     const departure = new Date(trip.departure_datetime);
-    // Длительность – например, 1 час (можно заменить на реальное время прибытия)
-    const durationHours = 1;
+    const durationHours = 1; // можно заменить на реальную длительность из trip, если есть
     const endDate = new Date(
       departure.getTime() + durationHours * 60 * 60 * 1000,
     );
 
+    // ---------- 4. Сборка DESCRIPTION ----------
     const description = [
       `Маршрут: ${trip.from_address} → ${trip.to_address}`,
       `Мест: ${trip.total_seats}`,
@@ -297,7 +299,8 @@ export default function Calendar() {
       .filter(Boolean)
       .join("\\n");
 
-    const icsContent = [
+    // ---------- 5. Формирование содержимого .ics ----------
+    const icsLines = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//AllTransfer//alltransfer.ru//RU",
@@ -312,36 +315,30 @@ export default function Calendar() {
       `DESCRIPTION:${escapeICS(description)}`,
       "END:VEVENT",
       "END:VCALENDAR",
-    ].join("\r\n");
+    ];
+    const icsContent = icsLines.join("\r\n");
 
-    // Создаём файл
-    const file = new File([icsContent], `trip_${trip.id}.ics`, {
-      type: "text/calendar",
+    // ---------- 6. Создание Blob и открытие в новой вкладке ----------
+    const blob = new Blob([icsContent], {
+      type: "text/calendar;charset=utf-8",
     });
+    const url = URL.createObjectURL(blob);
 
-    // Используем Web Share API
+    // Пытаемся открыть в новой вкладке
+    const newWindow = window.open(url, "_blank");
+
     if (
-      navigator.share &&
-      navigator.canShare &&
-      navigator.canShare({ files: [file] })
+      !newWindow ||
+      newWindow.closed ||
+      typeof newWindow.closed === "undefined"
     ) {
-      navigator
-        .share({
-          title: "Поездка",
-          text: `${trip.from_address} → ${trip.to_address}`,
-          files: [file],
-        })
-        .catch((err) => {
-          if (err.name !== "AbortError") {
-            console.error("Ошибка шаринга:", err);
-            alert("Не удалось поделиться. Попробуйте другой способ.");
-          }
-        });
-    } else {
-      // Запасной вариант – показать инструкцию или попросить скопировать ссылку
+      // Всплывающее окно заблокировано – показываем инструкцию
       alert(
-        'Ваш браузер не поддерживает добавление в календарь напрямую.\nПожалуйста, используйте стандартное приложение "Календарь" на iPhone.',
+        "Не удалось открыть файл календаря. Пожалуйста, разрешите всплывающие окна для этого сайта и попробуйте снова.",
       );
+    } else {
+      // Успешно открыли – через секунду освобождаем URL
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
   };
 
