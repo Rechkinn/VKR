@@ -94,10 +94,12 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  window.location.href = `tel:${trip.passenger_phone_number}`;
+                  window.location.href = `tel:+79511677611`;
+                  // window.location.href = `tel:${trip.passenger_phone_number}`;
                 }}
               >
-                {trip.passenger_phone_number}
+                +79511677611
+                {/* {trip.passenger_phone_number} */}
               </a>
             </TripInfoLine>
           </div>
