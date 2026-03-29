@@ -81,7 +81,9 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
             <TripInfoLine needGreyColor>
               <img src={phoneIcon} alt="Иконка телефонной трубки" />
               {/* <span>{trip.passenger_phone_number}</span> */}
-              <a href={`tel:${trip.passenger_phone_number}`}></a>
+              <a href={`tel:${trip.passenger_phone_number}`}>
+                {trip.passenger_phone_number}
+              </a>
             </TripInfoLine>
           </div>
         </div>
