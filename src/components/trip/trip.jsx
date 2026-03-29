@@ -94,7 +94,9 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  window.location.href = `tel:+79511677611`;
+                  // window.location.href = `tel:+79511677611`;
+                  window.location.assign(`tel:+79511677611`);
+                  // window.location.assign(`tel:${trip.passenger_phone_number}`);
                   // window.location.href = `tel:${trip.passenger_phone_number}`;
                 }}
               >
