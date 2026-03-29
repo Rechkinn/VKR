@@ -81,15 +81,24 @@ export default function Trip({ trip, openSettingsTrip, stateForFormTrip }) {
             <TripInfoLine needGreyColor>
               <img src={phoneIcon} alt="Иконка телефонной трубки" />
               {/* <span>{trip.passenger_phone_number}</span> */}
-              <a
+              {/* <a
                 href={`tel:+79511677611`}
                 // href={`tel:${trip.passenger_phone_number}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* {trip.passenger_phone_number} */}
-                +79511677611
+                {trip.passenger_phone_number}
               </a>
-              <a href="tel:+79511677611">+79511677611</a>
+              <a href="tel:+79511677611">+79511677611</a> */}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = `tel:${trip.passenger_phone_number}`;
+                }}
+              >
+                {trip.passenger_phone_number}
+              </a>
             </TripInfoLine>
           </div>
         </div>
