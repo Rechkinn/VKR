@@ -37,7 +37,7 @@ export default function Calendar() {
   const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
   const [clickedDay, setClickedDay] = useState(
-    `${`${date.getDate()}`.length > 1 ? date.getDate() : `0${date.getDate()}`}.${date.getMonth() + 1}.${date.getFullYear()}`,
+    `${date.getDate()}.${`${date.getMonth() + 1}`.length > 1 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`}.${date.getFullYear()}`,
   );
 
   const {
